@@ -1,4 +1,13 @@
 {
+  "name": "music-ally-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@nestjs/mongoose": "^10.0.6",
     "mongoose": "^8.3.3"
