@@ -31,12 +31,11 @@ const users_schema = new mongoose.Schema({
     require: false,
     default: true,
   },
-  // areas 스키마를 아직 안만든 관계로 일단 FK는 주석처리 해뒀음
-  // homearea:{
-  //     type: mongoose.Types.ObjectId,
-  //     require: true,
-  //     ref: 'areas'
-  // }
+  homearea:{
+      type: mongoose.Types.ObjectId,
+      require: true,
+      ref: 'areas'
+  }
 });
 
 export default mongoose.model("users", users_schema);
