@@ -15,5 +15,5 @@ const follows_schema = new mongoose.Schema({
 
 follows_schema.index({ from_user_id: 1, to_user_id: 1 }, { unique: true });
 
-
-export default mongoose.model("follows", follows_schema);
+const Follows = mongoose.model("follows", follows_schema);
+export default Follows;

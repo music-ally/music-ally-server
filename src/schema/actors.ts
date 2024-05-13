@@ -27,4 +27,5 @@ const actors_schema = new mongoose.Schema({
   }
 });
 
-export default mongoose.model("actors", actors_schema);
+const Actors = mongoose.model("actors", actors_schema);
+export default Actors;

@@ -38,4 +38,5 @@ const users_schema = new mongoose.Schema({
   }
 });
 
-export default mongoose.model("users", users_schema);
+const Users = mongoose.model("users", users_schema);
+export default Users; 
