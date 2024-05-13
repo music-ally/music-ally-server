@@ -31,4 +31,5 @@ const musicals_schema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("musicals", musicals_schema);
+const Musicals = mongoose.model("musicals", musicals_schema);
+export default Musicals;
