@@ -1,16 +1,26 @@
 import mongoose from "mongoose";
 
-const review_likes_schema = new mongoose.Schema({
-  user_id:{
-       type: mongoose.Types.ObjectId,
+const actors_schema = new mongoose.Schema({
+  actor_name:{
+       type: String,
        require: true,
-       ref: 'users'
   },
-  review_id:{
-    type: mongoose.Types.ObjectId,
+  progile_image:{
+    type: String,
     require: true,
-    ref: 'reviews'
-  }
+  },
+  birthday:{
+    type: Date,
+    require: false,
+  },
+  agency:{
+    type: String,
+    require: false,
+  },
+  physical:{
+    type: String,
+    require: false,
+  },
 });
 
-export default mongoose.model("review_likes", review_likes_schema);
+export default mongoose.model("actors", actors_schema);
