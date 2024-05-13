@@ -21,6 +21,10 @@ const actors_schema = new mongoose.Schema({
     type: String,
     require: false,
   },
+  job:{
+    type: String,
+    require: false,
+  }
 });
 
 export default mongoose.model("actors", actors_schema);
