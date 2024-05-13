@@ -13,4 +13,6 @@ const review_likes_schema = new mongoose.Schema({
   }
 });
 
+review_likes_schema.index({ user_id: 1, review_id: 1 }, { unique: true });
+
 export default mongoose.model("review_likes", review_likes_schema);
