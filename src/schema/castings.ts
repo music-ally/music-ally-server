@@ -17,5 +17,5 @@ const castings_schema = new mongoose.Schema({
   },
 });
 
-const Castings = mongoose.model("castings", castings_schema);
+const Castings = mongoose.model<mongoose.Document>("castings", castings_schema);
 export default Castings;

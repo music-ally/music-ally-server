@@ -52,5 +52,5 @@ const reviews_schema = new mongoose.Schema({
   
 });
 
-const Reviews = mongoose.model("reviews", reviews_schema);
+const Reviews = mongoose.model<mongoose.Document>("reviews", reviews_schema);
 export default Reviews;

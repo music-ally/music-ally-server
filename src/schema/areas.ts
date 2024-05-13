@@ -7,5 +7,5 @@ const areas_schema = new mongoose.Schema({
   },
 });
 
-const Areas = mongoose.model("areas", areas_schema);
+const Areas = mongoose.model<mongoose.Document>("areas", areas_schema);
 export default Areas;

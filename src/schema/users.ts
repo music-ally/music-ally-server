@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const users_schema = new mongoose.Schema({
   email: {
@@ -38,5 +38,5 @@ const users_schema = new mongoose.Schema({
   }
 });
 
-const Users = mongoose.model("users", users_schema);
+const Users = mongoose.model<mongoose.Document>("users", users_schema);
 export default Users; 

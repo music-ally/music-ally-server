@@ -15,6 +15,5 @@ const bookmarks_schema = new mongoose.Schema({
 
 bookmarks_schema.index({ user_id: 1, musical_id: 1 }, { unique: true });
 
-const Bookmarks = mongoose.model("bookmarks", bookmarks_schema);
-
+const Bookmarks = mongoose.model<mongoose.Document>("bookmarks", bookmarks_schema);
 export default Bookmarks; 
