@@ -1,25 +1,29 @@
 import mongoose from "mongoose";
-import { user_update_dto } from "../../dto/user/request/user_update";
-import { user_update_response_dto } from "../../dto/user/response/user_update_response";
-import users from "../../schema/users"
+import { user_info } from "../../dto/user/user_info";
+import Users from "../../schema/users";
 
-const update_user = async (
-    userId: string,
-    user_update_dto: user_update_dto
-): Promise<user_update_response_dto> => {
-    try{
-        await users.findByIdAndUpdate(userId, user_update_dto)
+const create_user = async (user_create_dto: user_info) => {
+  try {
+    const user = new Users({
+      email: user_create_dto.email,
+      password: user_create_dto.password,
+      nickname: user_create_dto.nickname,
+      birthday: user_create_dto.birthday,
+      sex: user_create_dto.sex,
+      profile_image: "null",
+      noti_allow: true,
+    });
 
-        const data: user_update_response_dto = {
-            password: user_update_dto.password,
-            nickname: user_update_dto.nickname,
-            birthday: user_update_dto.birthday,
-            sex: user_update_dto.sex,
-            profile_image: user_update_dto.profile_image
-        }
+    await user.save();
 
-        return data;
-    } catch(error){
-        throw error;
-    }
+    const data = {
+      _id: user._id,
+    };
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
 };
+
+export { create_user };

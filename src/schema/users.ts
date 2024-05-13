@@ -19,7 +19,7 @@ const users_schema = new mongoose.Schema({
     require: true,
   },
   sex: {
-    type: Date,
+    type: Boolean,
     require: true,
   },
   profile_image: {
@@ -31,12 +31,12 @@ const users_schema = new mongoose.Schema({
     require: false,
     default: true,
   },
-  homearea:{
-      type: mongoose.Types.ObjectId,
-      require: true,
-      ref: 'areas'
-  }
+  homearea: {
+    type: mongoose.Types.ObjectId,
+    require: true,
+    ref: "areas",
+  },
 });
 
 const Users = mongoose.model<mongoose.Document>("users", users_schema);
-export default Users; 
+export default Users;
