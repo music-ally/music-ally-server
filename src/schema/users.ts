@@ -8,7 +8,7 @@ const users_schema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: true,
+    require: false,
   },
   nickname: {
     type: String,
@@ -35,6 +35,10 @@ const users_schema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     require: true,
     ref: "areas",
+  },
+  is_social: {
+    type: Boolean,
+    require: true, // true = 소셜, false = 기본
   },
 });
 
