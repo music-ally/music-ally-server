@@ -1,4 +1,4 @@
-// import mongoose from "mongoose";
+// 유저 기본 정보
 export interface user_info {
   email: string;
   password: string;

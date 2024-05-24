@@ -38,7 +38,8 @@ const users_schema = new mongoose.Schema({
   },
   is_social: {
     type: Boolean,
-    require: true, // true = 소셜, false = 기본
+    require: true,
+    default: true // true = 소셜로그인, false = 정석로그인
   },
 });
 

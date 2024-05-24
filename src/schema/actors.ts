@@ -5,7 +5,7 @@ const actors_schema = new mongoose.Schema({
        type: String,
        require: true,
   },
-  progile_image:{
+  profile_image:{
     type: String,
     require: true,
   },
