@@ -3,32 +3,32 @@ import mongoose, { mongo } from "mongoose";
 const users_schema = new mongoose.Schema({
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    require: false,
+    required: false,
   },
   nickname: {
     type: String,
-    require: true,
+    required: true,
   },
   birthday: {
     type: String,
-    require: true,
+    required: true,
   },
   sex: {
     type: Boolean,
-    require: true,
+    required: true,
   },
   profile_image: {
     type: String,
-    require: false,
+    required: false,
   },
   noti_allow: {
     type: Boolean,
-    require: false,
+    required: false,
     default: true,
   },
   homearea: {
@@ -38,7 +38,7 @@ const users_schema = new mongoose.Schema({
   },
   is_social: {
     type: Boolean,
-    require: true,
+    required: true,
     default: true // true = 소셜로그인, false = 정석로그인
   },
 });

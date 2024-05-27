@@ -3,30 +3,33 @@ import mongoose from "mongoose";
 const notifications_schema = new mongoose.Schema({
   user_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
+    required: true,
     ref: "users",
   },
   type: {
     type: String,
-    require: true,
+    required: true,
     default: "번외",
   },
   created_at: {
     type: Date,
-    require: true,
+    required: true,
     default: new Date(),
   },
   review_id: {
     type: mongoose.Types.ObjectId,
-    require: false,
+    required: false,
     ref: "reviews",
   },
   follow_id: {
     type: mongoose.Types.ObjectId,
-    require: false,
+    required: false,
     ref: "follows",
   },
 });
 
-const Notifications = mongoose.model<mongoose.Document>("notifications", notifications_schema);
+const Notifications = mongoose.model<mongoose.Document>(
+  "notifications",
+  notifications_schema
+);
 export default Notifications;

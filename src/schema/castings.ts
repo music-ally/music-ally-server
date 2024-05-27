@@ -1,19 +1,19 @@
 import mongoose from "mongoose";
 
 const castings_schema = new mongoose.Schema({
-  actor_id:{
+  actor_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'actors'
+    required: true,
+    ref: "actors",
   },
-  musical_id:{
+  musical_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'musicals'
+    required: true,
+    ref: "musicals",
   },
-  role:{
+  role: {
     type: String,
-    require: false,
+    required: false,
   },
 });
 

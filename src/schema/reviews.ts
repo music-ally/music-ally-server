@@ -1,55 +1,54 @@
 import mongoose from "mongoose";
 
 const reviews_schema = new mongoose.Schema({
-  user_id:{
+  user_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'users'
+    required: true,
+    ref: "users",
   },
-  musical_id:{
+  musical_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'musicals'
+    required: true,
+    ref: "musicals",
   },
-  actor_id:{
+  actor_id: {
     type: mongoose.Types.ObjectId,
-    require: true,
-    ref: 'castings',
-    field: 'actors_id'
+    required: true,
+    ref: "castings",
+    field: "actors_id",
   },
   content: {
     type: String,
-    require: true,
+    required: true,
   },
   watch_at: {
     type: Date,
-    require: true,
+    required: true,
   },
   created_at: {
     type: Date,
-    require: true,
+    required: true,
   },
   like_num: {
     type: Number,
-    require: true,
-    default: 0
+    required: true,
+    default: 0,
   },
   fear: {
     type: Number,
-    require: true,
-    default: 0
+    required: true,
+    default: 0,
   },
   sensitivity: {
     type: Number,
-    require: true,
-    default: 0
+    required: true,
+    default: 0,
   },
   violence: {
     type: Number,
-    require: true,
-    default: 0
+    required: true,
+    default: 0,
   },
-  
 });
 
 const Reviews = mongoose.model<mongoose.Document>("reviews", reviews_schema);

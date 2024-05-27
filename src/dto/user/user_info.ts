@@ -7,4 +7,6 @@ export interface user_info {
   sex: Boolean;
   profile_image: string;
   noti_allow: boolean;
+  homearea: string;
+  is_social: boolean;
 }
