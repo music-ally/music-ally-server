@@ -1,4 +1,4 @@
-// import mongoose from "mongoose";
+// 유저 기본 정보
 export interface user_info {
   email: string;
   password: string;
@@ -7,4 +7,6 @@ export interface user_info {
   sex: Boolean;
   profile_image: string;
   noti_allow: boolean;
+  homearea: string;
+  is_social: boolean;
 }

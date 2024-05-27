@@ -1,30 +1,30 @@
 import mongoose from "mongoose";
 
 const actors_schema = new mongoose.Schema({
-  actor_name:{
-       type: String,
-       require: true,
-  },
-  progile_image:{
+  actor_name: {
     type: String,
-    require: true,
+    required: true,
   },
-  birthday:{
+  profile_image: {
+    type: String,
+    required: true,
+  },
+  birthday: {
     type: Date,
-    require: false,
+    required: false,
   },
-  agency:{
+  agency: {
     type: String,
-    require: false,
+    required: false,
   },
-  physical:{
+  physical: {
     type: String,
-    require: false,
+    required: false,
   },
-  job:{
+  job: {
     type: String,
-    require: false,
-  }
+    required: false,
+  },
 });
 
 const Actors = mongoose.model<mongoose.Document>("actors", actors_schema);
