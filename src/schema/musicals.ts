@@ -15,10 +15,10 @@ const musicals_schema = new mongoose.Schema({
     required: true,
     default: new Date(),
   },
-  theater: {
-    type: String,
+  theater_id: {
+    type: mongoose.Types.ObjectId,
     required: true,
-    default: "미정",
+    ref: "theaters"
   },
   poster_uri: {
     type: String,
