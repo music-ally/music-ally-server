@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
+import iconv from "iconv-lite";
 
 interface Musical {
   title: string;
@@ -33,31 +34,30 @@ const fetchMusicals = async (
 
   try {
     console.log("Fetching musicals with params:", params);
-    const response = await axios.get(baseURL, { params });
-    const $ = cheerio.load(response.data);
+    const response = await axios.get(baseURL, {
+      params,
+      responseType: 'arraybuffer', // 바이트 배열로 응답을 받음
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
+    const $ = cheerio.load(decodedData);
     const musicals: Musical[] = [];
 
-    $(".contents a").each((index, element) => {
-      const title = $(element).find("td b a").text().trim();
-      const info = $(element).find("td").eq(2).html() || "";
-      const dateMatch = info.match(/일시\s*:\s*([\d.]+)\s*~\s*([\d.]+)/);
-      const placeMatch = info.match(/장소\s*:\s*<a [^>]*>([^<]+)<\/a>/);
-      const castMatch = info.match(/출연\s*:\s*(.*?)<a [^>]*>/);
+    $("tr").each((index, element) => {
+      const titleElement = $(element).find("td b a");
+      if (titleElement.length) {
+        const title = titleElement.text().trim();
+        const infoElement = $(element).next("tr").find("td").html() || "";
 
-      if (
-        title &&
-        dateMatch &&
-        dateMatch.length === 3 &&
-        placeMatch &&
-        castMatch
-      ) {
-        const startDate = dateMatch[1];
-        const endDate = dateMatch[2];
-        const place = placeMatch[1];
-        const cast = castMatch[1]
-          .split(", ")
-          .map((actor) => actor.replace(/<.*?>/g, "").trim());
-          
+        const dateMatch = infoElement.match(/일시\s*:\s*([\d.]+)\s*~\s*([\d.]+)/);
+        const placeMatch = infoElement.match(/장소\s*:\s*<a [^>]*>([^<]+)<\/a>/);
+        const castMatch = infoElement.match(/출연\s*:\s*(.*?)<a [^>]*>/);
+
+        const startDate = dateMatch ? dateMatch[1] : 'N/A';
+        const endDate = dateMatch ? dateMatch[2] : 'N/A';
+        const place = placeMatch ? placeMatch[1] : 'N/A';
+        const cast = castMatch ? [castMatch[1].trim()] : [];
+
         musicals.push({
           title,
           date: `${startDate} ~ ${endDate}`,
@@ -74,7 +74,7 @@ const fetchMusicals = async (
   }
 };
 
-const fetchAllMusicals = async () => {
+const fetchAllMusicals = async (): Promise<Musical[]> => {
   const allMusicals: Musical[] = [];
 
   try {
@@ -84,6 +84,7 @@ const fetchAllMusicals = async () => {
       allMusicals.push(...musicals);
     }
 
+    /* 
     // 개막 예정
     for (let page = 1; page <= 10; page++) {
       const musicals = await fetchMusicals(3, page);
@@ -97,6 +98,8 @@ const fetchAllMusicals = async () => {
         allMusicals.push(...musicals);
       }
     }
+    */
+
   } catch (error) {
     console.error("Error fetching all musicals:", error);
     throw error;
