@@ -8,29 +8,26 @@ sPlayType=1~3                  : 공연 상태 (1=과거, 2=현재, 3=미래)
 sSelectType=2(고정)             : 정렬 옵션
 sStartYear=n                   : 연도별
 Page=n                         : 페이지
+sReqPlayno=n                   : 뮤지컬ID
 
-
-현재공연중 sReqTab=2 sPlayType=2 sSelectType=2
+현재공연중 sReqTab=5 sPlayType=2 sSelectType=3
 전체
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=&sReqDistrict=&sReqTab=2&sPlayType=2&sStartYear=&sSelectType=2"
-뮤지컬
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=2&sStartYear=&sSelectType=2"
+ㄱㄴㄷ순
+ - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=1&sReqMainCategory=000001&sReqSubCategory=&sReqDistrict=&sReqTab=5&sPlayType=2&sStartYear=&sSelectType=3"
 두번째 페이지
- - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=2&sStartYear=&sSelectType=2"
+ - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=&sReqDistrict=&sReqTab=5&sPlayType=2&sStartYear=&sSelectType=3"
 
 
-개막예정 sReqTab=2 sPlayType=3 sSelectType=2
-뮤지컬
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=3&sStartYear=&sSelectType=2"
-두번째 페이지
- - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=3&sStartYear=&sSelectType=2"
+개막예정 sReqTab=5 sPlayType=3 sSelectType=3
+전체
+ㄱㄴㄷ순
+ - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=&sReqDistrict=&sReqTab=5&sPlayType=3&sStartYear=&sSelectType=3"
 
 
-2019 sReqTab=2 sPlayType=1 sSelectType=2 sStartYear=2019
-뮤지컬
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2019&sSelectType=2"
-두번째 페이지
- - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2019&sSelectType=2"
+2019 sReqTab=5 sPlayType=1 sSelectType=3 sStartYear=2019
+전체
+ㄱㄴㄷ순
+ - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=&sReqDistrict=&sReqTab=5&sPlayType=1&sStartYear=2019&sSelectType=3"
 
 
 2017 sReqTab=2 sPlayType=1 sSelectType=2 sStartYear=2017
@@ -43,3 +40,7 @@ Page=n                         : 페이지
 2007년 이전 sReqTab=2 sPlayType=1 sSelectType=2 sStartYear=2007
 뮤지컬
  - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2007&sSelectType=2"
+
+
+특정 뮤지컬 sReqPlayno=n
+- "http://www.playdb.co.kr/playdb/playdbDetail.asp?sReqPlayno=198805"

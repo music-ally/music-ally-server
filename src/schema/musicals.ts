@@ -5,6 +5,10 @@ const musicals_schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  musical_sub_name: {
+    type: String,
+    required: true,
+  },
   start_at: {
     type: Date,
     required: true,
@@ -19,6 +23,18 @@ const musicals_schema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     required: true,
     ref: "theaters"
+  },
+  age_limit: {
+    type: String,
+    required: true,
+  },
+  runtime: {
+    type: String,
+    required: true,
+  },
+  purchase_web: {
+    type: String,
+    required: true,
   },
   poster_uri: {
     type: String,
