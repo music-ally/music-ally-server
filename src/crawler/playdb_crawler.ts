@@ -1,29 +1,12 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import iconv from "iconv-lite";
+import { Musical } from "../dto/crawling/crawling_response"
+import { Casts } from "../dto/crawling/crawling_response"
+import { Musical_Details } from "../dto/crawling/crawling_response"
 
-interface Musical {
-  musicalID: string;
-  musicalDetails: MusicalDetails;
-}
 
-interface Casts {
-  role: string;
-  castNames: string[];
-}
-
-interface MusicalDetails {
-  title: string;
-  subTitle: string;
-  genre: string;
-  date: string;
-  place: string;
-  ageLimit: string;
-  runtime: string;
-  website: string;
-  cast: Casts[];
-}
-
+// crawling해줄 기본 URL지정
 const baseURL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
 const detailURL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
 
@@ -31,7 +14,7 @@ const detailURL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 페이지 위 뮤지컬 리스트 크롤링
-const fetchMusicals = async (
+const fetch_musicals = async (
   sPlayType: number,
   page: number,
   sStartYear?: number
@@ -81,14 +64,14 @@ const fetchMusicals = async (
         if (titleElement.length) {
           const onclickAttr = titleElement.attr("onclick");
           const musicalIDMatch = onclickAttr ? onclickAttr.match(/goDetail\('(\d+)'\)/) : null; // goDetail 뒤에 뮤지컬 고유 숫자 추출
-          const musicalID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
+          const musical_ID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
 
           // 뮤지컬 상세 정보 반환 함수 호출
-          const musicalDetails = await fetchMusicalDetails(musicalID);
+          const musical_details = await fetch_musical_details(musical_ID);
 
           musicals.push({
-            musicalID,
-            musicalDetails,
+            musical_ID,
+            musical_details,
           });
         }
       }
@@ -102,9 +85,9 @@ const fetchMusicals = async (
 };
 
 // 뮤지컬ID를 이용해 해당 뮤지컬의 상세 정보(제목, 영어제목, 일시, 장소, 관람등급, 관람시간, 예매사이트, 출연진[]) 반환
-const fetchMusicalDetails = async (
+const fetch_musical_details = async (
   musicalId: string
-): Promise<MusicalDetails> => {
+): Promise<Musical_Details> => {
   const url = `${detailURL}sReqPlayno=${musicalId}`;
 
   try {
@@ -117,7 +100,7 @@ const fetchMusicalDetails = async (
     const $ = cheerio.load(decodedData);
 
     const title = $(".pddetail_subject .title").text().trim();
-    const subTitle = $(".pddetail_subject .entitle").text().trim();
+    const sub_title = $(".pddetail_subject .entitle").text().trim();
 
     // 'alt' 속성 값으로 세부 정보 추출
     const genre = $("img[alt='세부장르']")
@@ -137,7 +120,7 @@ const fetchMusicalDetails = async (
       .find("td a")
       .text()
       .trim();
-    const ageLimit = $("img[alt='관람등급']")
+    const age_limit = $("img[alt='관람등급']")
       .closest("tr")
       .find("td")
       .eq(1)
@@ -154,7 +137,7 @@ const fetchMusicalDetails = async (
       $("p a[href*='ticket.interpark.com/gate']").attr("href") || "";
     
     // 중복된 캐스트 제거
-    const cast: Casts[] = await fetchCast(musicalId);
+    const cast: Casts[] = await fetch_cast(musicalId);
     
     // 중복된 캐스트 제거
     const unique_casts = cast.reduce<Casts[]>((acc, current) => {
@@ -168,11 +151,11 @@ const fetchMusicalDetails = async (
 
     return {
       title,
-      subTitle,
+      sub_title,
       genre,
       date,
       place,
-      ageLimit,
+      age_limit,
       runtime,
       website,
       cast: unique_casts // cast 배열에 중복 제거된 unique_casts 할당
@@ -185,7 +168,7 @@ const fetchMusicalDetails = async (
 
 
 // 뮤지컬 ID를 활용해 해당 뮤지컬의 배우 fetch해오기
-const fetchCast = async (musicalId: string): Promise<Casts[] | any> => {
+const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
   const allCasts: Casts[] = [];
   const url = `${detailURL}sReqPlayno=${musicalId}`;
 
@@ -210,19 +193,19 @@ const fetchCast = async (musicalId: string): Promise<Casts[] | any> => {
       // role을 <b> 태그의 텍스트로 설정
       const role = roleTd.find("b").text().trim();
 
-      const castNames: string[] = [];
+      const cast_names: string[] = [];
 
       // 각 역의 캐스트 이름 추출
       $(element).find("td").slice(1).each((index, actor) => {
         const actorName = $(actor).find("a").text().trim();
         if (actorName !== "") { // 빈 문자열인 경우 제외
-          castNames.push(actorName);
+          cast_names.push(actorName);
         }
       });
 
       // 캐스트 이름이 하나 이상인 경우에만 추가
-      if (castNames.length > 0) {
-        allCasts.push({ role, castNames });
+      if (cast_names.length > 0) {
+        allCasts.push({ role, cast_names });
       }
     });
 
@@ -237,20 +220,35 @@ const fetchCast = async (musicalId: string): Promise<Casts[] | any> => {
 
 
 // 모든 페이지 탐색
-const fetchAllMusicals = async (): Promise<Musical[]> => {
+const fetch_all_musicals = async (): Promise<Musical[]> => {
   const allMusicals: Musical[] = [];
 
   try {
     // 현재 공연 중
     for (let page = 1; page <= 1; page++) {
-      const musicals = await fetchMusicals(2, page);
+      const musicals = await fetch_musicals(2, page);
       allMusicals.push(...musicals);
-      await delay(100); // 1.5초 대기
+      await delay(100); // 0.1초 대기
     }
+
+    // // 개막 예정
+    // for (let page = 1; page <= 10; page++) {
+    //   const musicals = await fetch_musicals(3, page);
+    //   allMusicals.push(...musicals);
+    // }
+
+    /* // 과거 공연 (연도별)
+    for (let year = 2019; year >= 2007; year--) {
+      for (let page = 1; page <= 10; page++) {
+        const musicals = await fetchMusicals(1, page, year);
+        allMusicals.push(...musicals);
+      }
+    }
+    */
 
     // 중복 제거
     const uniqueMusicals = allMusicals.filter(
-      (v, i, a) => a.findIndex(t => t.musicalID === v.musicalID) === i
+      (v, i, a) => a.findIndex(t => t.musical_ID === v.musical_ID) === i
     );
 
     return uniqueMusicals;
@@ -260,4 +258,4 @@ const fetchAllMusicals = async (): Promise<Musical[]> => {
   }
 };
 
-export { fetchMusicals, fetchMusicalDetails, fetchCast, fetchAllMusicals };
+export { fetch_musicals, fetch_musical_details, fetch_cast, fetch_all_musicals };

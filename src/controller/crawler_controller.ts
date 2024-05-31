@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { getMusicals } from '../service/crawler_service';
+import { get_musicals } from '../service/crawler_service';
 
-const getMusicalsController = async (req: Request, res: Response) => {
+const get_musicals_controller = async (req: Request, res: Response) => {
   try {
-    const musicals = await getMusicals();
+    const musicals = await get_musicals();
     res.status(200).json(musicals);
   } catch (error) {
     console.error('Error in fetchMusicalsController:', error);
@@ -12,5 +12,5 @@ const getMusicalsController = async (req: Request, res: Response) => {
 };
 
 export {
-    getMusicalsController
+  get_musicals_controller
 }
