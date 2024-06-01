@@ -9,6 +9,7 @@ export interface Casts {
 }
 
 export interface Musical_Details {
+  image_url: string;
   title: string;
   sub_title: string;
   genre: string;

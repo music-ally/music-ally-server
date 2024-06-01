@@ -99,6 +99,9 @@ const fetch_musical_details = async (
     const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR");
     const $ = cheerio.load(decodedData);
 
+    const image_url = $(".pddetail img").first().attr("src") || "";
+
+    
     const title = $(".pddetail_subject .title").text().trim();
     const sub_title = $(".pddetail_subject .entitle").text().trim();
 
@@ -150,6 +153,7 @@ const fetch_musical_details = async (
     }, []);
 
     return {
+      image_url,
       title,
       sub_title,
       genre,
