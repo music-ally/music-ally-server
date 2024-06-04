@@ -4,14 +4,20 @@ import iconv from "iconv-lite";
 import { Musical } from "../dto/crawling/crawling_response"
 import { Casts } from "../dto/crawling/crawling_response"
 import { Musical_Details } from "../dto/crawling/crawling_response"
+import { Artist } from "../dto/crawling/artist_crawling_response";
+import { Place } from "../dto/crawling/place_crawling_response";
 
 
 // crawling해줄 기본 URL지정
-const baseURL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
-const detailURL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
+const base_URL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
+const musical_URL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
+const artist_URL = "http://www.playdb.co.kr/artistdb/detail.asp?";
+const place_URL = "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?";
+
 
 // 대기 시간 추가 함수
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 
 // 페이지 위 뮤지컬 리스트 크롤링
 const fetch_musicals = async (
@@ -37,7 +43,7 @@ const fetch_musicals = async (
   try {
     // 크롤링 시작 콘솔 로그
     console.log("Fetching musicals with params:", params);
-    const response = await axios.get(baseURL, {
+    const response = await axios.get(base_URL, {
       params,
       responseType: 'arraybuffer', // 바이트 배열로 응답을 받음
     });
@@ -84,11 +90,12 @@ const fetch_musicals = async (
   }
 };
 
+
 // 뮤지컬ID를 이용해 해당 뮤지컬의 상세 정보(제목, 영어제목, 일시, 장소, 관람등급, 관람시간, 예매사이트, 출연진[]) 반환
 const fetch_musical_details = async (
   musicalId: string
 ): Promise<Musical_Details> => {
-  const url = `${detailURL}sReqPlayno=${musicalId}`;
+  const url = `${musical_URL}sReqPlayno=${musicalId}`;
 
   try {
     console.log("Fetching musical's details with URL:", url);
@@ -174,7 +181,7 @@ const fetch_musical_details = async (
 // 뮤지컬 ID를 활용해 해당 뮤지컬의 배우 fetch해오기
 const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
   const allCasts: Casts[] = [];
-  const url = `${detailURL}sReqPlayno=${musicalId}`;
+  const url = `${musical_URL}sReqPlayno=${musicalId}`;
 
   try {
     console.log("Fetching musical's casts with URL:", url);
@@ -221,6 +228,28 @@ const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
 };
 
 
+// 배우 프로필 크롤링
+const fetch_artist = async (artistId: string): Promise<Artist[] | any> => {
+  const url = `${place_URL}ManNo=${artistId}`;
+  try {
+
+  } catch (error) {
+    console.error("Error fetching artist:", error);
+    throw error;
+  }
+}
+
+
+// 공연장 크롤링
+const fetch_place = async (placeId: string): Promise<Place[] | any> => {
+  const url = `${artist_URL}PlacecCD=${placeId}`;
+  try {
+
+  } catch (error) {
+    console.error("Error fetching place:", error);
+    throw error;
+  }
+}
 
 
 // 모든 페이지 탐색
@@ -262,4 +291,10 @@ const fetch_all_musicals = async (): Promise<Musical[]> => {
   }
 };
 
-export { fetch_musicals, fetch_musical_details, fetch_cast, fetch_all_musicals };
+export { 
+  fetch_musicals, 
+  fetch_musical_details, 
+  fetch_cast, 
+  fetch_artist, 
+  fetch_place,
+  fetch_all_musicals };

@@ -9,6 +9,7 @@ sSelectType=2(고정)             : 정렬 옵션
 sStartYear=n                   : 연도별
 Page=n                         : 페이지
 sReqPlayno=n                   : 뮤지컬ID
+ManNo=n                        : 배우ID
 
 현재공연중 sReqTab=5 sPlayType=2 sSelectType=3
 전체
@@ -44,3 +45,11 @@ sReqPlayno=n                   : 뮤지컬ID
 
 특정 뮤지컬 sReqPlayno=n
 - "http://www.playdb.co.kr/playdb/playdbDetail.asp?sReqPlayno=198805"
+
+
+특정 배우 ManNo=n
+- "http://www.playdb.co.kr/artistdb/detail.asp?ManNo=8053"
+
+
+특정 공연장 PlacecCD=n
+- "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?PlacecCD=61"
