@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import notification_info from "../dto/notification/notification_info";
 
 const notifications_schema = new mongoose.Schema({
   user_id: {
@@ -28,7 +29,7 @@ const notifications_schema = new mongoose.Schema({
   },
 });
 
-const Notifications = mongoose.model<mongoose.Document>(
+const Notifications = mongoose.model<notification_info & mongoose.Document>(
   "notifications",
   notifications_schema
 );

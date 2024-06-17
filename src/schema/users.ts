@@ -1,4 +1,5 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
+import user_info from "../dto/user/user_info";
 
 const users_schema = new mongoose.Schema({
   email: {
@@ -8,7 +9,7 @@ const users_schema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: false,
+    required: true,
   },
   nickname: {
     type: String,
@@ -39,9 +40,9 @@ const users_schema = new mongoose.Schema({
   is_social: {
     type: Boolean,
     required: true,
-    default: true // true = 소셜로그인, false = 정석로그인
+    default: false // true = 소셜로그인, false = 정석로그인
   },
 });
 
-const Users = mongoose.model<mongoose.Document>("users", users_schema);
+const Users = mongoose.model<user_info & mongoose.Document>("users", users_schema);
 export default Users;

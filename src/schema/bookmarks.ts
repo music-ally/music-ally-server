@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bookmark_info from "../dto/bookmark/bookmark_info";
 
 const bookmarks_schema = new mongoose.Schema({
   user_id: {
@@ -15,7 +16,7 @@ const bookmarks_schema = new mongoose.Schema({
 
 bookmarks_schema.index({ user_id: 1, musical_id: 1 }, { unique: true });
 
-const Bookmarks = mongoose.model<mongoose.Document>(
+const Bookmarks = mongoose.model<bookmark_info & mongoose.Document>(
   "bookmarks",
   bookmarks_schema
 );

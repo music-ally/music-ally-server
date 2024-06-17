@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import follow_info from "../dto/follow/follow_info";
 
 const follows_schema = new mongoose.Schema({
   from_user_id: {
@@ -15,5 +16,5 @@ const follows_schema = new mongoose.Schema({
 
 follows_schema.index({ from_user_id: 1, to_user_id: 1 }, { unique: true });
 
-const Follows = mongoose.model<mongoose.Document>("follows", follows_schema);
+const Follows = mongoose.model<follow_info & mongoose.Document>("follows", follows_schema);
 export default Follows;

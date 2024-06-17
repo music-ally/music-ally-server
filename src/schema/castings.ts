@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import casting_info from "../dto/casting/casting_info";
 
 const castings_schema = new mongoose.Schema({
   actor_id: {
@@ -17,5 +18,5 @@ const castings_schema = new mongoose.Schema({
   },
 });
 
-const Castings = mongoose.model<mongoose.Document>("castings", castings_schema);
+const Castings = mongoose.model<casting_info & mongoose.Document>("castings", castings_schema);
 export default Castings;

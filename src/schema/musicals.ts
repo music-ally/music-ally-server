@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import musical_info from "../dto/musical/musical_info";
 
 const musicals_schema = new mongoose.Schema({
   musical_name: {
@@ -31,5 +32,5 @@ const musicals_schema = new mongoose.Schema({
   },
 });
 
-const Musicals = mongoose.model<mongoose.Document>("musicals", musicals_schema);
+const Musicals = mongoose.model<musical_info & mongoose.Document>("musicals", musicals_schema);
 export default Musicals;
