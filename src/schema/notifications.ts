@@ -12,7 +12,7 @@ const notifications_schema = new mongoose.Schema({
     required: true,
     default: "번외",
   },
-  created_at: {
+  create_at: {
     type: Date,
     required: true,
     default: new Date(),

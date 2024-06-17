@@ -6,7 +6,7 @@ export default interface review_info {
   actor_id: mongoose.Types.ObjectId;
   content: string;
   watch_at: Date;
-  created_at: Date;
+  create_at: Date;
   like_num: Number;
   fear: Number;
   sensitivity: Number;

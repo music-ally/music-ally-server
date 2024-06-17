@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export default interface user_info {
   email: string;
   password: string;
@@ -6,6 +8,6 @@ export default interface user_info {
   sex: Boolean;
   profile_image: string;
   noti_allow: boolean;
-  homearea: string;
+  homearea: mongoose.Types.ObjectId;
   is_social: boolean;
 }
