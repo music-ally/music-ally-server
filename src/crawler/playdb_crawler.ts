@@ -6,7 +6,7 @@ import { Casts } from "../dto/crawling/crawling_response"
 import { Musical_Details } from "../dto/crawling/crawling_response"
 import { Artist } from "../dto/crawling/artist_crawling_response";
 import { Place } from "../dto/crawling/place_crawling_response";
-
+import { SeatInfo } from "../dto/crawling/place_crawling_response";
 
 // crawling해줄 기본 URL지정
 const base_URL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
@@ -230,8 +230,30 @@ const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
 
 // 배우 프로필 크롤링
 const fetch_artist = async (artistId: string): Promise<Artist[] | any> => {
-  const url = `${place_URL}ManNo=${artistId}`;
+  const url = `${artist_URL}ManNo=${artistId}`;
   try {
+    const response = await axios.get(url, {
+      responseType: "arraybuffer",
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR");
+    const $ = cheerio.load(decodedData);
+
+    // 아티스트 세부사항 크롤링
+    const fullName = $('span.title').text().trim();
+    const koreanName = fullName.split('|')[0].trim();
+    const job = $('dt:contains("직업")').next('dd').text().trim();
+    const debut = $('dt:contains("데뷔년도")').next('dd').text().trim();
+    const birthday = $('dt:contains("생년월일")').next('dd').text().trim();
+    const physical = $('dt:contains("신체조건")').next('dd').text().trim();
+
+    return {
+      name: koreanName,
+      job,
+      debut,
+      birthday,
+      physical
+    };
 
   } catch (error) {
     console.error("Error fetching artist:", error);
@@ -244,6 +266,44 @@ const fetch_artist = async (artistId: string): Promise<Artist[] | any> => {
 const fetch_place = async (placeId: string): Promise<Place[] | any> => {
   const url = `${artist_URL}PlacecCD=${placeId}`;
   try {
+    const response = await axios.get(url, {
+      responseType: "arraybuffer",
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR");
+    const $ = cheerio.load(decodedData);
+
+    // 공연장 세부사항 크롤링
+    const name = $('td[background="http://ticketimage.interpark.com/TicketImage/07playdb/07_db_sang_ttitle01_bg.gif"]').next().text().trim();
+    const address = $('td:contains("주소:")').text().replace('주소:', '').trim();
+    const road_address = $('td:contains("도로명주소:")').text().replace('도로명주소:', '').trim();
+    const contact = $('td:contains("연락처:")').text().replace('연락처:', '').trim();
+    const website = $('td:contains("홈페이지 :") a').attr('href');
+
+    // 공연장에 존재하는 극장 크롤링
+    const seat_info: SeatInfo[] = [];
+    $('img[src="http://ticketimage.interpark.com/TicketImage/07playdb/07_db_tsang_title02.gif"]').each((index, element) => {
+      $(element).closest('table').next('table').find('tr').each((index, element) => {
+        const seatInfoText = $(element).find('td').text().trim();
+        if (seatInfoText) {
+          const [name, seats] = seatInfoText.split(' : ');
+          if (name && seats) {
+            seat_info.push({ name, seats });
+          } else if (!seats) {
+            seat_info.push({ name });
+          }
+        }
+      });
+    });
+
+    return {
+      name,
+      address,
+      road_address,
+      contact,
+      website,
+      seats: seat_info.map(info => `${info.name} : ${info.seats}`)
+    };
 
   } catch (error) {
     console.error("Error fetching place:", error);

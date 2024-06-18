@@ -6,6 +6,7 @@ const get_musicals = async () => {
   try {
     const musicals = await playdb_crawler.fetch_all_musicals();
     
+    // 크롤링 후  저장?
     // for (const musical of musicals) {
     //   const existing_musical = await Musical.findOne({ musical_ID: musical.musical_ID });
     //   if (!existing_musical) {

@@ -6,3 +6,8 @@ export interface Place {
     website: string;
     seats: string[];
 }
+
+export interface SeatInfo {
+    name: string;
+    seats?: string;
+}

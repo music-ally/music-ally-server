@@ -53,3 +53,5 @@ ManNo=n                        : 배우ID
 
 특정 공연장 PlacecCD=n
 - "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?PlacecCD=61"
+ㄱㄴㄷ순
+- "http://www.playdb.co.kr/placedb/placedbList.asp?strTab=2&selRegion=099099&selSubRegion="
