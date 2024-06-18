@@ -1,16 +1,15 @@
 import mongoose from "mongoose";
 
 
-export interface review_detail_musical_dto{ //이런거 musical dto로 뺄지 논의 필요
+export interface review_detail_musical_dto{
     musical_id: mongoose.Types.ObjectId;
     poster_uri: string;
     musical_name: string;
     theater_name: string;
     watch_at: Date;
-    //제작사, 티켓 가격 이런 것도 와이어프레임에 있는데 크롤링 가능한지 확인 필요 필요시 schema 수정
 }
 
-export interface review_detail_actor_dto{ //이런거 actor dto로 뺄지 논의 필요
+export interface review_detail_actor_dto{
     actor_id: mongoose.Types.ObjectId;
     profile_image: string;
     actor_name: string;
