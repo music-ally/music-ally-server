@@ -275,10 +275,10 @@ const fetch_place = async (placeId: string): Promise<Place[] | any> => {
 
     // 공연장 세부사항 크롤링
     const name = $('td[background="http://ticketimage.interpark.com/TicketImage/07playdb/07_db_sang_ttitle01_bg.gif"]').next().text().trim();
-    const address = $('td:contains("주소:")').text().replace('주소:', '').trim();
-    const road_address = $('td:contains("도로명주소:")').text().replace('도로명주소:', '').trim();
-    const contact = $('td:contains("연락처:")').text().replace('연락처:', '').trim();
-    const website = $('td:contains("홈페이지 :") a').attr('href');
+    const address = $('td:contains("주소:")').text().replace('주소:', '').trim() || "";
+    const road_address = $('td:contains("도로명주소:")').text().replace('도로명주소:', '').trim() || "";
+    const contact = $('td:contains("연락처:")').text().replace('연락처:', '').trim() || "";
+    const website = $('td:contains("홈페이지 :") a').attr('href' || "");
 
     // 공연장에 존재하는 극장 크롤링
     const seat_info: SeatInfo[] = [];
