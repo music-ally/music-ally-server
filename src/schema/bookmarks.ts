@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bookmark_info from "../dto/bookmark/bookmark_info";
+import {bookmark_info} from "../dto/bookmark/bookmark_info";
 
 const bookmarks_schema = new mongoose.Schema({
   user_id: {

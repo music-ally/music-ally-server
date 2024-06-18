@@ -17,7 +17,7 @@ export interface review_detail_actor_dto{ //이런거 actor dto로 뺄지 논의
 }
 
 //리뷰 상세 페이지 DTO
-export interface review_detail_response_dto{
+export interface review_detail_res_dto{
     review_id: mongoose.Types.ObjectId;
     musical: review_detail_musical_dto;
     actors: review_detail_actor_dto[];

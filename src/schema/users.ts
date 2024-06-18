@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import user_info from "../dto/user/user_info";
+import {user_info} from "../dto/user/user_info";
 
 const users_schema = new mongoose.Schema({
   email: {

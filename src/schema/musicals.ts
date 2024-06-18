@@ -1,24 +1,30 @@
 import mongoose from "mongoose";
-import musical_info from "../dto/musical/musical_info";
+import {musical_info} from "../dto/musical/musical_info";
 
 const musicals_schema = new mongoose.Schema({
+  musical_playdb_id:{
+    type: Number,
+    required: true,
+  },
   musical_name: {
     type: String,
     required: true,
   },
-  musical_sub_name: {
+  musical_subname: {
+    type: String,
+    required: false,
+  },
+  musical_genre:{
+    type: String,
+    required: false,
+  },
+  start_at: {
     type: String,
     required: true,
   },
-  start_at: {
-    type: Date,
-    required: true,
-    default: new Date(),
-  },
   end_at: {
-    type: Date,
+    type: String,
     required: true,
-    default: new Date(),
   },
   theater_id: {
     type: mongoose.Types.ObjectId,
@@ -27,25 +33,20 @@ const musicals_schema = new mongoose.Schema({
   },
   age_limit: {
     type: String,
-    required: true,
+    required: false,
   },
   runtime: {
     type: String,
-    required: true,
+    required: false,
   },
-  purchase_web: {
+  website: {
+    type: String,
+    required: false,
+  },
+  poster_image: {
     type: String,
     required: true,
-  },
-  poster_uri: {
-    type: String,
-    required: true,
-  },
-  area_id: {
-    type: mongoose.Types.ObjectId,
-    required: true,
-    ref: "areas",
-  },
+  }
 });
 
 const Musicals = mongoose.model<musical_info & mongoose.Document>("musicals", musicals_schema);

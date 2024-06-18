@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
-//뮤지컬 상세 모달 리뷰 DTO
-export default interface review_musical_detail_response_dto {
+//리뷰 페이지 등 기본 리뷰 컴포넌트 DTO
+export interface review_res_dto {
     review_id: mongoose.Types.ObjectId;
+    poster_uri: string;
     reviewer_profile_image: string;
     reviewer_nickname: string;
     reviewer_email: string; //앞의 2글자만 or 2글자외 나머지 마스킹해서 보내기
