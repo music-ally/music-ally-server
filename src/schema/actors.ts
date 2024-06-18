@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import { actor_info } from "../dto/actor/actor_info";
 
 const actors_schema = new mongoose.Schema({
+  actor_playdb_id:{
+    type: Number,
+    required: true,
+  },
   actor_name: {
     type: String,
     required: true,
@@ -22,9 +26,14 @@ const actors_schema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  debut: {
+    type: String,
+    required: false,
+  },
   job: {
     type: String,
     required: false,
+    default: '뮤지컬배우'
   },
 });
 

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import casting_info from "../dto/casting/casting_info";
+import {casting_info} from "../dto/casting/casting_info";
 
 const castings_schema = new mongoose.Schema({
   actor_id: {

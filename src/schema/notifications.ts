@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import notification_info from "../dto/notification/notification_info";
+import {notification_info} from "../dto/notification/notification_info";
 
 const notifications_schema = new mongoose.Schema({
   user_id: {

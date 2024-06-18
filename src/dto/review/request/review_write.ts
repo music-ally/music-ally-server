@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export default interface review_write_dto {
+export interface review_write_dto {
     musical_id: mongoose.Types.ObjectId;
     actor_ids: mongoose.Types.ObjectId[];
     fear: Number;

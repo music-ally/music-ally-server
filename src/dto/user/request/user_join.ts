@@ -1,4 +1,4 @@
-export default interface user_join_dto {
+export interface user_join_dto {
   email: string;
   password: string;
   nickname: string;

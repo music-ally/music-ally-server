@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import follow_info from "../dto/follow/follow_info";
+import {follow_info} from "../dto/follow/follow_info";
 
 const follows_schema = new mongoose.Schema({
   from_user_id: {
