@@ -9,6 +9,7 @@ import Musicals from '../schema/musicals';
 import Notifications from '../schema/notifications';
 import Review_likes from '../schema/review_likes';
 import Reviews from '../schema/reviews';
+import Theaters from '../schema/theaters';
 
 const connectDB = async () => {
     
@@ -55,6 +56,12 @@ const connectDB = async () => {
     });
     Reviews.createCollection().then(function (collection) {
       console.log('Reviews Collection is created!');
+    });
+    Reviews.createCollection().then(function (collection) {
+      console.log('Reviews Collection is created!');
+    });
+    Theaters.createCollection().then(function (collection) {
+      console.log('Theaters Collection is created!');
     });
   } catch (err: any) {
     console.log(err.message);

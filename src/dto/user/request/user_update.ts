@@ -1,4 +1,4 @@
-export interface user_update_dto {
+export default interface user_update_dto {
   password: string;
   nickname: string;
   birthday: string;

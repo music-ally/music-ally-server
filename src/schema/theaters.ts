@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import theater_info from "../dto/theater/theater_info";
 
 const theaters_schema = new mongoose.Schema({
   theater_name: {
@@ -16,5 +17,5 @@ const theaters_schema = new mongoose.Schema({
   }
 });
 
-const Theaters = mongoose.model<mongoose.Document>("theaters", theaters_schema);
+const Theaters = mongoose.model<theater_info & mongoose.Document>("theaters", theaters_schema);
 export default Theaters;

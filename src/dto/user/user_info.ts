@@ -1,5 +1,6 @@
-// 유저 기본 정보
-export interface user_info {
+import mongoose from "mongoose";
+
+export default interface user_info {
   email: string;
   password: string;
   nickname: string;
@@ -7,6 +8,6 @@ export interface user_info {
   sex: Boolean;
   profile_image: string;
   noti_allow: boolean;
-  homearea: string;
+  homearea: mongoose.Types.ObjectId;
   is_social: boolean;
 }
