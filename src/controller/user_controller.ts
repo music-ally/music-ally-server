@@ -20,7 +20,6 @@ const createUser = async (
   try {
     const data = await user_service.create_user(user_info);
     console.log(data);
-
     return res.send("create_user success!");
   } catch (error) {
     console.error("Error at creating User: Controller", error);

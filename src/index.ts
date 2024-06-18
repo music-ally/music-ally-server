@@ -3,6 +3,7 @@ import session from "express-session";
 import mongoose from "mongoose";
 import connectDB from "./loader/db";
 import user_router from "./router/user_router";
+import crawler_router from "./router/crawler_router"
 
 require("dotenv").config();
 const { PORT } = process.env;
@@ -11,6 +12,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(user_router);
+app.use(crawler_router);
 
 connectDB();
 
