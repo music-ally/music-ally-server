@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export default interface notification_info {
+export interface notification_info {
   user_id: mongoose.Types.ObjectId;
   type: string;
   create_at: Date;

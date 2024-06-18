@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import review_info from "../dto/review/review_info";
+import {review_info} from "../dto/review/review_info";
 
 const reviews_schema = new mongoose.Schema({
   user_id: {
