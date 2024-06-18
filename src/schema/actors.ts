@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { actor_info } from "../dto/actor/actor_info";
 
 const actors_schema = new mongoose.Schema({
   actor_name: {
@@ -27,5 +28,5 @@ const actors_schema = new mongoose.Schema({
   },
 });
 
-const Actors = mongoose.model<mongoose.Document>("actors", actors_schema);
+const Actors = mongoose.model<actor_info & mongoose.Document>("actors", actors_schema);
 export default Actors;

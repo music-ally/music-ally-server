@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import area_info from "../dto/area/area_info";
 
 const areas_schema = new mongoose.Schema({
   area_name: {
@@ -7,5 +8,5 @@ const areas_schema = new mongoose.Schema({
   },
 });
 
-const Areas = mongoose.model<mongoose.Document>("areas", areas_schema);
+const Areas = mongoose.model<area_info & mongoose.Document>("areas", areas_schema);
 export default Areas;

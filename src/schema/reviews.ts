@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import review_info from "../dto/review/review_info";
 
 const reviews_schema = new mongoose.Schema({
   user_id: {
@@ -25,7 +26,7 @@ const reviews_schema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  created_at: {
+  create_at: {
     type: Date,
     required: true,
   },
@@ -51,5 +52,5 @@ const reviews_schema = new mongoose.Schema({
   },
 });
 
-const Reviews = mongoose.model<mongoose.Document>("reviews", reviews_schema);
+const Reviews = mongoose.model<review_info & mongoose.Document>("reviews", reviews_schema);
 export default Reviews;
