@@ -1,10 +1,9 @@
-export interface Place {
+export interface Theater {
     playdb_id: number;
     name: string;
     address?: string;
     road_address?: string;
-    // contact?: string;
-    // website?: string;
+    area: string;
     seats?: string[];
 }
 

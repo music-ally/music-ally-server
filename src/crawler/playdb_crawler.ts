@@ -5,19 +5,23 @@ import { Musical } from "../dto/crawling/crawling_res";
 import { Casts } from "../dto/crawling/crawling_res";
 import { Musical_Details } from "../dto/crawling/crawling_res";
 import { Artist } from "../dto/crawling/artist_crawling_res";
-import { Place } from "../dto/crawling/place_crawling_res";
+import { Theater } from "../dto/crawling/theater_crawling_res";
 // import { SeatInfo } from "../dto/crawling/place_crawling_response";
 
 // crawling해줄 기본 URL지정
 const base_URL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
 const musical_URL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
 const artist_URL = "http://www.playdb.co.kr/artistdb/detail.asp?";
-const place_URL = "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?";
+const theater_URL = "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?";
 
 // 대기 시간 추가 함수
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// 페이지 위 뮤지컬 리스트 크롤링
+/**
+ * 기본 페이지 위에
+ * 뮤지컬 리스트
+ * 크롤링
+ */
 const fetch_musicals = async (
   sPlayType: number,
   page: number,
@@ -89,7 +93,11 @@ const fetch_musicals = async (
   }
 };
 
-// 뮤지컬ID를 이용해 해당 뮤지컬의 상세 정보(제목, 영어제목, 일시, 장소, 관람등급, 관람시간, 예매사이트, 출연진[]) 반환
+/**
+ * 뮤지컬ID를 이용해 
+ * 해당 뮤지컬의 상세 정보 
+ * 크롤링
+ */
 const fetch_musical_details = async (
   musicalId: string
 ): Promise<Musical_Details> => {
@@ -170,7 +178,11 @@ const fetch_musical_details = async (
   }
 };
 
-// 뮤지컬 ID를 활용해 해당 뮤지컬의 배우 fetch해오기
+/**
+ * 뮤지컬ID를 이용해 
+ * 해당 뮤지컬의 출연 배우
+ * 크롤링
+ */
 const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
   const allCasts: Casts[] = [];
   const url = `${musical_URL}sReqPlayno=${musicalId}`;
@@ -223,8 +235,63 @@ const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
   }
 };
 
-// 배우 프로필 크롤링
-const fetch_artist = async (artistId: string): Promise<Artist[] | any> => {
+/**
+ * 뮤지컬 크롤링을 위한
+ * 페이지 탐색
+ */
+const fetch_all_musicals = async (): Promise<Musical[]> => {
+  const allMusicals: Musical[] = [];
+
+  try {
+    // 현재 공연 중
+    for (let page = 1; page <= 1; page++) {
+      const musicals = await fetch_musicals(2, page);
+      allMusicals.push(...musicals);
+      await delay(100); // 0.1초 대기
+    }
+
+    // // 개막 예정
+    // for (let page = 1; page <= 10; page++) {
+    //   const musicals = await fetch_musicals(3, page);
+    //   allMusicals.push(...musicals);
+    // }
+
+    /* // 과거 공연 (연도별)
+    for (let year = 2024; year >= 2020; year--) {
+      for (let page = 1; page <= 10; page++) {
+        const musicals = await fetchMusicals(1, page, year);
+        allMusicals.push(...musicals);
+      }
+    }
+    */
+
+    // 중복 제거
+    const uniqueMusicals = allMusicals.filter(
+      (v, i, a) => a.findIndex((t) => t.musical_ID === v.musical_ID) === i
+    );
+
+    return uniqueMusicals;
+  } catch (error) {
+    console.error("Error fetching all musicals:", error);
+    throw error;
+  }
+};
+
+
+// ---------------------------------ARTIST---------------------------------
+/**
+ * 기본 페이지 위에
+ * 배우 리스트
+ * 크롤링
+ */
+// const fetch_artists = 
+
+/**
+ * 배우ID를 이용해 
+ * 해당 배우의 상세 정보 
+ * 크롤링
+ */
+const fetch_artist_details = async (artistId: string): Promise<Artist[] | any> => {
   const url = `${artist_URL}ManNo=${artistId}`;
   try {
     const response = await axios.get(url, {
@@ -242,22 +309,48 @@ const fetch_artist = async (artistId: string): Promise<Artist[] | any> => {
     const birthday = $('dt:contains("생년월일")').next("dd").text().trim();
     const physical = $('dt:contains("신체조건")').next("dd").text().trim();
 
+    const agencyText = $('p:contains("소속사")').text();
+    const agencyMatch = agencyText.match(/소속사\s*:\s*(.+)/);
+    const agency = agencyMatch ? agencyMatch[1].trim() : '';
+
     return {
       name: koreanName,
       job,
       debut,
       birthday,
       physical,
+      agency
     };
+
   } catch (error) {
     console.error("Error fetching artist:", error);
     throw error;
   }
 };
 
-// 공연장 크롤링
-const fetch_place = async (placeId: string): Promise<Place[] | any> => {
-  const url = `${artist_URL}PlacecCD=${placeId}`;
+/**
+ * 배우 크롤링을 위한
+ * 페이지 탐색
+ */
+// const fetch_all_artists = 
+
+
+
+// ---------------------------------THEATER---------------------------------
+/**
+ * 기본 페이지 위에
+ * 공연장 리스트
+ * 크롤링
+ */
+// const fetch_theaters = 
+
+/**
+ * 공연장ID를 이용해 
+ * 해당 공연장의 상세 정보 
+ * 크롤링
+ */
+const fetch_theater_details = async (placeId: string): Promise<Theater[] | any> => {
+  const url = `${theater_URL}PlacecCD=${placeId}`;
   try {
     const response = await axios.get(url, {
       responseType: "arraybuffer",
@@ -284,25 +377,17 @@ const fetch_place = async (placeId: string): Promise<Place[] | any> => {
     // const website = $('td:contains("홈페이지 :") a').attr('href' || "");
 
     // 공연장에 존재하는 극장 크롤링
-    const seat_info: SeatInfo[] = [];
-    $(
-      'img[src="http://ticketimage.interpark.com/TicketImage/07playdb/07_db_tsang_title02.gif"]'
-    ).each((index, element) => {
-      $(element)
-        .closest("table")
-        .next("table")
-        .find("tr")
-        .each((index, element) => {
-          const seatInfoText = $(element).find("td").text().trim();
-          if (seatInfoText) {
-            const [name, seats] = seatInfoText.split(" : ");
-            if (name && seats) {
-              seat_info.push({ name, seats });
-            } else if (!seats) {
-              seat_info.push({ name });
-            }
+    const seats: string[] = [];
+    $('img[src="http://ticketimage.interpark.com/TicketImage/07playdb/07_db_tsang_title02.gif"]').each((index, element) => {
+      $(element).closest('table').next('table').find('tr').each((index, element) => {
+        const seatInfoText = $(element).find('td').text().trim();
+        if (seatInfoText) {
+          const [seat_name] = seatInfoText.split(' : ');
+          if (seat_name) {
+            seats.push(seat_name.trim());
           }
-        });
+        }
+      });
     });
 
     return {
@@ -311,7 +396,7 @@ const fetch_place = async (placeId: string): Promise<Place[] | any> => {
       road_address,
       // contact,
       // website,
-      seats: seat_info.map((info) => `${info.name} : ${info.seats}`), ////수정!!!!!1
+      seats
     };
   } catch (error) {
     console.error("Error fetching place:", error);
@@ -319,50 +404,18 @@ const fetch_place = async (placeId: string): Promise<Place[] | any> => {
   }
 };
 
-// 모든 페이지 탐색
-const fetch_all_musicals = async (): Promise<Musical[]> => {
-  const allMusicals: Musical[] = [];
+/**
+ * 공연장 크롤링을 위한
+ * 페이지 탐색
+ */
+// fetch_all_theaters = 
 
-  try {
-    // 현재 공연 중
-    for (let page = 1; page <= 1; page++) {
-      const musicals = await fetch_musicals(2, page);
-      allMusicals.push(...musicals);
-      await delay(100); // 0.1초 대기
-    }
-
-    // // 개막 예정
-    // for (let page = 1; page <= 10; page++) {
-    //   const musicals = await fetch_musicals(3, page);
-    //   allMusicals.push(...musicals);
-    // }
-
-    /* // 과거 공연 (연도별)
-    for (let year = 2019; year >= 2007; year--) {
-      for (let page = 1; page <= 10; page++) {
-        const musicals = await fetchMusicals(1, page, year);
-        allMusicals.push(...musicals);
-      }
-    }
-    */
-
-    // 중복 제거
-    const uniqueMusicals = allMusicals.filter(
-      (v, i, a) => a.findIndex((t) => t.musical_ID === v.musical_ID) === i
-    );
-
-    return uniqueMusicals;
-  } catch (error) {
-    console.error("Error fetching all musicals:", error);
-    throw error;
-  }
-};
 
 export {
   fetch_musicals,
   fetch_musical_details,
   fetch_cast,
-  fetch_artist,
-  fetch_place,
   fetch_all_musicals,
+  fetch_artist_details,
+  fetch_theater_details,
 };
