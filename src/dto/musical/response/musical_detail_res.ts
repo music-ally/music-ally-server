@@ -9,14 +9,14 @@ import { review_musical_detail_res_dto } from "../../review/response/review_musi
 
 export interface musical_detail_res_dto{
     musical_id: mongoose.Types.ObjectId;
-    poster_uri: string;
+    poster_image: string;
     musical_name: string;
     is_bookmark:boolean;
-    synopsis: string; //줄거리 #근데 이거 하면 뮤지컬 schema에도 넣어야하지 않나
+    synopsis: string; 
     castings: string[];
     start_at: Date;
     end_at: Date;
     theater_name: string;
-    theater_address: string; //theater schema에 추가해야할 것 같음
+    theater_address: string;
     reviews:review_musical_detail_res_dto[];
 }
