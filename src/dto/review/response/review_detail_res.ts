@@ -23,10 +23,10 @@ export interface review_detail_res_dto{
     reviewer_profile_image: string;
     reviewer_nickname: string;
     reviewer_email: string; //앞의 2글자만 or 2글자외 나머지 마스킹해서 보내기
-    like_num: Number;
+    like_num: number;
     is_like: boolean; //사용자의 좋아요 여부
-    violence: Number;
-    fear: Number;
-    sensitivity: Number;
+    violence: number;
+    fear: number;
+    sensitivity: number;
     content: string;
 }
