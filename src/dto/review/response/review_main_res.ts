@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 
+export interface review_main_res_dto {
+    reviews: review_main_item_dto[];
+}
+
 //리뷰 페이지 등 기본 리뷰 컴포넌트 DTO
-export interface review_res_dto {
+export interface review_main_item_dto {
     review_id: mongoose.Types.ObjectId;
     poster_uri: string;
     reviewer_profile_image: string;
