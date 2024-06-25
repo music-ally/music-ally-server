@@ -70,9 +70,9 @@ const logout = async (
 ): Promise<void | Response> => {
 
   /*const user_info: user_info = req.body
-
+  
   try {
-    const data = await user_service.create_user(user_info);
+    const data = await user_service.create_user(user_join_dto);
     console.log(data);
 
     return res.send("create_user success!");

@@ -1,11 +1,11 @@
-import * as playdb_crawler from '../crawler/playdb_crawler';
-import Musical from '../schema/musicals';
-import { Musical_Details } from "../dto/crawling/crawling_response"
+import * as playdb_crawler from "../crawler/playdb_crawler";
+import Musical from "../schema/musicals";
+import { Musical_Details } from "../dto/crawling/musical_crawling_res";
 
 const get_musicals = async () => {
   try {
-    const musicals = await playdb_crawler.fetch_all_musicals();
-    
+    const data = await playdb_crawler.fetch_all_musicals();
+
     // 크롤링 후  저장?
     // for (const musical of musicals) {
     //   const existing_musical = await Musical.findOne({ musical_ID: musical.musical_ID });
@@ -27,11 +27,26 @@ const get_musicals = async () => {
     //   }
     // }
 
-    return musicals;
+    return data;
   } catch (error) {
-    console.error('Error in getMusicals service:', error);
+    console.error("Error in getMusicals service:", error);
     throw error;
   }
 };
 
-export { get_musicals };
+const get_artists = async () => {
+  try{
+    
+    const data = await playdb_crawler.fetch_all_artists();
+    return data
+
+  } catch (error) {
+    console.error("Error in getArtists service:", error);
+    throw error;
+  }
+}
+
+export { 
+  get_musicals,
+  get_artists
+};
