@@ -48,7 +48,6 @@ const join_user = async (user_join_dto : user_join_dto) => {
 
   } catch (error) {
     console.error("Error at join: Service");
-
     throw error;
   }
 };
