@@ -16,7 +16,7 @@ const users_schema = new mongoose.Schema({
     required: true,
   },
   birthday: {
-    type: String,
+    type: Date,
     required: true,
   },
   sex: {
@@ -41,6 +41,15 @@ const users_schema = new mongoose.Schema({
     type: Boolean,
     required: true,
     default: false // true = 소셜로그인, false = 정석로그인
+  },
+  is_active: {
+    type: Boolean,
+    required: true,
+    default: true
+  },
+  delete_date: {
+    type: Date,
+    required: false,
   },
 });
 
