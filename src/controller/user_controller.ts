@@ -97,14 +97,30 @@ const login = async (
       .send(
         form.success(message.LOGIN_SUCCESS, tokens)
       );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error at login: Controller", error);
-    return res
-      .status(status_code.INTERNAL_SERVER_ERROR)
-      .send(
-        form.fail(message.BAD_REQUEST, error)
-      );
+
+    if (error.message === 'email not found') {
+      return res
+        .status(status_code.NOT_FOUND)
+        .send(
+          form.fail(message.NOT_FOUND_EMAIL, error)
+        );
+    } else if (error.message === 'wrong password') {
+      return res
+        .status(status_code.BAD_REQUEST)
+        .send(
+          form.fail(message.INVALID_PASSWORD, error)
+        );
+    } else {
+      return res
+        .status(status_code.INTERNAL_SERVER_ERROR)
+        .send(
+          form.fail(message.INTERNAL_SERVER_ERROR, error)
+        );
+    }
   }
 };
+
 
 export {join_user, deleteUser, login, logout}
