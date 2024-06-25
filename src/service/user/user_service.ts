@@ -26,10 +26,11 @@ const create_user = async (user_join_dto : user_join_dto) => {
     const user_homearea_id = await find_homearea_by_name(user_join_dto.homearea_name)
     const birthday = new Date(user_join_dto.birthday)
     const sex = user_join_dto.sex === "여성" ? true : false; //true === 여성, false === 남성
+    const hashed_password = await bcrypt.hash(user_join_dto.password, 10);
 
     const user = new Users({
       email: user_join_dto.email,
-      password: user_join_dto.password,
+      password: hashed_password,
       nickname: user_join_dto.nickname,
       birthday: birthday,
       sex: sex, 
@@ -57,12 +58,12 @@ const login_user = async (user_login_dto : user_login_dto): Promise<user_login_r
   } else if (!(await bcrypt.compare(user_login_dto.password, user.password))) {
     throw new Error('wrong password');
   }
+  
   const access_token = generateAccessToken(user._id);
   const refresh_token = generateRefreshToken(user._id);
 
   return { 
     email: user.email,
-    password: user.password,
     access_token, 
     refresh_token 
   };

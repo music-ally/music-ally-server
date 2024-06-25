@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
 const generateAccessToken = (id: string): string => {
   return jwt.sign({ id }, JWT_SECRET, {
-    expiresIn: '15m', // 토큰의 유효시간 = 15분 h로 하면 시간단위도 가능 
+    expiresIn: '1h', // 토큰의 유효시간 = 1시간 
   });
 };
 

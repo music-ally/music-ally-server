@@ -9,8 +9,7 @@ import { user_join_dto } from "../dto/user/request/user_join";
 import { user_login_dto } from "../dto/user/request/user_login";
 import { user_login_res_dto } from "../dto/user/response/user_login_res"; //Todo 한 번에 import 하는 방법 있는지 확인
 
-
-const createUser = async ( 
+const join_user = async ( 
   req: Request,
   res: Response,
   next: NextFunction
@@ -19,7 +18,7 @@ const createUser = async (
   const user_join_dto: user_join_dto = req.body
 
   try {
-    const data = await user_service.create_user(user_join_dto);
+    const data = await user_service.join_user(user_join_dto);
     return res
     .status(status_code.CREATED)
     .send(
@@ -80,7 +79,7 @@ const logout = async (
   }*/
 };
 
-const login = async ( //Todo 다시 검토하고 수정하기
+const login = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -90,11 +89,19 @@ const login = async ( //Todo 다시 검토하고 수정하기
 
   try {
     const tokens: user_login_res_dto = await user_service.login_user(user_login_dto);
-    return res.status(200).json(tokens);
+    return res
+      .status(status_code.OK)
+      .send(
+        form.success(message.LOGIN_SUCCESS, tokens)
+      );
   } catch (error) {
     console.error("Error at login: Controller", error);
-    res.status(500).json({ error: "Error logging in: Controller" });
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(
+        form.fail(message.BAD_REQUEST, error)
+      );
   }
 };
 
-export {createUser, deleteUser, login, logout}
+export {join_user, deleteUser, login, logout}
