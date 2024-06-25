@@ -11,7 +11,7 @@ const { PORT } = process.env;
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(user_router);
+// app.use(user_router);
 app.use(crawler_router);
 
 connectDB();

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { get_musicals } from '../service/crawler_service';
+import { get_artists } from '../service/crawler_service';
 
 const get_musicals_controller = async (req: Request, res: Response) => {
   try {
@@ -11,6 +12,17 @@ const get_musicals_controller = async (req: Request, res: Response) => {
   }
 };
 
+const get_artists_controller = async (req: Request, res: Response) => {
+  try {
+    const artists = await get_artists();
+    res.status(200).json(artists);
+  } catch (error) {
+    console.error('Error in fetchArtistsController:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
 export {
-  get_musicals_controller
+  get_musicals_controller,
+  get_artists_controller
 }
