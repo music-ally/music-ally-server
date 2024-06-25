@@ -7,12 +7,15 @@ import { Musical_Details } from "../dto/crawling/musical_crawling_res";
 import { Artist } from "../dto/crawling/artist_crawling_res";
 import { Artist_Details } from "../dto/crawling/artist_crawling_res";
 import { Theater } from "../dto/crawling/theater_crawling_res";
+import { Theater_Details } from "../dto/crawling/theater_crawling_res";
 
 // crawling해줄 기본 URL지정
 const base_URL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
 const musical_URL = "http://www.playdb.co.kr/playdb/playdbDetail.asp?";
 const artist_list_base_URL = "http://www.playdb.co.kr/artistdb/list_iframe.asp";
 const artist_URL = "http://www.playdb.co.kr/artistdb/detail.asp?";
+const theater_list_base_URL =
+  "http://www.playdb.co.kr/placedb/placedbList.asp?";
 const theater_URL = "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?";
 
 // 대기 시간 추가 함수
@@ -284,7 +287,7 @@ const fetch_all_musicals = async (): Promise<Musical[]> => {
  * 배우 리스트
  * 크롤링
  */
-const fetch_artists = async (page : number): Promise<Artist[]> => {
+const fetch_artists = async (page: number): Promise<Artist[]> => {
   try {
     // 접속할 페이지 url
     const artist_list_URL = `${artist_list_base_URL}?Page=${page}&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd=`;
@@ -360,7 +363,7 @@ const fetch_artist_details = async (
     const debut = $('dt:contains("데뷔년도")').next("dd").text().trim();
     const birthday = $('dt:contains("생년월일")').next("dd").text().trim();
     const physical = $('dt:contains("신체조건")').next("dd").text().trim();
-    const agency = $('dt:contains("소속사")').next('dd').text().trim();
+    const agency = $('dt:contains("소속사")').next("dd").text().trim();
 
     return {
       name: koreanName,
@@ -370,7 +373,6 @@ const fetch_artist_details = async (
       physical,
       agency,
     };
-
   } catch (error) {
     console.error("Error fetching artist details:", error);
     throw error;
@@ -381,24 +383,26 @@ const fetch_artist_details = async (
  * 배우 크롤링을 위한
  * 페이지 탐색
  */
-const fetch_all_artists = async () : Promise<Artist[]> => {
-  const allArtists : Artist[] = [];
+const fetch_all_artists = async (): Promise<Artist[]> => {
+  const allArtists: Artist[] = [];
 
   try {
     // 페이지 수를 설정 (예: 5페이지)
-    const totalPages = 5; 
+    const totalPages = 5;
     for (let page = 2; page <= 2; page++) {
       const artists = await fetch_artists(page);
       allArtists.push(...artists);
-      await new Promise(resolve => setTimeout(resolve, 100)); // 0.1초 대기
+      await new Promise((resolve) => setTimeout(resolve, 100)); // 0.1초 대기
     }
 
     // 중복 제거
-    const uniqueArtists = allArtists.filter((v, i, a) => a.findIndex(t => t.artist_ID === v.artist_ID) === i);
+    const uniqueArtists = allArtists.filter(
+      (v, i, a) => a.findIndex((t) => t.artist_ID === v.artist_ID) === i
+    );
 
     return uniqueArtists;
   } catch (error) {
-    console.error('Error fetching all artists:', error);
+    console.error("Error fetching all artists:", error);
     throw error;
   }
 };
@@ -409,8 +413,70 @@ const fetch_all_artists = async () : Promise<Artist[]> => {
  * 공연장 리스트
  * 크롤링
  */
-// const fetch_theaters =
+const fetch_theaters = async (page: number): Promise<Theater[]> => {
+  // 크롤링 사이트 파라미터 기본설정(ㄱㄴㄷ순으로 받아옴)
+  const params: any = {
+    Page: page,
+    strTab: 2,
+  };
 
+  try {
+    // 크롤링 시작 콘솔 로그
+    console.log("Fetching theaters... 🏤", params);
+    const response = await axios.get(theater_list_base_URL, {
+      params,
+      responseType: "arraybuffer", // 바이트 배열로 응답을 받음
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
+    const $ = cheerio.load(decodedData);
+    const theaters: Theater[] = [];
+
+    let startCollecting = false;
+    const rows = $("table > tbody > tr").toArray();
+    for (const element of rows) {
+      const text = $(element).text();
+      if (
+        text.includes("공연장명") ||
+        text.includes("지역") ||
+        text.includes("최근주요작품")
+      ) {
+        startCollecting = true;
+        continue;
+      }
+
+      if (startCollecting) {
+        const titleElement = $(element).find(
+          "td a[href*='PlacedbInfo.asp?PlacecCD=']"
+        );
+        const locationElement = $(element).find("td").eq(4); // 지역이 위치한 td
+
+        if (titleElement.length && locationElement.length) {
+          const hrefAttr = titleElement.attr("href");
+          const theaterIDMatch = hrefAttr
+            ? hrefAttr.match(/PlacecCD=(\d+)/)
+            : null; // PlacecCD 뒤에 공연장 고유 숫자 추출
+          const theater_ID = theaterIDMatch ? theaterIDMatch[1] : "N/A";
+
+          const location = locationElement.text().trim();
+
+          const theater_details = await fetch_theater_details(theater_ID);
+
+          theaters.push({
+            theater_ID,
+            location,
+            theater_details,
+          });
+        }
+      }
+    }
+
+    return theaters;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
 /**
  * 공연장ID를 이용해
  * 해당 공연장의 상세 정보
@@ -418,7 +484,7 @@ const fetch_all_artists = async () : Promise<Artist[]> => {
  */
 const fetch_theater_details = async (
   placeId: string
-): Promise<Theater[] | any> => {
+): Promise<Theater_Details> => {
   const url = `${theater_URL}PlacecCD=${placeId}`;
   try {
     const response = await axios.get(url, {
@@ -469,8 +535,6 @@ const fetch_theater_details = async (
       name,
       address,
       road_address,
-      // contact,
-      // website,
       seats,
     };
   } catch (error) {
@@ -483,7 +547,29 @@ const fetch_theater_details = async (
  * 공연장 크롤링을 위한
  * 페이지 탐색
  */
-// fetch_all_theaters =
+const fetch_all_theaters = async (): Promise<Theater[]> => {
+  const allTheaters: Theater[] = [];
+
+  try {
+    // 페이지 수를 설정 (예: 5페이지)
+    const totalPages = 5;
+    for (let page = 2; page <= 2; page++) {
+      const theaters = await fetch_theaters(page);
+      allTheaters.push(...theaters);
+      await new Promise((resolve) => setTimeout(resolve, 100)); // 0.1초 대기
+    }
+
+    // 중복 제거
+    const uniqueTheaters = allTheaters.filter(
+      (v, i, a) => a.findIndex((t) => t.theater_ID === v.theater_ID) === i
+    );
+
+    return uniqueTheaters;
+  } catch (error) {
+    console.error("Error fetching all artists:", error);
+    throw error;
+  }
+};
 
 export {
   fetch_musicals,
@@ -493,5 +579,7 @@ export {
   fetch_artists,
   fetch_artist_details,
   fetch_all_artists,
+  fetch_theaters,
   fetch_theater_details,
+  fetch_all_theaters,
 };

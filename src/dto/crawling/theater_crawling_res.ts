@@ -1,13 +1,12 @@
 export interface Theater {
-    playdb_id: number;
-    name: string;
-    address?: string;
-    road_address?: string;
-    area: string;
-    seats?: string[];
+  theater_ID: string;
+  location: string;
+  theater_details: Theater_Details;
 }
 
-// export interface SeatInfo {
-//     name: string;
-//     seats?: string;
-// }
+export interface Theater_Details {
+  name: string;
+  address?: string;
+  road_address?: string;
+  seats?: string[];
+}
