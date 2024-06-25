@@ -26,12 +26,15 @@ const join_user = async (
     );
   } catch (error) {
     if ((error as any).code === 11000) {
+      console.log(error);
+
       return res
       .status(status_code.BAD_REQUEST)
       .send(
         form.fail(message.CONFLICT_EMAIL, error)
       );
     } else {
+      console.log(error);
       return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(

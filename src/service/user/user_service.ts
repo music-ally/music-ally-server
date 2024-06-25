@@ -21,7 +21,7 @@ const find_homearea_by_name = async(homearea : string) => {
   }
 }
 
-const create_user = async (user_join_dto : user_join_dto) => {
+const join_user = async (user_join_dto : user_join_dto) => {
   try {
     const user_homearea_id = await find_homearea_by_name(user_join_dto.homearea_name)
     const birthday = new Date(user_join_dto.birthday)
@@ -43,9 +43,12 @@ const create_user = async (user_join_dto : user_join_dto) => {
     const data = {
       _id: user._id,
     };
-
+    
     return data;
+
   } catch (error) {
+    console.error("Error at join: Service");
+
     throw error;
   }
 };
@@ -54,8 +57,10 @@ const login_user = async (user_login_dto : user_login_dto): Promise<user_login_r
   const user = await Users.findOne({email : user_login_dto.email});
   
   if (!user){
+    console.error("Error at login: Service");
     throw new Error('email not found');
   } else if (!(await bcrypt.compare(user_login_dto.password, user.password))) {
+    console.error("Error at login: Service");
     throw new Error('wrong password');
   }
   
@@ -69,4 +74,4 @@ const login_user = async (user_login_dto : user_login_dto): Promise<user_login_r
   };
 };
 
-export { create_user, find_homearea_by_name, login_user };
+export { join_user, find_homearea_by_name, login_user };
