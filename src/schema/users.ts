@@ -20,7 +20,7 @@ const users_schema = new mongoose.Schema({
     required: true,
   },
   sex: {
-    type: Boolean,
+    type: Boolean, // true = 여성, false = 남성
     required: true,
   },
   profile_image: {

@@ -13,8 +13,8 @@
   "dependencies": {
     "@types/iconv-lite": "^0.0.1",
     "axios": "^1.7.2",
-    "cheerio": "^1.0.0-rc.12",
     "bcryptjs": "^2.4.3",
+    "cheerio": "^1.0.0-rc.12",
     "config": "^3.3.11",
     "console-control-strings": "^1.1.0",
     "content-disposition": "^0.5.4",

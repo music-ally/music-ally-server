@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { user_info } from "../../dto/user/user_info";
 import { user_join_dto } from "../../dto/user/request/user_join";
 import { user_login_dto } from "../../dto/user/request/user_login";
 import { user_login_res_dto } from "../../dto/user/response/user_login_res";
@@ -25,14 +24,15 @@ const find_homearea_by_name = async(homearea : string) => {
 const create_user = async (user_join_dto : user_join_dto) => {
   try {
     const user_homearea_id = await find_homearea_by_name(user_join_dto.homearea_name)
+    const birthday = new Date(user_join_dto.birthday)
+    const sex = user_join_dto.sex === "여성" ? true : false; //true === 여성, false === 남성
 
     const user = new Users({
       email: user_join_dto.email,
       password: user_join_dto.password,
       nickname: user_join_dto.nickname,
-      birthday: user_join_dto.birthday,
-      sex: user_join_dto.sex, //sex를 string으로 받기 때문에 boolean값으로 변환하도록 수정해야함
-      profile_image: "null",
+      birthday: birthday,
+      sex: sex, 
       homearea: user_homearea_id,
       noti_allow: true,
     });
