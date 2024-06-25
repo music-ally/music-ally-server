@@ -7,6 +7,6 @@ export interface musical_main_res_dto {
 
 export interface musical_main_item_dto {
     musical_id: mongoose.Types.ObjectId;
-    poster_uri: string;
+    poster_image: string;
 }
 

@@ -22,10 +22,10 @@ const notifications_schema = new mongoose.Schema({
     required: false,
     ref: "reviews",
   },
-  follow_id: {
+  follower_id: {
     type: mongoose.Types.ObjectId,
     required: false,
-    ref: "follows",
+    ref: "users",
   },
 });
 
