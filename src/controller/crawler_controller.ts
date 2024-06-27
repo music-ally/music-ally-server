@@ -11,9 +11,9 @@ const get_musicals_controller = async (req: Request, res: Response) => {
   }
 };
 
-const get_artists_controller = async (req: Request, res: Response) => {
+const get_actors_controller = async (req: Request, res: Response) => {
   try {
-    const artists = await crawler_service.get_artists();
+    const artists = await crawler_service.get_actors();
     res.status(200).json(artists);
   } catch (error) {
     console.error('Error in fetchArtistsController:', error);
@@ -33,6 +33,6 @@ const get_theaters_controller = async (req: Request, res: Response) => {
 
 export {
   get_musicals_controller,
-  get_artists_controller,
+  get_actors_controller,
   get_theaters_controller
 }

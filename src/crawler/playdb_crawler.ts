@@ -78,10 +78,12 @@ const fetch_musicals = async (
           const musicalIDMatch = onclickAttr
             ? onclickAttr.match(/goDetail\('(\d+)'\)/)
             : null; // goDetail 뒤에 뮤지컬 고유 숫자 추출
-          const musical_ID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
+          const string_musical_ID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
 
           // 뮤지컬 상세 정보 반환 함수 호출
-          const musical_details = await fetch_musical_details(musical_ID);
+          const musical_details = await fetch_musical_details(string_musical_ID);
+
+          const musical_ID = parseInt(string_musical_ID);
 
           musicals.push({
             musical_ID,
@@ -322,10 +324,12 @@ const fetch_actors = async (page: number): Promise<Actor[]> => {
         if (nameElement.length) {
           const hrefAttr = nameElement.attr("href");
           const actorIDMatch = hrefAttr ? hrefAttr.match(/ManNo=(\d+)/) : null; // ManNo 뒤에 뮤지컬 고유 숫자 추출
-          const actor_ID = actorIDMatch ? actorIDMatch[1] : "N/A";
+          const string_actor_ID = actorIDMatch ? actorIDMatch[1] : "N/A";
 
           // 뮤지컬 상세 정보 반환 함수 호출
-          const actor_details = await fetch_actor_details(actor_ID);
+          const actor_details = await fetch_actor_details(string_actor_ID);
+
+          const actor_ID = parseInt(string_actor_ID);
 
           actors.push({
             actor_ID,
@@ -362,6 +366,7 @@ const fetch_actor_details = async (
     // 아티스트 세부사항 크롤링
     const fullName = $("span.title").text().trim();
     const koreanName = fullName.split("|")[0].trim();
+    const profile_image = $('img.mainimg').attr('src');
     const job = $('dt:contains("직업")').next("dd").text().trim();
     const debut = $('dt:contains("데뷔년도")').next("dd").text().trim();
     const birthday = $('dt:contains("생년월일")').next("dd").text().trim();
@@ -370,6 +375,7 @@ const fetch_actor_details = async (
 
     return {
       name: koreanName,
+      profile_image: profile_image || '',
       job,
       debut,
       birthday,
@@ -395,7 +401,7 @@ const fetch_all_actors = async (): Promise<Actor[]> => {
       actor_base_URL
     );
 
-    for (let page = 1; page <= last_page; page++) {
+    for (let page = 1; page <= 1; page++) {
       const actors = await fetch_actors(page);
       allActors.push(...actors);
       await new Promise((resolve) => setTimeout(resolve, 100)); // 0.1초 대기
@@ -463,11 +469,13 @@ const fetch_theaters = async (page: number): Promise<Theater[]> => {
           const theaterIDMatch = hrefAttr
             ? hrefAttr.match(/PlacecCD=(\d+)/)
             : null; // PlacecCD 뒤에 공연장 고유 숫자 추출
-          const theater_ID = theaterIDMatch ? theaterIDMatch[1] : "N/A";
+          const string_theater_ID = theaterIDMatch ? theaterIDMatch[1] : "N/A";
           const name = titleElement.text().trim();
           const location = locationElement.text().trim();
 
-          const theater_details = await fetch_theater_details(theater_ID);
+          const theater_details = await fetch_theater_details(string_theater_ID);
+
+          const theater_ID = parseInt(string_theater_ID);
 
           theaters.push({
             theater_ID,

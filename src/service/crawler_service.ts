@@ -34,7 +34,7 @@ const get_musicals = async () => {
   }
 };
 
-const get_artists = async () => {
+const get_actors = async () => {
   try{
     
     const data = await playdb_crawler.fetch_all_actors();
@@ -60,6 +60,6 @@ const get_theaters = async () => {
 
 export { 
   get_musicals,
-  get_artists,
+  get_actors,
   get_theaters
 };
