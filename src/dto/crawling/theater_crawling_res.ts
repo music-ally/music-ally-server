@@ -1,5 +1,5 @@
 export interface Theater {
-  theater_ID: string;
+  theater_ID: number;
   name: string;
   location: string;
   theater_details: Theater_Details;
