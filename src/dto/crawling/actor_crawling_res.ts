@@ -1,9 +1,9 @@
-export interface Artist {
-  artist_ID: string;
-  artist_details: Artist_Details[];
+export interface Actor {
+  actor_ID: string;
+  actor_details: Actor_Details[];
 }
 
-export interface Artist_Details {
+export interface Actor_Details {
   playdb_id: number;
   name: string;
   profile_image?: string;

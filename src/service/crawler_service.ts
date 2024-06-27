@@ -37,7 +37,7 @@ const get_musicals = async () => {
 const get_artists = async () => {
   try{
     
-    const data = await playdb_crawler.fetch_all_artists();
+    const data = await playdb_crawler.fetch_all_actors();
     return data
 
   } catch (error) {

@@ -38,11 +38,6 @@ ManNo=n                        : 배우ID
  - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2017&sSelectType=2"
 
 
-2007년 이전 sReqTab=2 sPlayType=1 sSelectType=2 sStartYear=2007
-뮤지컬
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2007&sSelectType=2"
-
-
 특정 뮤지컬 sReqPlayno=n
 - "http://www.playdb.co.kr/playdb/playdbDetail.asp?sReqPlayno=198805"
 
