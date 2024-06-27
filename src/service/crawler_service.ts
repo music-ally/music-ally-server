@@ -37,7 +37,7 @@ const get_musicals = async () => {
 const get_artists = async () => {
   try{
     
-    const data = await playdb_crawler.fetch_all_artists();
+    const data = await playdb_crawler.fetch_all_actors();
     return data
 
   } catch (error) {
@@ -46,7 +46,20 @@ const get_artists = async () => {
   }
 }
 
+const get_theaters = async () => {
+  try{
+    
+    const data = await playdb_crawler.fetch_all_theaters();
+    return data
+
+  } catch (error) {
+    console.error("Error in getTheaters service:", error);
+    throw error;
+  }
+}
+
 export { 
   get_musicals,
-  get_artists
+  get_artists,
+  get_theaters
 };
