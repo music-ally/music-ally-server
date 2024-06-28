@@ -185,7 +185,11 @@ const get_random_musical = async () => {
 const get_random_singer = async () => {
   try {
     const random_singer = await Actors.aggregate([
-      { $match: { job: "뮤지컬배우, 가수" || "가수, 뮤지컬배우" } },
+      { $match: { 
+        $or: [
+        { job: "뮤지컬배우, 가수" },
+        { job: "가수, 뮤지컬배우" }
+      ]}},
       { $sample: { size: 1 } },
     ]);
 
@@ -194,6 +198,7 @@ const get_random_singer = async () => {
     }
 
     return random_singer[0];
+    
   } catch (error) {
     console.error("Error fetching random singer Id: ServiceUtils", error);
     throw error;

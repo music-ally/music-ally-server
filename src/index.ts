@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import connectDB from "./loader/db";
 import user_router from "./router/user_router";
 import crawler_router from "./router/crawler_router"
+import actor_router from "./router/actor_router"
 
 require("dotenv").config();
 const { PORT } = process.env;
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(user_router);
 app.use(crawler_router);
-
+app.use(actor_router);
 connectDB();
 
 app.set("port", process.env.PORT || 3000); //  서버 포트
