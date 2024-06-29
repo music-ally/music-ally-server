@@ -13,6 +13,10 @@ const message = {
   // etc error
   NULL_VALUE: '필요한 값이 없습니다',
 
+  // common
+  FETCH_SUCCESS: '반환 성공',
+  CREATE_SUCCESS : '생성 성공',
+
   //auth
   NULL_VALUE_TOKEN: '토큰이 없습니다',
   EXPIRED_TOKEN: '만료된 토큰',
@@ -23,6 +27,8 @@ const message = {
   SIGNUP_SUCCESS: '회원가입 성공',
   LOGIN_SUCCESS: '로그인 성공',
   
+  //actor
+
 }
 
 export default message;

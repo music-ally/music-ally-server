@@ -1,4 +1,6 @@
-export interface actor_info {
+import mongoose from "mongoose";
+
+export interface create_actor_dto {
   actor_playdb_id: number;
   actor_name: string;
   profile_image?: string;
@@ -6,5 +8,4 @@ export interface actor_info {
   agency?: string;
   physical?: string;
   job?: string;
-  view: number;
 }
