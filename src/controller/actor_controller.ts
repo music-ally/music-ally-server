@@ -7,6 +7,30 @@ import { Result, ValidationError, validationResult } from "express-validator";
 import * as actor_service from "../service/actor/actor_service";
 import * as actor_service_util from "../service/actor/actor_service_util";
 import { create_actor_dto } from "../dto/actor/response/create_actor";
+
+/**
+ * 모든 배우 반환
+ */
+const fetch_all_actors = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  try {
+    const data = await actor_service.get_all_actors();
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.FETCH_SUCCESS, data));
+  } catch (error) {
+    console.error(
+      "error fetching all actors: controller/actor",
+      error
+    );
+    throw error;
+  }
+};
+
 /**
  * 특정 뮤지컬 출연 배우 반환
  */
@@ -115,6 +139,7 @@ const create_actor = async (
 };
 
 export {
+  fetch_all_actors,
   fetch_actors_appeared,
   fetch_singers,
   fetch_most_viewed,

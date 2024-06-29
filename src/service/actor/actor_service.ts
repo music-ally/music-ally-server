@@ -16,6 +16,36 @@ import { actor_info } from "../../dto/actor/actor_info";
 import Musicals from "../../schema/musicals";
 
 /**
+ * 모든 배우 반환
+ */
+const get_all_actors = async(): Promise<actor_search_res_dto> => {
+  try{
+    const actor_list: actor_search_item_dto[] = [];
+
+    const all_actors = await Actors.find();
+
+    all_actors.forEach(actor => {
+      actor_list.push({
+        actor_id: actor._id,
+        profile_image: actor.profile_image,
+        actor_name: actor.actor_name,
+        agency: actor.agency,
+        birthday: actor.birthday
+      })
+    })
+
+    const data: actor_search_res_dto = {
+      actors: actor_list
+    }
+
+    return data;
+  } catch (error) {
+      console.error("Error fetching all actors: Service", error);
+      throw error;
+  }
+}
+
+/**
  * 랜덤한 뮤지컬 1개의
  * [뮤지컬 제목, 출연 배우들][]집합 반환
  */
@@ -181,6 +211,7 @@ const create_actor = async (create_actor_dto: create_actor_dto) => {
 };
 
 export {
+  get_all_actors,
   get_actors_in_random_musical,
   get_many_actors_in_random_musical,
   get_singers,
