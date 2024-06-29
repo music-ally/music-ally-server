@@ -4,11 +4,11 @@ import auth from "../middleware/auth";
 
 const actor_router = express.Router();
 
-actor_router.get("/actor", actor_controller.fetch_all_actors);
-actor_router.get("/actor/musicalAppeard", actor_controller.fetch_actors_appeared);
-actor_router.get("/actor/job", actor_controller.fetch_singers);
-actor_router.get("/actor/view", actor_controller.fetch_most_viewed);
-actor_router.get("/actor/:actorId", actor_controller.fetch_actor_details);
+actor_router.get("/actor", auth, actor_controller.fetch_all_actors);
+actor_router.get("/actor/musicalAppeard", auth, actor_controller.fetch_actors_appeared);
+actor_router.get("/actor/job", auth, actor_controller.fetch_singers);
+actor_router.get("/actor/view", auth, actor_controller.fetch_most_viewed);
+actor_router.get("/actor/:actorId", auth, actor_controller.fetch_actor_details);
 
 actor_router.post("/actor", actor_controller.create_actor);
 
