@@ -12,7 +12,7 @@ const actors_schema = new mongoose.Schema({
   },
   profile_image: {
     type: String,
-    required: true,
+    required: false,
   },
   birthday: {
     type: Date,
@@ -35,6 +35,11 @@ const actors_schema = new mongoose.Schema({
     required: false,
     default: '뮤지컬배우'
   },
+  view: {
+    type: Number,
+    required: true,
+    default: 0
+  }
 });
 
 const Actors = mongoose.model<actor_info & mongoose.Document>("actors", actors_schema);

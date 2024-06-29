@@ -104,6 +104,29 @@ const find_actor_by_id = async (actor_id: string) => {
 };
 
 /**
+ * 뮤지컬 object_id로
+ * [뮤지컬 제목, 출연 배우들][]집합 반환
+ */
+const get_actors_in_musical = async (
+  musical_id: string
+): Promise<actor_main_musical_res_dto> => {
+  try {
+    const musical = await find_musical_by_Id(musical_id);
+    const musical_actors = await get_actors_same_musical(musical_id);
+
+    const data: actor_main_musical_res_dto = {
+      musical_name: (await musical).musical_name,
+      actors: musical_actors.actors,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching actors in musical: ServiceUtils", error);
+    throw error;
+  }
+};
+
+/**
  * 배우 object_id를 활용해
  * [배우 object_id, 프로필 이미지] 반환
  */
@@ -185,11 +208,11 @@ const get_random_musical = async () => {
 const get_random_singer = async () => {
   try {
     const random_singer = await Actors.aggregate([
-      { $match: { 
-        $or: [
-        { job: "뮤지컬배우, 가수" },
-        { job: "가수, 뮤지컬배우" }
-      ]}},
+      {
+        $match: {
+          $or: [{ job: "뮤지컬배우, 가수" }, { job: "가수, 뮤지컬배우" }],
+        },
+      },
       { $sample: { size: 1 } },
     ]);
 
@@ -198,7 +221,6 @@ const get_random_singer = async () => {
     }
 
     return random_singer[0];
-    
   } catch (error) {
     console.error("Error fetching random singer Id: ServiceUtils", error);
     throw error;
@@ -235,6 +257,10 @@ const get_actor_details = async (actor_id: string): Promise<actor_info> => {
     if (!actor_details) {
       throw new Error("actor not found");
     }
+    
+    // 배우 조회할때마다 조회수 +1씩 증가
+    actor_details.view++;
+    await actor_details.save();
 
     return actor_details;
   } catch (error) {
@@ -248,6 +274,7 @@ export {
   find_actor_by_playdb_id,
   find_musical_by_Id,
   find_actor_by_id,
+  get_actors_in_musical,
   get_actor_item_by_Id,
   get_actors_same_musical,
   get_random_musical,
