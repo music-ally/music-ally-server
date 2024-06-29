@@ -53,6 +53,22 @@ const fetch_singers = async (
 /**
  * 조회수가 가장 높은 배우 반환
  */
+const fetch_most_viewed = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  try {
+    const data = await actor_service.get_most_viewed();
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.FETCH_SUCCESS, data));
+  } catch (error) {
+    console.error("error fetching most viewed actor: controller/actor", error);
+    throw error;
+  }
+};
 
 /**
  * 특정 배우 정보 반환
@@ -101,6 +117,7 @@ const create_actor = async (
 export {
   fetch_actors_appeared,
   fetch_singers,
+  fetch_most_viewed,
   fetch_actor_details,
   create_actor,
 };

@@ -16,31 +16,6 @@ import { actor_info } from "../../dto/actor/actor_info";
 import Musicals from "../../schema/musicals";
 
 /**
- * 뮤지컬 object_id로
- * [뮤지컬 제목, 출연 배우들][]집합 반환
- */
-const get_actors_in_musical = async (
-  musical_id: string
-): Promise<actor_main_musical_res_dto> => {
-  try {
-    const musical = actor_service_util.find_musical_by_Id(musical_id);
-    const musical_actors = await actor_service_util.get_actors_same_musical(
-      musical_id
-    );
-
-    const data: actor_main_musical_res_dto = {
-      musical_name: (await musical).musical_name,
-      actors: musical_actors.actors,
-    };
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching actors in musical: Service", error);
-    throw error;
-  }
-};
-
-/**
  * 랜덤한 뮤지컬 1개의
  * [뮤지컬 제목, 출연 배우들][]집합 반환
  */
@@ -113,7 +88,8 @@ const get_singers = async (): Promise<actor_main_res_dto> => {
 
     let attempts = 0;
 
-    while (unique_singer.size < 10 && attempts < 50) { // 최대 50번 시도
+    while (unique_singer.size < 10 && attempts < 50) {
+      // 최대 50번 시도
       const singer = await actor_service_util.get_random_singer(); // actor_service_util.get_random_singer() 호출 수정
 
       if (!unique_singer.has(singer._id.toString())) {
@@ -145,15 +121,41 @@ const get_singers = async (): Promise<actor_main_res_dto> => {
 /**
  * 조회수가 가장 높은 배우 반환
  */
+const get_most_viewed = async(): Promise<actor_main_res_dto> => {
+  try{
+    const actor_list: actor_main_item_dto[] = [];
+
+    const top_actors = await Actors.find()
+      .sort({ view: -1 })  // view 필드를 기준으로 내림차순 정렬
+      .limit(10);
+
+    top_actors.forEach(actor => {
+      actor_list.push({
+        actor_id: actor._id.toString(),
+        profile_image: actor.profile_image,
+      });
+    });
+
+    const data:actor_main_res_dto = {
+      actors: actor_list
+    }
+
+    return data
+
+  } catch (error) {
+    console.error("Error fetching most viewd actors: Service", error);
+    throw error;
+  }
+}
 
 /**
  * 더미 데이터 넣기용
  */
-const create_actor = async (
-  create_actor_dto:create_actor_dto
-) => {
+const create_actor = async (create_actor_dto: create_actor_dto) => {
   try {
-    const birthday = new Date(create_actor_dto.birthday);
+    const birthday = create_actor_dto.birthday
+      ? new Date(create_actor_dto.birthday)
+      : undefined;
 
     const actor = new Actors({
       actor_playdb_id: create_actor_dto.actor_playdb_id,
@@ -179,9 +181,9 @@ const create_actor = async (
 };
 
 export {
-  get_actors_in_musical,
   get_actors_in_random_musical,
   get_many_actors_in_random_musical,
   get_singers,
-  create_actor
+  get_most_viewed,
+  create_actor,
 };
