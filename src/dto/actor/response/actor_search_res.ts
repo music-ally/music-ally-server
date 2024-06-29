@@ -9,6 +9,6 @@ export interface actor_search_item_dto {
     profile_image?: string;
     actor_name: string;
     agency?: string;
-    birthday?: string;
+    birthday?: Date;
 }
 
