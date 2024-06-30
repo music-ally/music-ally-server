@@ -5,6 +5,11 @@ import connectDB from "./loader/db";
 import user_router from "./router/user_router";
 import crawler_router from "./router/crawler_router"
 import actor_router from "./router/actor_router"
+<<<<<<< Updated upstream
+=======
+import mypge_router from "./router/mypage_router";
+import profile_router from "./router/profile_router";
+>>>>>>> Stashed changes
 
 require("dotenv").config();
 const { PORT } = process.env;
@@ -16,6 +21,11 @@ app.use(express.json());
 app.use(user_router);
 app.use(crawler_router);
 app.use(actor_router);
+<<<<<<< Updated upstream
+=======
+app.use(mypge_router);
+app.use(profile_router);
+>>>>>>> Stashed changes
 connectDB();
 
 app.set("port", process.env.PORT || 3000); //  서버 포트
