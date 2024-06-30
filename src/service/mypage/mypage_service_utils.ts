@@ -129,7 +129,7 @@ const get_follower = async( user_id:string ): Promise<follow_res_dto> => {
             // 맞팔 여부를 확인하기 위해 반대의 관계를 찾아봄
             const both_follow = await Follows.exists({
                 from_user_id: user_id,
-                to_user_id: follow.from_user_id
+                to_user_id: follow.to_user_id
             });
 
             follower_list.push({
