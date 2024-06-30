@@ -16,6 +16,8 @@ const message = {
   // common
   FETCH_SUCCESS: '반환 성공',
   CREATE_SUCCESS : '생성 성공',
+  UPDATE_SUCCESS : '수정 성공',
+  DELETE_SUCCESS : '삭제 성공',
 
   //auth
   NULL_VALUE_TOKEN: '토큰이 없습니다',
