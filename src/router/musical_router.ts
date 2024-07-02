@@ -16,5 +16,8 @@ musical_router.get("/musical/sex/bookmark", auth, musical_controller.find_musica
 musical_router.get("/musical/sex/review", auth, musical_controller.find_musical_by_sex_review);
 musical_router.get("/musical/onGoing", auth, musical_controller.find_ongoing_musical);
 musical_router.get("/musical/:musicalId", auth, musical_controller.musical_detail);
+musical_router.post("/musical/:musicalId/bookmark", auth, musical_controller.bookmark);
+musical_router.delete("/musical/:musicalId/bookmark", auth, musical_controller.cancel_bookmark);
+
 
 export default musical_router;

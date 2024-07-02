@@ -17,8 +17,10 @@ const find_most_review_musical = async (
     return res
       .status(status_code.OK)
       .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+
   } catch (error) {
     console.error("Error at most_review_musical: Controller", error);
+
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
@@ -235,6 +237,52 @@ const musical_detail = async (
   */
 };
 
+const bookmark = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  
+  const { musicalId } = req.params
+  
+  try {
+    await musical_service.bookmark(req.user_id, musicalId);
+
+    return res
+      .status(status_code.CREATED)
+      .send(form.success(message.BOOKMARK_SUCCESS));
+  } catch (error) {
+    console.error("Error at bookmark: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+  
+};
+
+const cancel_bookmark = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  const { musicalId } = req.params
+  
+  try {
+    await musical_service.cancel_bookmark(req.user_id, musicalId);
+
+    return res
+      .status(status_code.NO_CONTENT)
+      .send(form.success(message.CANCEL_BOOKMARK_SUCCESS));
+  } catch (error) {
+    console.error("Error at cancel_bookmark: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+  
+};
+
 export { 
   find_top_rank_musical,
   find_most_review_musical,
@@ -247,5 +295,7 @@ export {
   find_musical_by_sex_bookmark,
   find_musical_by_sex_review,
   find_ongoing_musical,
-  musical_detail
+  musical_detail,
+  bookmark,
+  cancel_bookmark  
 }
