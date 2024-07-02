@@ -3,8 +3,8 @@ import Musicals from "../../schema/musicals";
 import Actors from "../../schema/actors";
 import Reviews from "../../schema/reviews";
 import { review_write_dto } from "../../dto/review/request/review_write";
-import { watch } from "fs";
 import { review_update_dto } from "../../dto/review/request/review_update";
+import { review_detail_res_dto } from "../../dto/review/response/review_detail_res";
 
 const write_review = async (user_id : string, review_write_dto : review_write_dto) => {  
 
@@ -53,5 +53,24 @@ const update_review = async (review_id: string, review_update_dto: review_update
 };
 
 
+const review_detail = async (review_id: string) => {
 
-export { write_review, update_review };
+  try {
+    const data = {
+      
+    }
+
+
+
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at update_review: Service", error);
+    throw error;
+  }
+};
+
+
+
+export { write_review, update_review, review_detail };
