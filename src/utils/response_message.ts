@@ -44,6 +44,9 @@ const message = {
   MY_SEX_BOOKMARK_MUSICAL_SUCCESS: '동성의 찜 수 상위 10개 뮤지컬 반환 성공',
   MY_SEX_REVIEW_MUSICAL_SUCCESS: '동성의 리뷰 개수 상위 10개 뮤지컬 반환 성공',
   MUSICAL_DETAIL_SUCCESS: '뮤지컬 상세 정보 반환 성공',
+  BOOKMARK_SUCCESS: '뮤지컬 찜 성공',
+  CANCEL_BOOKMARK_SUCCESS: '뮤지컬 찜 취소 성공',
+
   
   //review
   BEST_REVIEW_SUCCESS: '베스트 리뷰 반환 성공',
