@@ -8,7 +8,7 @@ review_router.get("/review/best", auth, review_controller.best_review);
 review_router.get("/review", auth, review_controller.all_review);
 review_router.get("/review/:reviewId", auth, review_controller.review_detail);
 review_router.post("/review", auth, review_controller.write_review);
-review_router.patch("/review/:reviewId", auth, review_controller.modify_review);
+review_router.patch("/review/:reviewId", auth, review_controller.update_review);
 review_router.post("/review/:reviewId/like", auth, review_controller.review_like);
 review_router.delete("/review/:reviewId/like", auth, review_controller.cancel_review_like);
 

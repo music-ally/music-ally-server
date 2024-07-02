@@ -50,7 +50,7 @@ const message = {
   ALL_REVIEW_SUCCESS: '모든 리뷰 반환 성공',
   REVIEW_DETAIL_SUCCESS: '리뷰 상세 반환 성공',
   REVIEW_WRITE_SUCCESS: '리뷰 작성 성공',
-  MODIFY_REVIEW_SUCCESS: '리뷰 수정 성공',
+  UPDATE_REVIEW_SUCCESS: '리뷰 수정 성공',
   REVIEW_LIKE_SUCCESS: '리뷰 좋아요 성공',
   CANCEL_REVIEW_LIKE_SUCCESS: '리뷰 좋아요 취소 성공',
 }

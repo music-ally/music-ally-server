@@ -5,6 +5,7 @@ import status_code from "../utils/status_code";
 import { NextFunction, Request, Response } from "express";
 import * as review_service from "../service/review/review_service";
 import { review_write_dto } from "../dto/review/request/review_write";
+import { review_update_dto } from "../dto/review/request/review_update";
 
 
 const write_review = async ( 
@@ -75,37 +76,45 @@ const review_detail = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const { reviewId } = req.params
+
+  const data = await review_service.review_detail(reviewId);
+
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.REVIEW_DETAIL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at review_detail: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
-const modify_review = async ( 
+const update_review = async ( 
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+
+  const review_update_dto: review_update_dto = req.body
+  const { reviewId } = req.params
+
   try {
+    const data = await review_service.update_review(reviewId, review_update_dto);
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.UPDATE_REVIEW_SUCCESS, data));
+
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at update_review: Controller", error);
+    
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const review_like = async ( 
@@ -151,7 +160,7 @@ export {
   all_review,
   review_detail,
   write_review,
-  modify_review,
+  update_review,
   review_like,
   cancel_review_like
 }

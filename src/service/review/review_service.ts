@@ -4,6 +4,7 @@ import Actors from "../../schema/actors";
 import Reviews from "../../schema/reviews";
 import { review_write_dto } from "../../dto/review/request/review_write";
 import { watch } from "fs";
+import { review_update_dto } from "../../dto/review/request/review_update";
 
 const write_review = async (user_id : string, review_write_dto : review_write_dto) => {  
 
@@ -34,4 +35,23 @@ const write_review = async (user_id : string, review_write_dto : review_write_dt
   }
 };
 
-export { write_review };
+const update_review = async (review_id: string, review_update_dto: review_update_dto) => {
+
+  try {
+    const data = await Reviews.findByIdAndUpdate(
+      review_id,
+      review_update_dto,
+      { new: true }
+    );
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at update_review: Service", error);
+    throw error;
+  }
+};
+
+
+
+export { write_review, update_review };
