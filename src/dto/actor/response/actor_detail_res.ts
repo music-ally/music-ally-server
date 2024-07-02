@@ -4,7 +4,7 @@ import { musical_main_item_dto } from "../../musical/response/musical_main_res";
 
 export interface actor_detail_res_dto{
     actor_id: mongoose.Types.ObjectId;
-    profile_image: string;
+    profile_image?: string;
     actor_name: string;
     birthday?: Date; 
     debut?: Date;

@@ -1,11 +1,6 @@
 export interface Musical {
-  musical_ID: string;
+  musical_ID: number;
   musical_details: Musical_Details;
-}
-
-export interface Casts {
-  role: string;
-  cast_names: string[];
 }
 
 export interface Musical_Details {
@@ -19,4 +14,9 @@ export interface Musical_Details {
   runtime: string;
   website: string;
   cast: Casts[];
+}
+
+export interface Casts {
+  role: string;
+  cast_names: string[];
 }

@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import connectDB from "./loader/db";
 import user_router from "./router/user_router";
 import crawler_router from "./router/crawler_router"
+import actor_router from "./router/actor_router"
+import mypge_router from "./router/mypage_router";
+import profile_router from "./router/profile_router";
 
 require("dotenv").config();
 const { PORT } = process.env;
@@ -14,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(user_router);
 app.use(crawler_router);
+app.use(actor_router);
+app.use(mypge_router);
+app.use(profile_router);
 
 connectDB();
 

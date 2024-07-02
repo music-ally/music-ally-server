@@ -38,11 +38,6 @@ ManNo=n                        : 배우ID
  - "http://www.playdb.co.kr/playdb/playdblist.asp?Page=2&sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2017&sSelectType=2"
 
 
-2007년 이전 sReqTab=2 sPlayType=1 sSelectType=2 sStartYear=2007
-뮤지컬
- - "http://www.playdb.co.kr/playdb/playdblist.asp?sReqMainCategory=000001&sReqSubCategory=001005&sReqDistrict=&sReqTab=2&sPlayType=1&sStartYear=2007&sSelectType=2"
-
-
 특정 뮤지컬 sReqPlayno=n
 - "http://www.playdb.co.kr/playdb/playdbDetail.asp?sReqPlayno=198805"
 
@@ -52,23 +47,21 @@ ManNo=n                        : 배우ID
 
 **배우!!!!
 
-배우 리스트 페이지
-- "http://www.playdb.co.kr/artistdb/list.asp?code=013003"
 특정 배우 페이지 ManNo=n
 - "http://www.playdb.co.kr/artistdb/detail.asp?ManNo=8053"
-
-http://www.playdb.co.kr/artistdb/list_iframe.asp?Page=2&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd=
-http://www.playdb.co.kr/artistdb/list_iframe.asp?Page=1&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd=
+숨겨져있던 개빡치는 페이지
+- "http://www.playdb.co.kr/artistdb/list_iframe.asp?Page=2&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd="
+- "http://www.playdb.co.kr/artistdb/list_iframe.asp?Page=1&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd="
 
 
 
 **공연장!!
 
-특정 공연장 PlacecCD=n
+특정 공연장 PlacecCD=n Page=n strTab=2
 - "http://www.playdb.co.kr/placedb/PlacedbInfo.asp?PlacecCD=61"
-주간조회순, 서울
-- "http://www.playdb.co.kr/placedb/PlacedbList.asp?strTab=1&selRegion=099001"
-ㄱㄴㄷ순
-- "http://www.playdb.co.kr/placedb/placedbList.asp?strTab=2&selRegion=099099&selSubRegion="
+ㄱㄴㄷ 전체
+- "http://www.playdb.co.kr/placedb/placedbList.asp?strTab=2&selRegion=&selSubRegion="
+ㄱㄴㄷ 전체 page2
+- "http://www.playdb.co.kr/placedb/placedbList.asp?Page=2&strTab=2&selRegion=&selSubRegion="
 ㄱㄴㄷ순, 서울
 - "http://www.playdb.co.kr/placedb/placedbList.asp?strTab=2&selRegion=099001&selSubRegion="

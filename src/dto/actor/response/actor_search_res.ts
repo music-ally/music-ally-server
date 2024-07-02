@@ -6,9 +6,9 @@ export interface actor_search_res_dto {
 
 export interface actor_search_item_dto {
     actor_id: mongoose.Types.ObjectId;
-    profile_image: string;
+    profile_image?: string;
     actor_name: string;
-    agency: string;
-    birthday: string;
+    agency?: string;
+    birthday?: Date;
 }
 
