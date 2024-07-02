@@ -5,7 +5,7 @@ import { user_login_res_dto } from "../../dto/user/response/user_login_res";
 import Users from "../../schema/users";
 import Areas from "../../schema/areas";
 import bcrypt from 'bcryptjs';
-import { generateAccessToken, generateRefreshToken } from "../../utils/jwt_handler";
+import { generate_access_token, generate_refresh_token } from "../../utils/jwt_handler";
 
 
 
@@ -63,8 +63,8 @@ const login_user = async (user_login_dto : user_login_dto): Promise<user_login_r
     throw new Error('wrong password');
   }
   
-  const access_token = generateAccessToken(user._id);
-  const refresh_token = generateRefreshToken(user._id);
+  const access_token = generate_access_token(user._id);
+  const refresh_token = generate_refresh_token(user._id);
 
   return { 
     email: user.email,
