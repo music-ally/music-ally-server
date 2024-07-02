@@ -20,7 +20,7 @@ const write_review = async (
     const data = await review_service.write_review(req.user_id, review_write_dto);
 
     return res
-      .status(status_code.OK)
+      .status(status_code.CREATED)
       .send(form.success(message.REVIEW_WRITE_SUCCESS, data));
 
   } catch (error) {
@@ -128,7 +128,7 @@ const review_like = async (
     await review_service.review_like(req.user_id, reviewId);
 
     return res
-      .status(status_code.OK)
+      .status(status_code.CREATED)
       .send(form.success(message.REVIEW_LIKE_SUCCESS));
   } catch (error) {
     console.error("Error at review_like: Controller", error);
@@ -149,7 +149,7 @@ const cancel_review_like = async (
     await review_service.cancel_review_like(req.user_id, reviewId);
 
     return res
-      .status(status_code.OK)
+      .status(status_code.NO_CONTENT)
       .send(form.success(message.CANCEL_REVIEW_LIKE_SUCCESS));
   } catch (error) {
     console.error("Error at cancel_review_like: Controller", error);
