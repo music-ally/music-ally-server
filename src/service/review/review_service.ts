@@ -5,6 +5,7 @@ import Reviews from "../../schema/reviews";
 import { review_write_dto } from "../../dto/review/request/review_write";
 import { review_update_dto } from "../../dto/review/request/review_update";
 import { review_detail_res_dto } from "../../dto/review/response/review_detail_res";
+import Review_likes from "../../schema/review_likes";
 
 const write_review = async (user_id : string, review_write_dto : review_write_dto) => {  
 
@@ -52,12 +53,11 @@ const update_review = async (review_id: string, review_update_dto: review_update
   }
 };
 
-
 const review_detail = async (review_id: string) => {
 
   try {
     const data = {
-      
+
     }
 
 
@@ -71,6 +71,26 @@ const review_detail = async (review_id: string) => {
   }
 };
 
+const review_like = async (user_id: string, review_id: string) => {
 
+  try {
+    const review_like = new Review_likes({
+      user_id: user_id,
+      review_id: review_id
+    });
 
-export { write_review, update_review, review_detail };
+    await review_like.save();
+
+    const data = {
+      _id: review_like._id,
+    };
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at review_like: Service", error);
+    throw error;
+  }
+};
+
+export { write_review, update_review, review_detail, review_like };
