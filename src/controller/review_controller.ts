@@ -143,18 +143,20 @@ const cancel_review_like = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const { reviewId } = req.params
+  
   try {
+    await review_service.cancel_review_like(req.user_id, reviewId);
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.CANCEL_REVIEW_LIKE_SUCCESS));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at cancel_review_like: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 export { 

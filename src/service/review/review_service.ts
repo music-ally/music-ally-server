@@ -81,11 +81,7 @@ const review_like = async (user_id: string, review_id: string) => {
 
     await review_like.save();
 
-    const data = {
-      _id: review_like._id,
-    };
-
-    return data;
+    return
 
   } catch (error) {
     console.error("Error at review_like: Service", error);
@@ -93,4 +89,20 @@ const review_like = async (user_id: string, review_id: string) => {
   }
 };
 
-export { write_review, update_review, review_detail, review_like };
+const cancel_review_like = async (user_id: string, review_id: string) => {
+  try {
+    const review_like = await Review_likes.findOneAndDelete({
+      user_id: user_id,
+      review_id: review_id
+    });
+
+    return
+
+  } catch (error) {
+    console.error("Error at cancel_review_like: Service", error);
+    throw error;
+  }
+};
+
+
+export { write_review, update_review, review_detail, review_like, cancel_review_like };
