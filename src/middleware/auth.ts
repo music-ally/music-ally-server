@@ -2,8 +2,7 @@ import form from "../utils/response_form";
 import message from "../utils/response_message";
 import status_code from "../utils/status_code";
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from "../utils/jwt_handler";
-import { error } from "console";
+import { verify_token } from "../utils/jwt_handler";
 
 const auth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -19,8 +18,10 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const user = verifyToken(token);
-    req.token = user;
+    const verified_token = verify_token(token);
+    req.token = verified_token;
+    req.user_id = verified_token.id;
+
     next();
   } catch (err) {
     return res
