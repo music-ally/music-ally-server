@@ -46,6 +46,48 @@ const most_review_musical = async (): Promise<musical_main_item_dto[]> => {
   }
 };
 
+const most_bookmark_musical = async (): Promise<musical_main_item_dto[]> => {
+  try {
+    const filter_data = await Bookmarks.aggregate([
+      {
+        $group: { 
+          _id: "$musical_id",
+          bookmark_count: { $count: {} }
+        }
+      },
+      {
+        $sort: { bookmark_count: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $lookup: {
+          from: "musicals",
+          localField: "_id",
+          foreignField: "_id",
+          as: "musical"
+        }
+      },
+      {
+        $unwind: "$musical"
+      },
+      {
+        $project: {
+          musical_id: "$_id",
+          poster_image: "$musical.poster_image"
+        }
+      }
+    ]);
+
+    return filter_data as musical_main_item_dto[];
+
+  } catch (error) {
+    console.error("Error at most_bookmark_musical: Service", error);
+    throw error;
+  }
+};
+
 
 const bookmark = async (user_id: string, musical_id: string) => {
 
@@ -83,6 +125,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 
 export {
   most_review_musical,
+  most_bookmark_musical,
   bookmark,
   cancel_bookmark
 };

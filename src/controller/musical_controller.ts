@@ -5,6 +5,26 @@ import status_code from "../utils/status_code";
 import { NextFunction, Request, Response } from "express";
 import * as musical_service from "../service/musical/musical_service";
 
+const find_top_rank_musical = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  /*
+  try {
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+  } catch (error) {
+    console.error("Error at most_review_musical: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+  */
+};
+
+
 const find_most_review_musical = async ( 
   req: Request,
   res: Response,
@@ -28,42 +48,26 @@ const find_most_review_musical = async (
 };
 
 
-const find_top_rank_musical = async ( 
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
-  /*
-  try {
-    return res
-      .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
-  } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
-    return res
-      .status(status_code.INTERNAL_SERVER_ERROR)
-      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
-  }
-  */
-};
-
 const find_most_bookmark_musical = async ( 
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+
   try {
+    const data = await musical_service.most_bookmark_musical();
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.MOST_BOOKMARK_MUSICAL_SUCCESS, data));
+
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at most_bookmark_musical: Controller", error);
+
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const find_musical_by_actor = async ( 
