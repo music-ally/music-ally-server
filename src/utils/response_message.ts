@@ -31,6 +31,19 @@ const message = {
   
   //actor
 
+  //musical
+  TOP_RANK_MUSICAL_SUCCESS: '랭킹 상위 10위 뮤지컬 반환 성공',
+  MOST_REVIEW_MUSICAL_SUCCESS: '리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  MOST_BOOKMARK_MUSICAL_SUCCESS: '찜 수 상위 10개 뮤지컬 반환 성공',
+  ACTOR_MUSICAL_SUCCESS: '특정 배우의 뮤지컬 반환 성공',
+  FOLLOWING_MUSICAL_SUCCESS: '나의 팔로잉의 뮤지컬 반환 성공',
+  NEAR_MUSICAL_SUCCESS: '나의 거주지 근처 뮤지컬 반환 성공',
+  MY_AGE_BOOKMARK_MUSICAL_SUCCESS: '나의 연령대 찜 수 상위 10개 뮤지컬 반환 성공',
+  MY_AGE_REVIEW_MUSICAL_SUCCESS: '나의 연령대 리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  ONGOING_MUSICAL_SUCCESS: '현재 개막중인 뮤지컬 반환 성공',
+  MY_SEX_BOOKMARK_MUSICAL_SUCCESS: '동성의 찜 수 상위 10개 뮤지컬 반환 성공',
+  MY_SEX_REVIEW_MUSICAL_SUCCESS: '동성의 리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  MUSICAL_DETAIL_SUCCESS: '뮤지컬 상세 정보 반환 성공',
 }
 
 export default message;
