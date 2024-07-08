@@ -31,6 +31,31 @@ const message = {
   
   //actor
 
+  //musical
+  TOP_RANK_MUSICAL_SUCCESS: '랭킹 상위 10위 뮤지컬 반환 성공',
+  MOST_REVIEW_MUSICAL_SUCCESS: '리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  MOST_BOOKMARK_MUSICAL_SUCCESS: '찜 수 상위 10개 뮤지컬 반환 성공',
+  ACTOR_MUSICAL_SUCCESS: '특정 배우의 뮤지컬 반환 성공',
+  FOLLOWING_MUSICAL_SUCCESS: '나의 팔로잉의 뮤지컬 반환 성공',
+  NEAR_MUSICAL_SUCCESS: '나의 거주지 근처 뮤지컬 반환 성공',
+  MY_AGE_BOOKMARK_MUSICAL_SUCCESS: '나의 연령대 찜 수 상위 10개 뮤지컬 반환 성공',
+  MY_AGE_REVIEW_MUSICAL_SUCCESS: '나의 연령대 리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  ONGOING_MUSICAL_SUCCESS: '현재 개막중인 뮤지컬 반환 성공',
+  MY_SEX_BOOKMARK_MUSICAL_SUCCESS: '동성의 찜 수 상위 10개 뮤지컬 반환 성공',
+  MY_SEX_REVIEW_MUSICAL_SUCCESS: '동성의 리뷰 개수 상위 10개 뮤지컬 반환 성공',
+  MUSICAL_DETAIL_SUCCESS: '뮤지컬 상세 정보 반환 성공',
+  BOOKMARK_SUCCESS: '뮤지컬 찜 성공',
+  CANCEL_BOOKMARK_SUCCESS: '뮤지컬 찜 취소 성공',
+
+  
+  //review
+  BEST_REVIEW_SUCCESS: '베스트 리뷰 반환 성공',
+  ALL_REVIEW_SUCCESS: '모든 리뷰 반환 성공',
+  REVIEW_DETAIL_SUCCESS: '리뷰 상세 반환 성공',
+  REVIEW_WRITE_SUCCESS: '리뷰 작성 성공',
+  UPDATE_REVIEW_SUCCESS: '리뷰 수정 성공',
+  REVIEW_LIKE_SUCCESS: '리뷰 좋아요 성공',
+  CANCEL_REVIEW_LIKE_SUCCESS: '리뷰 좋아요 취소 성공',
 }
 
 export default message;

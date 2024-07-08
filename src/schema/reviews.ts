@@ -12,12 +12,11 @@ const reviews_schema = new mongoose.Schema({
     required: true,
     ref: "musicals",
   },
-  actor_id: {
+  actor_ids: [{
     type: mongoose.Types.ObjectId,
     required: true,
     ref: "castings",
-    field: "actors_id",
-  },
+  }],
   content: {
     type: String,
     required: true,
