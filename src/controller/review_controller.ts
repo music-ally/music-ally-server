@@ -57,18 +57,18 @@ const all_review = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const data = await review_service.all_review();
+
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.REVIEW_DETAIL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at review_detail: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const review_detail = async ( 
@@ -77,8 +77,7 @@ const review_detail = async (
   next: NextFunction
 ): Promise<void | Response> => {
   const { reviewId } = req.params
-
-  const data = await review_service.review_detail(reviewId);
+  const data = await review_service.review_detail(reviewId, req.user_id);
 
   try {
     return res
