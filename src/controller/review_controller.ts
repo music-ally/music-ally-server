@@ -32,43 +32,23 @@ const write_review = async (
   }
 };
 
-
-const best_review = async ( 
+const review_main = async ( 
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
-  try {
-    return res
-      .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
-  } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
-    return res
-      .status(status_code.INTERNAL_SERVER_ERROR)
-      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
-  }
-  */
-};
+  const data = await review_service.review_main(req.user_id);
 
-const all_review = async ( 
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
-  /*
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.GET_REVIEW_MAIN_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at get main_review: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const review_detail = async ( 
@@ -77,8 +57,7 @@ const review_detail = async (
   next: NextFunction
 ): Promise<void | Response> => {
   const { reviewId } = req.params
-
-  const data = await review_service.review_detail(reviewId);
+  const data = await review_service.review_detail(reviewId, req.user_id);
 
   try {
     return res
@@ -160,8 +139,7 @@ const cancel_review_like = async (
 };
 
 export { 
-  best_review,
-  all_review,
+  review_main,
   review_detail,
   write_review,
   update_review,

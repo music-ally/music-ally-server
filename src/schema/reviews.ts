@@ -29,11 +29,6 @@ const reviews_schema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  like_num: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
   fear: {
     type: Number,
     required: true,
