@@ -12,11 +12,15 @@ export interface musical_detail_res_dto{
     poster_image: string;
     musical_name: string;
     is_bookmark:boolean;
-    synopsis: string; 
+    musical_subname?: string,
+    musical_genre?: string,
+    age_limit?: string,
+    runtime?: string,
+    website?: string,
     castings: string[];
-    start_at: Date;
-    end_at: Date;
+    start_at: string;
+    end_at: string;
     theater_name: string;
-    theater_address: string;
+    theater_address?: string;
     reviews:review_musical_detail_res_dto[];
 }
