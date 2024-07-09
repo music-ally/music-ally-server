@@ -114,18 +114,20 @@ const find_musical_by_following = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  
+  const data = await musical_service.random_follow_musical(req.user_id);
+
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.FOLLOWING_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at get following's reviewed musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
+  
 };
 
 const find_musical_my_sex_bookmark = async ( 

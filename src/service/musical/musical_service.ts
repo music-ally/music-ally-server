@@ -11,6 +11,8 @@ import Theaters from "../../schema/theaters";
 import Actors from "../../schema/actors";
 import { musical_main_actor_res_dto } from "../../dto/musical/response/musical_main_actor_res";
 import Castings from "../../schema/castings";
+import Follows from "../../schema/follows";
+import { musical_main_follow_res_dto } from "../../dto/musical/response/musical_main_follow_res";
 
 const random_actor_musical = async () => {
   try {
@@ -57,6 +59,87 @@ const random_actor_musical = async () => {
 
   } catch (error) {
     console.error("Error at get all musical: Service", error);
+    throw error;
+  }
+}
+
+const random_follow_musical = async (user_id: string) => {
+  try {
+    const random_follow = await Follows.aggregate([
+      {
+        $match: {
+          from_user_id: new mongoose.Types.ObjectId(user_id)
+        }
+      },
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "to_user_id",
+          foreignField: "user_id",
+          as: "reviews"
+        }
+      },
+      {
+        $addFields: {
+          review_count: { $size: "$reviews" }
+        }
+      },
+      {
+        $match: {
+          review_count: { $gte: 4 }
+        }
+      },
+      {
+        $sample: { size: 1 }
+      },
+      {
+        $project: {
+          to_user_id: 1,
+          review_musical_ids: "$reviews.musical_id"
+        }
+      },
+    ]);
+
+    if (random_follow.length === 0) {
+      throw new Error("리뷰가 4개 이상인 팔로우한 유저 없음");
+    }
+
+    console.log(random_follow);
+
+    const to_user_id = random_follow[0].to_user_id;
+    const to_user = await Users.findById(to_user_id);
+    if (!to_user) {
+      throw new Error("팔로우한 유저 찾을 수 없음");
+    }
+
+    const musicals = await Musicals.aggregate([
+      {
+        $match: {
+          _id: { $in: random_follow[0].review_musical_ids }
+        },
+      },
+      {
+        $project: {
+          musical_id: "$_id",
+          poster_image: 1
+        }
+      }
+    ]);
+
+    const musical_dto: musical_main_item_dto[] = musicals.map(musical => ({
+      musical_id: musical._id,
+      poster_image: musical.poster_image,
+    }));
+
+    const data: musical_main_follow_res_dto = {
+      follow_name: to_user.nickname,
+      musicals: musical_dto
+    };
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at get follow's reviewed musical: Service", error);
     throw error;
   }
 }
@@ -402,6 +485,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 export {
   all_musical,
   random_actor_musical,
+  random_follow_musical,
   musical_my_age_review,
   musical_my_sex_review,
   musical_my_sex_bookmark,
