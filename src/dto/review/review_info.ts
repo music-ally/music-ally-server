@@ -7,7 +7,6 @@ export interface review_info {
   content: string;
   watch_at: Date;
   create_at: Date;
-  like_num: number;
   fear: number;
   sensitivity: number;
   violence: number;
