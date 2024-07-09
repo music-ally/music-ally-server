@@ -29,4 +29,5 @@ export interface review_detail_res_dto{
     fear: number;
     sensitivity: number;
     content: string;
+    create_at: Date;
 }

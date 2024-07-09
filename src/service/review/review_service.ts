@@ -130,7 +130,7 @@ const review_detail = async (review_id: string, user_id: string) => {
 
     const maskedEmail = `${review.user_id.email.slice(0, 2)}****`;
     
-    const like_num = await Review_likes.countDocuments({ review_id: new mongoose.Types.ObjectId(review_id) });
+    const like_num = await Review_likes.countDocuments({ review_id: review_id });
 
     const data: review_detail_res_dto = {
       review_id: review._id,
@@ -147,7 +147,7 @@ const review_detail = async (review_id: string, user_id: string) => {
         actor_name: actor.actor_name,
       })),
       poster_uri: review.musical_id.poster_uri,
-      reviewer_profile_image: review.user_id.profile_image,
+      reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: maskedEmail,
       like_num: like_num,
@@ -156,6 +156,7 @@ const review_detail = async (review_id: string, user_id: string) => {
       fear: review.fear,
       sensitivity: review.sensitivity,
       content: review.content,
+      create_at: review.create_at
     };  
 
 
