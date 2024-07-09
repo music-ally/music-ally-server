@@ -11,7 +11,7 @@ import Users from "../../schema/users";
 import Theaters from "../../schema/theaters";
 
 
-const all_review = async (user_id: string) => {
+const review_main = async (user_id: string) => {
 
   try {
     const reviews = await Reviews.find()
@@ -73,25 +73,6 @@ const all_review = async (user_id: string) => {
 
   } catch (error) {
     console.error("Error at get all_review: Service", error);
-    throw error;
-  }
-};
-
-
-const best_review = async () => {
-
-  try {
-    const data = {
-
-    }
-
-
-
-
-    return data;
-
-  } catch (error) {
-    console.error("Error at get best_review: Service", error);
     throw error;
   }
 };
@@ -249,4 +230,4 @@ const cancel_review_like = async (user_id: string, review_id: string) => {
 };
 
 
-export { all_review, best_review, write_review, update_review, review_detail, review_like, cancel_review_like };
+export { review_main, write_review, update_review, review_detail, review_like, cancel_review_like };

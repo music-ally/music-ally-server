@@ -46,8 +46,7 @@ const message = {
   MUSICAL_DETAIL_SUCCESS: '뮤지컬 상세 정보 반환 성공',
   
   //review
-  BEST_REVIEW_SUCCESS: '베스트 리뷰 반환 성공',
-  ALL_REVIEW_SUCCESS: '모든 리뷰 반환 성공',
+  GET_REVIEW_MAIN_SUCCESS: '리뷰 메인 페이지 데이터 반환 성공',
   REVIEW_DETAIL_SUCCESS: '리뷰 상세 반환 성공',
   REVIEW_WRITE_SUCCESS: '리뷰 작성 성공',
   UPDATE_REVIEW_SUCCESS: '리뷰 수정 성공',
