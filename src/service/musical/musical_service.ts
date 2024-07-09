@@ -25,7 +25,7 @@ const random_actor_musical = async () => {
     },
     {
       $match: {
-        count: { $gte: 1 }
+        count: { $gte: 4 }
       }
     },
     {
