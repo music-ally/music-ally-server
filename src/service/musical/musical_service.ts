@@ -6,6 +6,40 @@ import { musical_main_age_res_dto } from "../../dto/musical/response/musical_mai
 import Bookmarks from "../../schema/bookmarks";
 import Users from "../../schema/users";
 import { calculate_age } from "./musical_service_utils";
+import { data } from "cheerio/lib/api/attributes";
+import { musical_search_item_dto, musical_search_res_dto } from "../../dto/musical/response/musical_search_res";
+import Theaters from "../../schema/theaters";
+
+const all_musical = async () => {
+  try {
+
+    const musicals = await Musicals.find()
+      .populate({
+        path: 'theater_id',
+        model: Theaters,
+        select: 'theater_name'
+      }).exec() as any[]; //exec()의 필요성,, promise 반환? 인데 잘 모르겠음
+
+    const musical_dto : musical_search_item_dto[] = musicals.map(musical => ({
+      musical_id: musical._id,
+      poster_image: musical.poster_image,
+      musical_name: musical.musical_name,
+      start_at: musical.start_at,
+      end_at: musical.end_at,
+      theater_name: musical.theater_id.theater_name
+    }))
+
+    const data: musical_search_res_dto = {
+      musicals: musical_dto
+    }
+
+    return data
+
+  } catch (error) {
+    console.error("Error at get all musical: Service", error);
+    throw error;
+  }
+}
 
 const musical_my_age_review = async (user_id: string) => {
 
@@ -315,6 +349,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 };
 
 export {
+  all_musical,
   musical_my_age_review,
   musical_my_sex_review,
   musical_my_sex_bookmark,

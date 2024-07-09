@@ -32,6 +32,7 @@ const message = {
   //actor
 
   //musical
+  ALL_MUSICAL_SUCCESS: '검색용 모든 뮤지컬 반환 성공',
   TOP_RANK_MUSICAL_SUCCESS: '랭킹 상위 10위 뮤지컬 반환 성공',
   MOST_REVIEW_MUSICAL_SUCCESS: '리뷰 개수 상위 10개 뮤지컬 반환 성공',
   MOST_BOOKMARK_MUSICAL_SUCCESS: '찜 수 상위 10개 뮤지컬 반환 성공',

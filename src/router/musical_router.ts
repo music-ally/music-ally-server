@@ -4,6 +4,7 @@ import auth from "../middleware/auth";
 
 const musical_router = express.Router();
 
+musical_router.get("/musical", auth, musical_controller.all_musical);
 musical_router.get("/musical/topRank", auth, musical_controller.find_top_rank_musical);
 musical_router.get("/musical/most/review", auth, musical_controller.find_most_review_musical);
 musical_router.get("/musical/most/bookmark", auth, musical_controller.find_most_bookmark_musical);

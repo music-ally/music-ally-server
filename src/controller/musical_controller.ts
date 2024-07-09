@@ -5,6 +5,25 @@ import status_code from "../utils/status_code";
 import { NextFunction, Request, Response } from "express";
 import * as musical_service from "../service/musical/musical_service";
 
+const all_musical = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  try {
+    const data = await musical_service.all_musical();
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.ALL_MUSICAL_SUCCESS, data));
+  } catch (error) {
+    console.error("Error at get all musical: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+};
+
 const find_top_rank_musical = async ( 
   req: Request,
   res: Response,
@@ -290,6 +309,7 @@ const cancel_bookmark = async (
 };
 
 export { 
+  all_musical,
   find_top_rank_musical,
   find_most_review_musical,
   find_most_bookmark_musical,
