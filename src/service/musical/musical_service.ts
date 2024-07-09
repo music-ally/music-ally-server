@@ -6,9 +6,60 @@ import { musical_main_age_res_dto } from "../../dto/musical/response/musical_mai
 import Bookmarks from "../../schema/bookmarks";
 import Users from "../../schema/users";
 import { calculate_age } from "./musical_service_utils";
-import { data } from "cheerio/lib/api/attributes";
 import { musical_search_item_dto, musical_search_res_dto } from "../../dto/musical/response/musical_search_res";
 import Theaters from "../../schema/theaters";
+import Actors from "../../schema/actors";
+import { musical_main_actor_res_dto } from "../../dto/musical/response/musical_main_actor_res";
+import Castings from "../../schema/castings";
+
+const random_actor_musical = async () => {
+  try {
+
+    const random_actor = await Castings.aggregate([
+    {
+      $group: {
+        _id: "$actor_id",
+        count: { $sum: 1 },
+        musicals: { $addToSet: "$musical_id" }
+      }
+    },
+    {
+      $match: {
+        count: { $gte: 1 }
+      }
+    },
+    {
+      $sample: { size: 1 }
+    }
+    ]);
+
+    const actor = await Actors.findById(random_actor[0]._id);
+
+    if (!actor) {
+      throw new Error("선택 배우 정보 불러오기 실패");
+    }
+
+    const musicals = await Musicals.find({
+      _id: { $in: random_actor[0].musicals }
+    });
+
+    const musical_dto : musical_main_item_dto[] = musicals.map(musical => ({
+      musical_id: musical._id,
+      poster_image: musical.poster_image,
+    }))
+
+    const data: musical_main_actor_res_dto = {
+      actor_name: actor?.actor_name,
+      musicals: musical_dto
+    }
+
+    return data
+
+  } catch (error) {
+    console.error("Error at get all musical: Service", error);
+    throw error;
+  }
+}
 
 const all_musical = async () => {
   try {
@@ -350,6 +401,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 
 export {
   all_musical,
+  random_actor_musical,
   musical_my_age_review,
   musical_my_sex_review,
   musical_my_sex_bookmark,

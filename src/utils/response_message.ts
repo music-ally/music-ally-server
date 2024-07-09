@@ -20,9 +20,9 @@ const message = {
   DELETE_SUCCESS : '삭제 성공',
 
   //auth
-  NULL_VALUE_TOKEN: '토큰이 없습니다',
+  NULL_VALUE_TOKEN: '헤더에 토큰이 없습니다',
   EXPIRED_TOKEN: '만료된 토큰',
-  INVALID_TOKEN: '존재하지 않는 토큰',
+  INVALID_TOKEN: '유효하지 않은 토큰',
   INVALID_PASSWORD: '잘못된 비밀번호',
   NOT_FOUND_EMAIL: '가입되지 않은 이메일',
   CONFLICT_EMAIL: '이메일 중복',
