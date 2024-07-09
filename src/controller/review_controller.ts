@@ -57,7 +57,7 @@ const all_review = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  const data = await review_service.all_review();
+  const data = await review_service.all_review(req.user_id);
 
   try {
     return res

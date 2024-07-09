@@ -11,15 +11,63 @@ import Users from "../../schema/users";
 import Theaters from "../../schema/theaters";
 
 
-const all_review = async () => {
+const all_review = async (user_id: string) => {
 
   try {
+    const reviews = await Reviews.find()
+      .populate({
+        path: 'musical_id',
+        model: Musicals,
+        select: 'poster_uri'
+      })
+      .populate({
+        path: 'user_id',
+        model: Users,
+        select: 'profile_image nickname email',
+      })
+      //.sort({ create_at: -1 }) //-1 => 내림차순, 최신순 정렬
+      .exec() as any[];
+
+    let all_review: any[] = [];
+
+    await Promise.all(reviews.map(async (review) => {
+      const review_id = review._id;
+
+      const is_like = await Review_likes.exists({ user_id, review_id });
+      const like_num = await Review_likes.countDocuments({ review_id });
+      const masked_email = `${review.user_id.email.slice(0, 2)}****`;
+
+      const reviewData = {
+        review_id: review._id,
+        poster_image: review.musical_id.poster_uri,
+        reviewer_profile_image: review.user_id.profile_image || null,
+        reviewer_nickname: review.user_id.nickname,
+        reviewer_email: masked_email,
+        create_at: review.create_at,
+        like_num: like_num,
+        is_like: Boolean(is_like),
+        fear: review.fear,
+        sensitivity: review.sensitivity,
+        violence: review.violence,
+        content: review.content,
+      };
+
+      all_review.push(reviewData);
+
+    }))
+
+    all_review = all_review.sort((a,b) => b.create_at - a.create_at); //sort 말고 더 좋은 방법 없는지 찾아보기
+
+    let best_review = [ ...all_review ];
+
+    best_review = best_review
+      .sort((a, b) => b.like_num - a.like_num) //b가 더 크면 b를 앞에다 놓음
+      .slice(0, 10);
+
     const data = {
-
-    }
-
-
-
+      best_review: best_review,
+      all_review: all_review,
+    };
 
     return data;
 
@@ -126,9 +174,9 @@ const review_detail = async (review_id: string, user_id: string) => {
 
     console.log(review);
 
-    const isLike = await Review_likes.exists({ user_id, review_id });
+    const is_like = await Review_likes.exists({ user_id, review_id });
 
-    const maskedEmail = `${review.user_id.email.slice(0, 2)}****`;
+    const masked_email = `${review.user_id.email.slice(0, 2)}****`;
     
     const like_num = await Review_likes.countDocuments({ review_id: review_id });
 
@@ -149,9 +197,9 @@ const review_detail = async (review_id: string, user_id: string) => {
       poster_uri: review.musical_id.poster_uri,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
-      reviewer_email: maskedEmail,
+      reviewer_email: masked_email,
       like_num: like_num,
-      is_like: Boolean(isLike),
+      is_like: Boolean(is_like),
       violence: review.violence,
       fear: review.fear,
       sensitivity: review.sensitivity,
@@ -159,11 +207,10 @@ const review_detail = async (review_id: string, user_id: string) => {
       create_at: review.create_at
     };  
 
-
     return data;
 
   } catch (error) {
-    console.error("Error at update_review: Service", error);
+    console.error("Error at get review_detail: Service", error);
     throw error;
   }
 };
