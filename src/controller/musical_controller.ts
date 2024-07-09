@@ -252,18 +252,20 @@ const musical_detail = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const {musicalId} = req.params
+  const data = await musical_service.musical_detail(req.user_id, musicalId)
+
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.MUSICAL_DETAIL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at musical_detail: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
+  
 };
 
 const bookmark = async ( 

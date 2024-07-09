@@ -13,6 +13,92 @@ import { musical_main_actor_res_dto } from "../../dto/musical/response/musical_m
 import Castings from "../../schema/castings";
 import Follows from "../../schema/follows";
 import { musical_main_follow_res_dto } from "../../dto/musical/response/musical_main_follow_res";
+import { musical_detail_res_dto } from "../../dto/musical/response/musical_detail_res";
+import Review_likes from "../../schema/review_likes";
+
+const musical_detail = async (user_id:string, musical_id:string) => {
+  try {
+    
+    const user_oid = new mongoose.Types.ObjectId(user_id);
+    const musical_oid = new mongoose.Types.ObjectId(musical_id);
+    const musical = await Musicals.findById(musical_oid);
+
+    if (!musical){
+      throw new Error("해당 뮤지컬 아이디의 뮤지컬을 찾을 수 없습니다");
+    }
+
+    const is_bookmark = Boolean(await Bookmarks.exists( { user_oid, musical_oid } ));
+
+    const theater = await Theaters.findById(musical.theater_id);
+    if (!theater){
+      throw new Error("해당 극장 아이디의 극장을 찾을 수 없습니다");
+    }
+
+    console.log(musical_oid)
+
+    const castings = await Castings.find({musical_id: musical_oid})
+    .populate('actor_id')
+    .exec() as any[];
+
+    console.log(castings)
+
+    const castings_names = castings.map((casting: any) => casting.actor_id.actor_name);
+  
+    console.log(castings_names)
+
+
+    const review_data = await Reviews.find({musical_id: musical_oid })
+    .populate('user_id')
+    .populate('musical_id')
+    .exec() as any[];
+    
+    const reviews = await Promise.all(review_data.map(async (review: any) => {
+      const review_id = review._id;
+    
+      const is_like = Boolean(await Review_likes.exists({ user_id, review_id }));
+      const like_num = await Review_likes.countDocuments({ review_id });
+      const masked_email = `${review.user_id.email.slice(0, 2)}****`;
+    
+      return {
+        review_id: review._id,
+        reviewer_profile_image: review.user_id.profile_image || null,
+        reviewer_nickname: review.user_id.nickname,
+        reviewer_email: masked_email,
+        create_at: review.create_at,
+        like_num: like_num,
+        is_like: is_like,
+        fear: review.fear,
+        sensitivity: review.sensitivity,
+        violence: review.violence,
+        content: review.content,
+      };
+    }));
+
+    const data: musical_detail_res_dto = {
+      musical_id: musical_oid,
+      poster_image: musical.poster_image,
+      musical_name: musical.musical_name,
+      is_bookmark: is_bookmark,
+      musical_subname: musical.musical_subname,
+      musical_genre: musical.musical_genre,
+      age_limit: musical.age_limit,
+      runtime: musical.runtime,
+      website: musical.website,
+      castings: castings_names,
+      start_at: musical.start_at,
+      end_at: musical.end_at,
+      theater_name: theater.theater_name,
+      theater_address: theater.theater_road_address ? theater.theater_road_address : theater.theater_address,
+      reviews: reviews
+    }
+
+    return data
+
+  } catch (error) {
+    console.error("Error at get musical_detail: Service", error);
+    throw error;
+  }
+}
 
 const random_actor_musical = async () => {
   try {
@@ -484,6 +570,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 
 export {
   all_musical,
+  musical_detail,
   random_actor_musical,
   random_follow_musical,
   musical_my_age_review,
