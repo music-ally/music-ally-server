@@ -2,7 +2,198 @@ import mongoose from "mongoose";
 import Musicals from "../../schema/musicals";
 import Reviews from "../../schema/reviews";
 import { musical_main_item_dto } from "../../dto/musical/response/musical_main_res";
+import { musical_main_age_res_dto } from "../../dto/musical/response/musical_main_age_res";
 import Bookmarks from "../../schema/bookmarks";
+import Users from "../../schema/users";
+import { calculate_age } from "./musical_service_utils";
+
+const musical_my_age_review = async (user_id: string) => {
+
+  // user에 age_group 컬럼을 만드는 게 나은가? 근데 그러면 age_group 관리는? 
+
+  /* try {
+    const user = await Users.findById(user_id);
+    if (!user) {
+      throw new Error('존재하지 않는 유저');
+    }
+
+    const birthday = user.birthday;
+    const age_group = calculate_age(birthday);
+
+    console.log(age_group);
+
+
+    const musicals: musical_main_item_dto[] = filter_data.map(musical => ({
+      musical_id: musical.musical_id,
+      poster_image: musical.poster_image
+    }));
+
+
+    const data= {
+      age_group: age_group,
+      musicals: musicals
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at musical_my_age_review: Service", error);
+    throw error;
+  }*/
+};
+
+const musical_my_sex_review = async (user_id: string) => {
+  try {
+    const user = await Users.findById(user_id);
+    if (!user) {
+      throw new Error('존재하지 않는 유저');
+    }
+
+    const sex = user.sex;
+
+    const filter_data = await Reviews.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      {
+        $unwind: "$user"
+      },
+      {
+        $match: {
+          "user.sex": sex
+        }
+      },
+      {
+        $group: {
+          _id: "$musical_id",
+          review_count: { $count: {} },
+          poster_image: { $first: "$musical.poster_image" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $lookup: {
+          from: "musicals",
+          localField: "_id",
+          foreignField: "_id",
+          as: "musical"
+        }
+      },
+      {
+        $unwind: "$musical"
+      },
+      {
+        $project: {
+          musical_id: "$_id",
+          poster_image: "$musical.poster_image"
+        }
+      }
+    ]);
+
+    const musicals: musical_main_item_dto[] = filter_data.map(musical => ({
+      musical_id: musical.musical_id,
+      poster_image: musical.poster_image
+    }));
+
+    const data = {
+      sex: sex ? "여성" : "남성",
+      musicals: musicals
+    };
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at musical_my_sex_review: Service", error);
+    throw error;
+  }
+};
+
+const musical_my_sex_bookmark = async (user_id: string) => {
+  try {
+    const user = await Users.findById(user_id);
+    if (!user) {
+      throw new Error('존재하지 않는 유저');
+    }
+
+    const sex = user.sex;
+
+    const filter_data = await Bookmarks.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      {
+        $unwind: "$user"
+      },
+      {
+        $match: {
+          "user.sex": sex
+        }
+      },
+      {
+        $group: {
+          _id: "$musical_id",
+          bookmark_count: { $count: {} },
+          poster_image: { $first: "$musical.poster_image" }
+        }
+      },
+      {
+        $sort: { count: -1 }
+      },
+      {
+        $limit: 10
+      },
+      {
+        $lookup: {
+          from: "musicals",
+          localField: "_id",
+          foreignField: "_id",
+          as: "musical"
+        }
+      },
+      {
+        $unwind: "$musical"
+      },
+      {
+        $project: {
+          musical_id: "$_id",
+          poster_image: "$musical.poster_image"
+        }
+      }
+    ]);
+
+    const musicals: musical_main_item_dto[] = filter_data.map(musical => ({
+      musical_id: musical.musical_id,
+      poster_image: musical.poster_image
+    }));
+
+    const data = {
+      sex: sex ? "여성" : "남성",
+      musicals: musicals
+    };
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at musical_my_sex_bookmark: Service", error);
+    throw error;
+  }
+};
+
 
 const most_review_musical = async (): Promise<musical_main_item_dto[]> => {
   try {
@@ -124,6 +315,9 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 };
 
 export {
+  musical_my_age_review,
+  musical_my_sex_review,
+  musical_my_sex_bookmark,
   most_review_musical,
   most_bookmark_musical,
   bookmark,

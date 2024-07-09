@@ -24,7 +24,6 @@ const find_top_rank_musical = async (
   */
 };
 
-
 const find_most_review_musical = async ( 
   req: Request,
   res: Response,
@@ -108,7 +107,48 @@ const find_musical_by_following = async (
   */
 };
 
-const find_musical_by_sex_bookmark = async ( 
+const find_musical_my_sex_bookmark = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  
+  const data = await musical_service.musical_my_sex_bookmark(req.user_id);
+
+  try {
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.MY_SEX_BOOKMARK_MUSICAL_SUCCESS, data));
+  } catch (error) {
+    console.error("Error at get my sex most bookmarked musical: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+  
+};
+
+const find_musical_my_sex_review = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  const data = await musical_service.musical_my_sex_review(req.user_id);
+
+  try {
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.MY_SEX_REVIEW_MUSICAL_SUCCESS, data));
+  } catch (error) {
+    console.error("Error at get my sex most reviewed musical: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+};
+
+const find_musical_my_age_bookmark = async ( 
   req: Request,
   res: Response,
   next: NextFunction
@@ -127,61 +167,23 @@ const find_musical_by_sex_bookmark = async (
   */
 };
 
-const find_musical_by_sex_review = async ( 
+const find_musical_my_age_review = async ( 
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const data = await musical_service.musical_my_age_review(req.user_id);
+  
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.MY_AGE_REVIEW_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at my age_group most review musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
-};
-
-const find_musical_by_age_bookmark = async ( 
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
-  /*
-  try {
-    return res
-      .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
-  } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
-    return res
-      .status(status_code.INTERNAL_SERVER_ERROR)
-      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
-  }
-  */
-};
-
-const find_musical_by_age_review = async ( 
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void | Response> => {
-  /*
-  try {
-    return res
-      .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
-  } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
-    return res
-      .status(status_code.INTERNAL_SERVER_ERROR)
-      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
-  }
-  */
 };
 
 const find_near_musical = async ( 
@@ -294,10 +296,10 @@ export {
   find_musical_by_actor,
   find_musical_by_following,
   find_near_musical,
-  find_musical_by_age_bookmark,
-  find_musical_by_age_review,
-  find_musical_by_sex_bookmark,
-  find_musical_by_sex_review,
+  find_musical_my_age_bookmark,
+  find_musical_my_age_review,
+  find_musical_my_sex_bookmark,
+  find_musical_my_sex_review,
   find_ongoing_musical,
   musical_detail,
   bookmark,
