@@ -5,8 +5,8 @@ export interface musical_info {
   musical_name: string;
   musical_subname?: string;
   musical_genre?: string;
-  start_at: String;
-  end_at: String;
+  start_at: string;
+  end_at: string;
   theater_id: mongoose.Types.ObjectId;
   poster_image: string;
   age_limit?: string;

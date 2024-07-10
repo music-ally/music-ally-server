@@ -37,7 +37,7 @@ const review_main = async (user_id: string) => {
       const like_num = await Review_likes.countDocuments({ review_id });
       const masked_email = `${review.user_id.email.slice(0, 2)}****`;
 
-      const reviewData = {
+      const review_data = {
         review_id: review._id,
         poster_image: review.musical_id.poster_uri,
         reviewer_profile_image: review.user_id.profile_image || null,
@@ -52,7 +52,7 @@ const review_main = async (user_id: string) => {
         content: review.content,
       };
 
-      all_review.push(reviewData);
+      all_review.push(review_data);
 
     }))
 
