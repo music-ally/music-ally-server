@@ -20,9 +20,9 @@ const message = {
   DELETE_SUCCESS : '삭제 성공',
 
   //auth
-  NULL_VALUE_TOKEN: '토큰이 없습니다',
+  NULL_VALUE_TOKEN: '헤더에 토큰이 없습니다',
   EXPIRED_TOKEN: '만료된 토큰',
-  INVALID_TOKEN: '존재하지 않는 토큰',
+  INVALID_TOKEN: '유효하지 않은 토큰',
   INVALID_PASSWORD: '잘못된 비밀번호',
   NOT_FOUND_EMAIL: '가입되지 않은 이메일',
   CONFLICT_EMAIL: '이메일 중복',
@@ -32,6 +32,7 @@ const message = {
   //actor
 
   //musical
+  ALL_MUSICAL_SUCCESS: '검색용 모든 뮤지컬 반환 성공',
   TOP_RANK_MUSICAL_SUCCESS: '랭킹 상위 10위 뮤지컬 반환 성공',
   MOST_REVIEW_MUSICAL_SUCCESS: '리뷰 개수 상위 10개 뮤지컬 반환 성공',
   MOST_BOOKMARK_MUSICAL_SUCCESS: '찜 수 상위 10개 뮤지컬 반환 성공',

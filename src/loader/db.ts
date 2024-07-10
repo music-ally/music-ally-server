@@ -57,9 +57,6 @@ const connectDB = async () => {
     Reviews.createCollection().then(function (collection) {
       console.log('Reviews Collection is created!');
     });
-    Reviews.createCollection().then(function (collection) {
-      console.log('Reviews Collection is created!');
-    });
     Theaters.createCollection().then(function (collection) {
       console.log('Theaters Collection is created!');
     });
