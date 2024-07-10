@@ -5,9 +5,9 @@ import {
 } from "../../dto/notification/response/notification_res";
 import Users from "../../schema/users";
 import Reviews from "../../schema/reviews";
-import Review_likes from "../../schema/review_likes";
-import Areas from "../../schema/areas";
 import Notifications from "../../schema/notifications";
+import Musicals from "../../schema/musicals";
+import * as notification_service_utils from "./notification_service_utils";
 
 /**
  * 알림 생성
@@ -28,6 +28,7 @@ const make_notification = async (
         review_id: review_id,
       });
       await reviewNotification.save();
+      console.log(`${from_user_id}가 ${to_user_id}리뷰에 좋아요를 눌렀음`)
     }
     // 팔로우 알림 생성
     else {
@@ -38,6 +39,7 @@ const make_notification = async (
         follower_id: from_user_id,
       });
       await followNotification.save();
+      console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`)
     }
   } catch (error) {
     console.error("Error making notifications: Service", error);
@@ -67,43 +69,57 @@ const get_notification = async (
  */
 const get_notifications_by_user_id = async (user_id: string, type: string) => {
   try {
+    // user_id가 해당되는 알림들 모두 반환
     const notifications = await Notifications.find({
       user_id: user_id,
     }).sort({ create_at: -1 });
 
+    // 사용자의 리뷰좋아요 알림 가져오기
     if (type === "리뷰") {
-      const reviewLikeNotifications: notification_item_dto[] = [];
+      const reviewLikeNotification: notification_item_dto[] = [];
       const reviewIds: string[] = [];
 
       notifications.forEach((notification) => {
         if (notification.type === "리뷰") {
-          if (!reviewIds.includes(notification.review_id.toString())) {
-            reviewIds.push(notification.review_id.toString());
-            reviewLikeNotifications.push({
-              type: notification.type,
-              create_at: notification.create_at,
-              review_id: notification.review_id,
-            });
-          }
-        }
-      });
+          const review = await Reviews.findById(notification.review_id);
+          const reviewMusical = await Musicals.findById(review?.musical_id);
+          const reviewLikeUsers = await notification_service_utils.get_review_like_users(notification.review_id);
 
-      return reviewLikeNotifications;
-    }
-    else if (type === "팔로우") {
-      const followNotifications: notification_item_dto[] = [];
-
-      notifications.forEach((notification) => {
-        if (notification.type === "팔로우") {
-          followNotifications.push({
+          reviewIds.push(notification.review_id?);
+          reviewLikeNotification.push({
             type: notification.type,
             create_at: notification.create_at,
-            follower_id: notification.follower_id,
+            review_id: notification.review_id,
+            poster_image: reviewMusical?.poster_image,
+            review_like_nickname: reviewLikeUsers.recent_user?.nickname,
+            review_like_image: reviewLikeUsers.users_with_profile_images?.map((user) => user.profile_image),
+            review_like_num: number;
           });
         }
       });
 
-      return followNotifications;
+      // return reviewLikeNotifications;
+    }
+    // 사용자의 팔로워 알림 가져오기
+    else if (type === "팔로우") {
+      const followNotification: notification_item_dto[] = [];
+
+      notifications.forEach((notification) => {
+        if (notification.type === "팔로우") {
+          const follower = await Users.findById(notification.follower_id);
+          const meFollow = 
+          followNotification.push({
+            type: notification.type,
+            create_at: notification.create_at,
+            follower_id: notification.follower_id,
+            follower_image: follower?.profile_image,
+            follower_nickname: follower?.nickname,
+            // is_followed:
+          });
+        }
+      });
+
+      // return followNotifications;
     }
   } catch (error) {
     console.error("Error getting notifications by user id: Service", error);
