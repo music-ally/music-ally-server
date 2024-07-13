@@ -73,4 +73,31 @@ const login_user = async (user_login_dto : user_login_dto): Promise<user_login_r
   };
 };
 
-export { join_user, find_homearea_by_name, login_user };
+
+const check_email = async (email : string): Promise<boolean> => {
+  const user = await Users.find({email : email});
+  let is_duplicate;
+  if (user.length === 0){
+    is_duplicate = false
+  } else {
+    is_duplicate = true
+  }
+  
+  return is_duplicate;
+};
+
+const check_nickname = async (nickname : string): Promise<boolean> => {
+  const user = await Users.find({nickname : nickname});
+  let is_duplicate;
+  if (user.length === 0){
+    is_duplicate = false
+  } else {
+    is_duplicate = true
+  }
+  
+  return is_duplicate;
+};
+
+
+
+export { join_user, find_homearea_by_name, login_user, check_email, check_nickname };

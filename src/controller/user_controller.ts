@@ -123,4 +123,52 @@ const login = async (
 };
 
 
-export {join_user, deleteUser, login, logout}
+const check_email = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  try {
+    const is_duplicate: boolean = await user_service.check_email(req.body.email);
+    return res
+      .status(status_code.OK)
+      .send(
+        form.success(message.CHECK_EMAIL_SUCCESS, is_duplicate)
+      );
+  } catch (error: any) {
+    console.error("Error at check_email: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(
+        form.fail(message.INTERNAL_SERVER_ERROR, error)
+      );
+  }
+}
+
+const check_nickname = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  try {
+    const is_duplicate: boolean = await user_service.check_nickname(req.body.nickname);
+    return res
+      .status(status_code.OK)
+      .send(
+        form.success(message.CHECK_NICKNAME_SUCCESS, is_duplicate)
+      );
+  } catch (error: any) {
+    console.error("Error at check_nickname: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(
+        form.fail(message.INTERNAL_SERVER_ERROR, error)
+      );
+  }
+}
+
+
+
+export {join_user, deleteUser, login, logout, check_email, check_nickname}
