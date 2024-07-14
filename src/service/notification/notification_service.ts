@@ -4,9 +4,7 @@ import {
   notification_item_dto,
 } from "../../dto/notification/response/notification_res";
 import Notifications from "../../schema/notifications";
-import Musicals from "../../schema/musicals";
 import * as notification_service_utils from "./notification_service_utils";
-import Reviews from "../../schema/reviews";
 
 /**
  * 알림 생성
@@ -55,72 +53,21 @@ const get_notification = async (
   user_id: string
 ): Promise<notification_res_dto> => {
   try {
-    const reviewLikeNotifications;
-    const followNotifications;
+    const reviewLikeNotifications = await notification_service_utils.get_review_notifications(user_id, "리뷰") || [];;
+    const followNotifications = await notification_service_utils.get_follow_notifications(user_id, "팔로우") || [];;
+
+    const notifications: notification_item_dto[] = reviewLikeNotifications.concat(followNotifications);
+
+    return { notifications };
+
   } catch (error) {
     console.error("Error getting notifications: Service", error);
     throw error;
   }
 };
 
-/**
- * 알림 가져오기
- */
-const get_notifications_by_user_id = async (user_id: string, type: string) => {
-  try {
-    // user_id가 해당되는 알림들 모두 반환
-    const notifications = await Notifications.find({
-      user_id: user_id,
-    }).sort({ create_at: -1 });
+export {
+  make_notification,
+  get_notification,
+}
 
-    if (type === "리뷰") {
-      const reviewLikeNotification: notification_item_dto[] = [];
-      const reviewIds: string[] = [];
-
-      notifications.forEach((notification) => {
-        if (notification.type === "리뷰") {
-          const review = await Reviews.findById(notification.review_id);
-          const reviewMusical = await Musicals.findById(review?.musical_id);
-          const reviewLikeUsers = await notification_service_utils.get_review_like_users(notification.review_id);
-
-          reviewIds.push(notification.review_id?);
-          reviewLikeNotification.push({
-            type: notification.type,
-            create_at: notification.create_at,
-            review_id: notification.review_id,
-            poster_image: reviewMusical?.poster_image,
-            review_like_nickname: reviewLikeUsers.recent_user?.nickname,
-            review_like_image: reviewLikeUsers.users_with_profile_images?.map((user) => user.profile_image),
-            review_like_num: number;
-          });
-        }
-      });
-
-      // return reviewLikeNotification;
-    }
-    // 사용자의 팔로워 알림 가져오기
-    else if (type === "팔로우") {
-      const followNotification: notification_item_dto[] = [];
-
-      notifications.forEach((notification) => {
-        if (notification.type === "팔로우") {
-          const follower = await Users.findById(notification.follower_id);
-          const meFollow = 
-          followNotification.push({
-            type: notification.type,
-            create_at: notification.create_at,
-            follower_id: notification.follower_id,
-            follower_image: follower?.profile_image,
-            follower_nickname: follower?.nickname,
-            // is_followed:
-          });
-        }
-      });
-
-      return followNotification;
-    }
-  } catch (error) {
-    console.error("Error getting notifications by user id: Service", error);
-    throw error;
-  }
-};
