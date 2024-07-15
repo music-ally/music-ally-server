@@ -5,19 +5,23 @@ import {
 } from "../../dto/notification/response/notification_res";
 import Notifications from "../../schema/notifications";
 import * as notification_service_utils from "./notification_service_utils";
+import Reviews from "../../schema/reviews";
+import Follows from "../../schema/follows";
+import Users from "../../schema/users";
 
 /**
  * 알림 생성
- * : 리뷰 좋아요 받았을때, 팔로우 받았을때
+ * : 리뷰 좋아요 받았을때
  */
-const make_notification = async (
-  to_user_id: string,
-  from_user_id: string,
-  review_id?: string
+const make_review_notification = async (
+  type: string,
+  review_id: string,
+  from_user_id: string // 리뷰 좋아요 누른 사람
 ) => {
   try {
     // 리뷰 알림 생성
-    if (review_id) {
+    if (type === "리뷰") {
+      const to_user_id = await Reviews.findById(review_id).select("user_id");
       const reviewNotification = new Notifications({
         user_id: to_user_id,
         type: "리뷰",
@@ -25,10 +29,26 @@ const make_notification = async (
         review_id: review_id,
       });
       await reviewNotification.save();
-      console.log(`${from_user_id}가 ${to_user_id}리뷰에 좋아요를 눌렀음`)
+      console.log(`${from_user_id}가 ${to_user_id}리뷰에 좋아요를 눌렀음`);
     }
+  } catch (error) {
+    console.error("Error making notifications: Service", error);
+    throw error;
+  }
+};
+
+/**
+ * 알림 생성
+ * : 팔로우 받았을때
+ */
+const make_follow_notification = async (
+  type: string,
+  to_user_id: string, // 팔로우 받은 사람
+  from_user_id: string // 팔로우 누른 사람
+) => {
+  try {
     // 팔로우 알림 생성
-    else {
+    if (type === "팔로우") {
       const followNotification = new Notifications({
         user_id: to_user_id,
         type: "팔로우",
@@ -36,7 +56,7 @@ const make_notification = async (
         follower_id: from_user_id,
       });
       await followNotification.save();
-      console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`)
+      console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`);
     }
   } catch (error) {
     console.error("Error making notifications: Service", error);
@@ -53,21 +73,48 @@ const get_notification = async (
   user_id: string
 ): Promise<notification_res_dto> => {
   try {
-    const reviewLikeNotifications = await notification_service_utils.get_review_notifications(user_id, "리뷰") || [];;
-    const followNotifications = await notification_service_utils.get_follow_notifications(user_id, "팔로우") || [];;
+    const reviewLikeNotifications =
+      (await notification_service_utils.get_review_notifications(
+        user_id,
+        "리뷰"
+      )) || [];
+    const followNotifications =
+      (await notification_service_utils.get_follow_notifications(
+        user_id,
+        "팔로우"
+      )) || [];
 
-    const notifications: notification_item_dto[] = reviewLikeNotifications.concat(followNotifications);
+    const notifications: notification_item_dto[] =
+      reviewLikeNotifications.concat(followNotifications);
 
     return { notifications };
-
   } catch (error) {
     console.error("Error getting notifications: Service", error);
     throw error;
   }
 };
 
-export {
-  make_notification,
-  get_notification,
-}
+/**
+ * 알림 껐다 키기
+ */
+const on_off_notification = async (user_id: string) => {
+  try {
+    const user = await Users.findById(user_id);
+    
+    if(user) {
+      user.noti_allow = !user.noti_allow;
+      await user.save();
+    }
+    
+  } catch (error) {
+    console.error("Error turn on/off notifications: Service", error);
+    throw error;
+  }
+};
 
+export {
+  make_review_notification,
+  make_follow_notification,
+  get_notification,
+  on_off_notification,
+};

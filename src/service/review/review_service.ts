@@ -6,6 +6,7 @@ import { review_write_dto } from "../../dto/review/request/review_write";
 import { review_update_dto } from "../../dto/review/request/review_update";
 import { review_detail_res_dto } from "../../dto/review/response/review_detail_res";
 import { review_main_res_dto } from "../../dto/review/response/review_main_res";
+import * as notification_service from "../notification/notification_service";
 import Review_likes from "../../schema/review_likes";
 import Users from "../../schema/users";
 import Theaters from "../../schema/theaters";
@@ -205,6 +206,7 @@ const review_like = async (user_id: string, review_id: string) => {
     });
 
     await review_like.save();
+    await notification_service.make_review_notification("리뷰", review_id, user_id);
 
     return
 

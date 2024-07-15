@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Users from "../../schema/users";
 import Follows from "../../schema/follows";
-
+import * as notification_service from "../notification/notification_service";
 /**
  * 팔로우 하기
  * 접속중인 유저가 누군가를 follow할때를 가정한 서비스
@@ -16,6 +16,7 @@ const do_follow = async (user_id: string, to_user_id: string) => {
     });
 
     await follow.save();
+    await notification_service.make_follow_notification("팔로우", to_user_id, user_id);
 
   } catch (error) {
     console.error("Error following someone: Service", error);

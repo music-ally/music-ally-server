@@ -9,6 +9,7 @@ import mypge_router from "./router/mypage_router";
 import profile_router from "./router/profile_router";
 import musical_router from "./router/musical_router";
 import review_router from "./router/review_router";
+import notification_router from "./router/notification_router";
 
 require("dotenv").config();
 const { PORT } = process.env;
@@ -23,7 +24,8 @@ app.use(actor_router);
 app.use(mypge_router);
 app.use(profile_router);
 app.use(review_router);
-app.use(musical_router)
+app.use(musical_router);
+app.use(notification_router);
 
 connectDB();
 
