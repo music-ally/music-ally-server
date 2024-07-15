@@ -14,6 +14,7 @@ import Musicals from "../../schema/musicals";
 import Castings from "../../schema/castings";
 import { musical_info } from "../../dto/musical/musical_info";
 import { actor_info } from "../../dto/actor/actor_info";
+import Users from "../../schema/users";
 
 /**
  * 뮤지컬의 playdb_id가
@@ -269,6 +270,32 @@ const get_actor_details = async (actor_id: string): Promise<actor_info> => {
   }
 };
 
+/**
+ * userId로 나이 찾아보기
+ */
+const find_age_by_userId = async (userId: string) => {
+  try {
+    const user = await Users.findById(userId);
+
+    if(user?.birthday) {
+      const today = new Date();
+      const birthDate = new Date(user.birthday);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const month = today.getMonth() - birthDate.getMonth();
+      if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age/10;
+    }
+    else {
+      return 0;
+    }
+  } catch (error) {
+    console.error("Error finding person's age by userId: ServiceUtils", error);
+    throw error;
+  }
+}
+
 export {
   find_musical_by_playdb_id,
   find_actor_by_playdb_id,
@@ -281,4 +308,5 @@ export {
   get_random_singer,
   get_musical_details,
   get_actor_details,
+  find_age_by_userId
 };

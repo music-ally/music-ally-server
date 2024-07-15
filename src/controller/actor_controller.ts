@@ -47,7 +47,31 @@ const fetch_actors_appeared = async (
       .send(form.success(message.FETCH_SUCCESS, data));
   } catch (error) {
     console.error(
-      "error fetching actors appeard in musical: controller/actor",
+      "error fetching actors appeared in musical: controller/actor",
+      error
+    );
+    throw error;
+  }
+};
+
+/**
+ * 특정 뮤지컬(n개) 출연 배우 반환
+ */
+const fetch_num_actors_appeared = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  const n = parseInt(req.params.num);
+  try {
+    const data = await actor_service.get_many_actors_in_num_random_musical(n);
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.FETCH_SUCCESS, data));
+  } catch (error) {
+    console.error(
+      "error fetching actors appeared in num musical: controller/actor",
       error
     );
     throw error;
@@ -141,6 +165,7 @@ const create_actor = async (
 export {
   fetch_all_actors,
   fetch_actors_appeared,
+  fetch_num_actors_appeared,
   fetch_singers,
   fetch_most_viewed,
   fetch_actor_details,

@@ -18,32 +18,32 @@ import Musicals from "../../schema/musicals";
 /**
  * 모든 배우 반환
  */
-const get_all_actors = async(): Promise<actor_search_res_dto> => {
-  try{
+const get_all_actors = async (): Promise<actor_search_res_dto> => {
+  try {
     const actor_list: actor_search_item_dto[] = [];
 
     const all_actors = await Actors.find();
 
-    all_actors.forEach(actor => {
+    all_actors.forEach((actor) => {
       actor_list.push({
         actor_id: actor._id,
         profile_image: actor.profile_image,
         actor_name: actor.actor_name,
         agency: actor.agency,
-        birthday: actor.birthday
-      })
-    })
+        birthday: actor.birthday,
+      });
+    });
 
     const data: actor_search_res_dto = {
-      actors: actor_list
-    }
+      actors: actor_list,
+    };
 
     return data;
   } catch (error) {
-      console.error("Error fetching all actors: Service", error);
-      throw error;
+    console.error("Error fetching all actors: Service", error);
+    throw error;
   }
-}
+};
 
 /**
  * 랜덤한 뮤지컬 1개의
@@ -108,6 +108,38 @@ const get_many_actors_in_random_musical =
   };
 
 /**
+ * 겹치지 않게끔
+ * 랜덤한 뮤지컬 n개의
+ * 출연배우가 5명 이상일 경우에만
+ * [뮤지컬 제목, 출연 배우들][]집합 반환
+ */
+const get_many_actors_in_num_random_musical = async (
+  n: number
+): Promise<actor_main_musical_res_dto[]> => {
+  try {
+    const musicalsSet = new Set<string>();
+    const musicals: actor_main_musical_res_dto[] = [];
+
+    while (musicals.length < n) {
+      const musicalData = await get_many_actors_in_random_musical();
+
+      if (!musicalsSet.has(musicalData.musical_name)) {
+        musicalsSet.add(musicalData.musical_name);
+        musicals.push(musicalData);
+      }
+    }
+
+    return musicals;
+  } catch (error) {
+    console.error(
+      "Error fetching three unique musicals with many actors: Service",
+      error
+    );
+    throw error;
+  }
+};
+
+/**
  * 특정 직업(=가수)의 뮤지컬 배우들
  * 10명 랜덤 반환
  */
@@ -151,32 +183,31 @@ const get_singers = async (): Promise<actor_main_res_dto> => {
 /**
  * 조회수가 가장 높은 배우 반환
  */
-const get_most_viewed = async(): Promise<actor_main_res_dto> => {
-  try{
+const get_most_viewed = async (): Promise<actor_main_res_dto> => {
+  try {
     const actor_list: actor_main_item_dto[] = [];
 
     const top_actors = await Actors.find()
-      .sort({ view: -1 })  // view 필드를 기준으로 내림차순 정렬
+      .sort({ view: -1 }) // view 필드를 기준으로 내림차순 정렬
       .limit(10);
 
-    top_actors.forEach(actor => {
+    top_actors.forEach((actor) => {
       actor_list.push({
         actor_id: actor._id.toString(),
         profile_image: actor.profile_image,
       });
     });
 
-    const data:actor_main_res_dto = {
-      actors: actor_list
-    }
+    const data: actor_main_res_dto = {
+      actors: actor_list,
+    };
 
-    return data
-
+    return data;
   } catch (error) {
     console.error("Error fetching most viewd actors: Service", error);
     throw error;
   }
-}
+};
 
 /**
  * 더미 데이터 넣기용
@@ -214,6 +245,7 @@ export {
   get_all_actors,
   get_actors_in_random_musical,
   get_many_actors_in_random_musical,
+  get_many_actors_in_num_random_musical,
   get_singers,
   get_most_viewed,
   create_actor,
