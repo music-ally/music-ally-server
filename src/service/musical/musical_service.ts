@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Musicals from "../../schema/musicals";
 import Reviews from "../../schema/reviews";
-import { musical_main_item_dto } from "../../dto/musical/response/musical_main_res";
+import { musical_main_item_dto, musical_main_res_dto } from "../../dto/musical/response/musical_main_res";
 import { musical_main_age_res_dto } from "../../dto/musical/response/musical_main_age_res";
 import Bookmarks from "../../schema/bookmarks";
 import Users from "../../schema/users";
@@ -15,6 +15,7 @@ import Follows from "../../schema/follows";
 import { musical_main_follow_res_dto } from "../../dto/musical/response/musical_main_follow_res";
 import { musical_detail_res_dto } from "../../dto/musical/response/musical_detail_res";
 import Review_likes from "../../schema/review_likes";
+import { musical_main_area_res_dto } from "../../dto/musical/response/musical_main_area_res";
 
 const musical_detail = async (user_id:string, musical_id:string) => {
   try {
@@ -26,6 +27,10 @@ const musical_detail = async (user_id:string, musical_id:string) => {
     if (!musical){
       throw new Error("해당 뮤지컬 아이디의 뮤지컬을 찾을 수 없습니다");
     }
+
+    //뮤지컬 조회수 증가
+    musical.view++;
+    await musical.save();
 
     const is_bookmark = Boolean(await Bookmarks.exists( { user_oid, musical_oid } ));
 
@@ -96,6 +101,32 @@ const musical_detail = async (user_id:string, musical_id:string) => {
 
   } catch (error) {
     console.error("Error at get musical_detail: Service", error);
+    throw error;
+  }
+}
+
+const top_rank_musical = async () => {
+  try {
+    const filter_data = await Musicals.aggregate([
+      {
+        $sort: { view: -1 } //-1 : 내림차순
+      },
+      {
+        $limit: 10
+      },
+      {
+        $project: {
+          _id: 0, // 0 => 제외한다
+          musical_id: "$_id",
+          poster_image: "$poster_image"
+        }
+      }
+    ]);
+
+    return filter_data as musical_main_item_dto[];
+
+  } catch (error) {
+    console.error("Error at get top rank musical: Service", error);
     throw error;
   }
 }
@@ -477,6 +508,7 @@ const most_review_musical = async (): Promise<musical_main_item_dto[]> => {
       },
       {
         $project: {
+          _id: 0, // 0 => 제외한다
           musical_id: "$_id",
           poster_image: "$musical.poster_image"
         }
@@ -519,6 +551,7 @@ const most_bookmark_musical = async (): Promise<musical_main_item_dto[]> => {
       },
       {
         $project: {
+          _id: 0, // 0 => 제외한다
           musical_id: "$_id",
           poster_image: "$musical.poster_image"
         }
@@ -533,6 +566,90 @@ const most_bookmark_musical = async (): Promise<musical_main_item_dto[]> => {
   }
 };
 
+
+const ongoing_musical = async (): Promise<musical_main_item_dto[]> => {
+  try {
+    const today = new Date();
+
+    const filter_data = await Musicals.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $lte: [{ $toDate: "$start_at" }, today] },
+              { $gte: [{ $toDate: "$end_at" }, today] }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0, // 0 => 제외한다
+          musical_id: "$_id",
+          poster_image: "$poster_image"
+        }
+      }
+    ]);
+
+    return filter_data as musical_main_item_dto[];
+
+  } catch (error) {
+    console.error("Error at ongoing_musical: Service", error);
+    throw error;
+  }
+};
+
+
+const near_musical = async (user_id: string) => {
+  try {
+    const today = new Date();
+    const user = await Users.findById(user_id).populate('homearea').exec() as any;
+    const user_area = user.homearea.area_name.toString();
+
+    const musicals = await Musicals.aggregate([
+      {
+        $lookup: {
+          from: 'theaters',
+          localField: 'theater_id',
+          foreignField: '_id',
+          as: 'theaters'
+        }
+      },
+      {
+        $unwind: '$theaters'
+      },
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $lte: [{ $toDate: "$start_at" }, today] },
+              { $gte: [{ $toDate: "$end_at" }, today] },
+              { $eq: ["$theaters.area_id", user.homearea._id] }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          musical_id: "$_id",
+          poster_image: "$poster_image",        
+        }
+      }
+    ]);
+
+    const data = {
+      area: user_area,
+      musicals: musicals
+    };
+
+    return data as musical_main_area_res_dto;
+
+  } catch (error) {
+    console.error("Error at near_musical: Service", error);
+    throw error;
+  }
+};
 
 const bookmark = async (user_id: string, musical_id: string) => {
 
@@ -571,6 +688,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 export {
   all_musical,
   musical_detail,
+  top_rank_musical,
   random_actor_musical,
   random_follow_musical,
   musical_my_age_review,
@@ -578,6 +696,8 @@ export {
   musical_my_sex_bookmark,
   most_review_musical,
   most_bookmark_musical,
+  ongoing_musical,
+  near_musical,
   bookmark,
   cancel_bookmark
 };
