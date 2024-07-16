@@ -29,18 +29,22 @@ const find_top_rank_musical = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  
+
   try {
+    
+    const data = await musical_service.top_rank_musical();
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.TOP_RANK_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at find top rank musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
+  
 };
 
 const find_most_review_musical = async ( 

@@ -46,6 +46,11 @@ const musicals_schema = new mongoose.Schema({
   poster_image: {
     type: String,
     required: true,
+  },
+  view: {
+    type: Number,
+    required: true,
+    default: 0,
   }
 });
 

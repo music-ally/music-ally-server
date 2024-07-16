@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Musicals from "../../schema/musicals";
 import Reviews from "../../schema/reviews";
-import { musical_main_item_dto } from "../../dto/musical/response/musical_main_res";
+import { musical_main_item_dto, musical_main_res_dto } from "../../dto/musical/response/musical_main_res";
 import { musical_main_age_res_dto } from "../../dto/musical/response/musical_main_age_res";
 import Bookmarks from "../../schema/bookmarks";
 import Users from "../../schema/users";
@@ -26,6 +26,10 @@ const musical_detail = async (user_id:string, musical_id:string) => {
     if (!musical){
       throw new Error("해당 뮤지컬 아이디의 뮤지컬을 찾을 수 없습니다");
     }
+
+    //뮤지컬 조회수 증가
+    musical.view++;
+    await musical.save();
 
     const is_bookmark = Boolean(await Bookmarks.exists( { user_oid, musical_oid } ));
 
@@ -96,6 +100,31 @@ const musical_detail = async (user_id:string, musical_id:string) => {
 
   } catch (error) {
     console.error("Error at get musical_detail: Service", error);
+    throw error;
+  }
+}
+
+const top_rank_musical = async () => {
+  try {
+    const filter_data = await Musicals.aggregate([
+      {
+        $sort: { view: -1 } //-1 : 내림차순
+      },
+      {
+        $limit: 10
+      },
+      {
+        $project: {
+          musical_id: "$_id",
+          poster_image: "$poster_image"
+        }
+      }
+    ]);
+
+    return filter_data as musical_main_item_dto[];
+
+  } catch (error) {
+    console.error("Error at get top rank musical: Service", error);
     throw error;
   }
 }
@@ -571,6 +600,7 @@ const cancel_bookmark = async (user_id: string, musical_id: string) => {
 export {
   all_musical,
   musical_detail,
+  top_rank_musical,
   random_actor_musical,
   random_follow_musical,
   musical_my_age_review,

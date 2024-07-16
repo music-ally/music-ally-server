@@ -12,4 +12,5 @@ export interface musical_info {
   age_limit?: string;
   runtime?: string;
   website?: string;
+  view: number;
 }
