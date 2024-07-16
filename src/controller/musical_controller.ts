@@ -218,18 +218,19 @@ const find_near_musical = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
   try {
+
+    const data = await musical_service.near_musical(req.user_id)
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.NEAR_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at near_musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const find_ongoing_musical = async ( 
@@ -237,18 +238,19 @@ const find_ongoing_musical = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
   try {
+
+    const data = await musical_service.ongoing_musical();
+
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.ONGOING_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at ongoing musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const musical_detail = async ( 

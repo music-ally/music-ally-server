@@ -15,6 +15,7 @@ import Follows from "../../schema/follows";
 import { musical_main_follow_res_dto } from "../../dto/musical/response/musical_main_follow_res";
 import { musical_detail_res_dto } from "../../dto/musical/response/musical_detail_res";
 import Review_likes from "../../schema/review_likes";
+import { musical_main_area_res_dto } from "../../dto/musical/response/musical_main_area_res";
 
 const musical_detail = async (user_id:string, musical_id:string) => {
   try {
@@ -115,6 +116,7 @@ const top_rank_musical = async () => {
       },
       {
         $project: {
+          _id: 0, // 0 => 제외한다
           musical_id: "$_id",
           poster_image: "$poster_image"
         }
@@ -506,6 +508,7 @@ const most_review_musical = async (): Promise<musical_main_item_dto[]> => {
       },
       {
         $project: {
+          _id: 0, // 0 => 제외한다
           musical_id: "$_id",
           poster_image: "$musical.poster_image"
         }
@@ -548,6 +551,7 @@ const most_bookmark_musical = async (): Promise<musical_main_item_dto[]> => {
       },
       {
         $project: {
+          _id: 0, // 0 => 제외한다
           musical_id: "$_id",
           poster_image: "$musical.poster_image"
         }
@@ -562,6 +566,96 @@ const most_bookmark_musical = async (): Promise<musical_main_item_dto[]> => {
   }
 };
 
+
+const ongoing_musical = async (): Promise<musical_main_item_dto[]> => {
+  try {
+    const today = new Date();
+
+    const filter_data = await Musicals.aggregate([
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $lte: [{ $toDate: "$start_at" }, today] },
+              { $gte: [{ $toDate: "$end_at" }, today] }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0, // 0 => 제외한다
+          musical_id: "$_id",
+          poster_image: "$poster_image"
+        }
+      }
+    ]);
+
+    return filter_data as musical_main_item_dto[];
+
+  } catch (error) {
+    console.error("Error at ongoing_musical: Service", error);
+    throw error;
+  }
+};
+
+
+const near_musical = async (user_id: string) => {
+  try {
+    const today = new Date();
+    const user = await Users.findById(user_id).populate('homearea').exec() as any;
+    const user_area = user.homearea.area_name.toString();
+
+    console.log("User homearea ID:", user.homearea._id);
+
+    console.log(user_area);
+
+    const musicals = await Musicals.aggregate([
+      {
+        $lookup: {
+          from: 'theaters',
+          localField: 'theater_id',
+          foreignField: '_id',
+          as: 'theaters'
+        }
+      },
+      {
+        $unwind: '$theaters'
+      },
+      {
+        $match: {
+          $expr: {
+            $and: [
+              { $lte: [{ $toDate: "$start_at" }, today] },
+              { $gte: [{ $toDate: "$end_at" }, today] },
+              { $eq: ["$theaters.area_id", user.homearea._id] }
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          musical_id: "$_id",
+          poster_image: "$poster_image",        
+        }
+      }
+    ]);
+
+    console.log(musicals);
+
+    const data = {
+      area: user_area,
+      musicals: musicals
+    };
+
+    return data as musical_main_area_res_dto;
+
+  } catch (error) {
+    console.error("Error at near_musical: Service", error);
+    throw error;
+  }
+};
 
 const bookmark = async (user_id: string, musical_id: string) => {
 
@@ -608,6 +702,8 @@ export {
   musical_my_sex_bookmark,
   most_review_musical,
   most_bookmark_musical,
+  ongoing_musical,
+  near_musical,
   bookmark,
   cancel_bookmark
 };
