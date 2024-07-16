@@ -606,10 +606,6 @@ const near_musical = async (user_id: string) => {
     const user = await Users.findById(user_id).populate('homearea').exec() as any;
     const user_area = user.homearea.area_name.toString();
 
-    console.log("User homearea ID:", user.homearea._id);
-
-    console.log(user_area);
-
     const musicals = await Musicals.aggregate([
       {
         $lookup: {
@@ -641,8 +637,6 @@ const near_musical = async (user_id: string) => {
         }
       }
     ]);
-
-    console.log(musicals);
 
     const data = {
       area: user_area,
