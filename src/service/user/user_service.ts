@@ -52,15 +52,35 @@ const join_user = async (user_join_dto : user_join_dto) => {
   }
 };
 
+
+const leave = async (user_id: string) => {
+  try {
+    const leave_data = {
+      $set: {
+        is_active: false,
+        delete_date: new Date()
+      }
+    };
+    
+    await Users.findByIdAndUpdate(user_id, leave_data);
+
+    return
+
+  } catch (error) {
+    console.error("Error at leave: Service");
+    throw error;
+  }
+};
+
 const login_user = async (user_login_dto : user_login_dto): Promise<user_login_res_dto> => {
   const user = await Users.findOne({email : user_login_dto.email});
   
   if (!user){
-    console.error("Error at login: Service");
     throw new Error('email not found');
   } else if (!(await bcrypt.compare(user_login_dto.password, user.password))) {
-    console.error("Error at login: Service");
     throw new Error('wrong password');
+  } else if (!user.is_active){
+    throw new Error('left user');
   }
   
   const access_token = generate_access_token(user._id);
@@ -100,4 +120,10 @@ const check_nickname = async (nickname : string): Promise<boolean> => {
 
 
 
-export { join_user, find_homearea_by_name, login_user, check_email, check_nickname };
+export {
+  join_user,
+  leave,
+  find_homearea_by_name,
+  login_user,
+  check_email,
+  check_nickname };

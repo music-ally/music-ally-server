@@ -25,11 +25,14 @@ const message = {
   INVALID_TOKEN: '유효하지 않은 토큰',
   INVALID_PASSWORD: '잘못된 비밀번호',
   NOT_FOUND_EMAIL: '가입되지 않은 이메일',
+  LEFT_USER: '회원 탈퇴한 유저',
   CONFLICT_EMAIL: '이메일 중복',
   SIGNUP_SUCCESS: '회원가입 성공',
   LOGIN_SUCCESS: '로그인 성공',
+  LEAVE_SUCCESS: '회원탈퇴 성공',
   CHECK_EMAIL_SUCCESS : '이메일 중복 확인 성공',
   CHECK_NICKNAME_SUCCESS : '닉네임 중복 확인 성공',
+
 
   
   //actor

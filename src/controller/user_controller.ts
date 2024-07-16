@@ -44,23 +44,28 @@ const join_user = async (
   }
 };
 
-const deleteUser = async (
+const leave = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
 
-  /*const user_info: user_info = req.body
-
   try {
-    const data = await user_service.create_user(user_info);
-    console.log(data);
+    await user_service.leave(req.user_id);
 
-    return res.send("create_user success!");
-  } catch (error) {
-    console.error("Error at creating User: Controller", error);
-    res.status(500).json({ error: "Error creating User: Controller" });
-  }*/
+    return res
+      .status(status_code.NO_CONTENT)
+      .send(
+        form.success(message.LEAVE_SUCCESS)
+      );
+  } catch (error: any) {
+    console.error("Error at leave: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(
+        form.fail(message.INTERNAL_SERVER_ERROR, error)
+      );
+  }
 };
 
 const logout = async (
@@ -98,8 +103,6 @@ const login = async (
         form.success(message.LOGIN_SUCCESS, tokens)
       );
   } catch (error: any) {
-    console.error("Error at login: Controller", error);
-
     if (error.message === 'email not found') {
       return res
         .status(status_code.NOT_FOUND)
@@ -112,7 +115,14 @@ const login = async (
         .send(
           form.fail(message.INVALID_PASSWORD, error)
         );
+    } else if (error.message === 'left user') {
+      return res
+        .status(status_code.BAD_REQUEST)
+        .send(
+          form.fail(message.LEFT_USER, error)
+        );
     } else {
+      console.error("Error at login: Controller", error);
       return res
         .status(status_code.INTERNAL_SERVER_ERROR)
         .send(
@@ -171,4 +181,4 @@ const check_nickname = async (
 
 
 
-export {join_user, deleteUser, login, logout, check_email, check_nickname}
+export {join_user, leave, login, logout, check_email, check_nickname}
