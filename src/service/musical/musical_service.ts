@@ -293,10 +293,7 @@ const all_musical = async () => {
 }
 
 const musical_my_age_review = async (user_id: string) => {
-
-  // user에 age_group 컬럼을 만드는 게 나은가? 근데 그러면 age_group 관리는? 
-
-  /* try {
+  try {
     const user = await Users.findById(user_id);
     if (!user) {
       throw new Error('존재하지 않는 유저');
@@ -305,17 +302,63 @@ const musical_my_age_review = async (user_id: string) => {
     const birthday = user.birthday;
     const age_group = calculate_age(birthday);
 
-    console.log(age_group);
+    const today_year = new Date().getFullYear()
 
+    const age_lower_bound = new Date(today_year - age_group - 9, 0, 1); //js의 월은 0~11
+    const age_upper_bound = new Date(today_year - age_group, 11, 31); 
+
+    const filter_data = await Users.aggregate([
+      {
+        $match: {
+          birthday: {
+            $gte: age_lower_bound, //이상
+            $lte: age_upper_bound //이하
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: 'reviews',
+          localField: '_id',
+          foreignField: 'user_id',
+          as: 'reviews'
+        }
+      },
+      {
+        $unwind: '$reviews'
+      },
+      {
+        $lookup: {
+          from: 'musicals',
+          localField: 'reviews.musical_id',
+          foreignField: '_id',
+          as: 'musical'
+        }
+      },
+      {
+        $unwind: '$musical'
+      },
+      {
+        $group: {
+          _id: '$musical._id',
+          poster_image: { $first: '$musical.poster_image' }
+        }
+      },
+      {
+        $project: {
+          musical_id: '$_id',
+          poster_image: '$poster_image'
+        }
+      }
+    ]);
 
     const musicals: musical_main_item_dto[] = filter_data.map(musical => ({
       musical_id: musical.musical_id,
       poster_image: musical.poster_image
     }));
 
-
-    const data= {
-      age_group: age_group,
+    const data = {
+      age_group: `${age_group}대`,
       musicals: musicals
     }
 
@@ -324,8 +367,87 @@ const musical_my_age_review = async (user_id: string) => {
   } catch (error) {
     console.error("Error at musical_my_age_review: Service", error);
     throw error;
-  }*/
+  }
 };
+
+const musical_my_age_bookmark = async (user_id: string) => {
+  try {
+    const user = await Users.findById(user_id);
+    if (!user) {
+      throw new Error('존재하지 않는 유저');
+    }
+
+    const birthday = user.birthday;
+    const age_group = calculate_age(birthday);
+
+    const today_year = new Date().getFullYear()
+
+    const age_lower_bound = new Date(today_year - age_group - 9, 0, 1); //js의 월은 0~11
+    const age_upper_bound = new Date(today_year - age_group, 11, 31); 
+
+    const filter_data = await Users.aggregate([
+      {
+        $match: {
+          birthday: {
+            $gte: age_lower_bound, //이상
+            $lte: age_upper_bound //이하
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: 'bookmarks',
+          localField: '_id',
+          foreignField: 'user_id',
+          as: 'bookmarks'
+        }
+      },
+      {
+        $unwind: '$bookmarks'
+      },
+      {
+        $lookup: {
+          from: 'musicals',
+          localField: 'bookmarks.musical_id',
+          foreignField: '_id',
+          as: 'musical'
+        }
+      },
+      {
+        $unwind: '$musical'
+      },
+      {
+        $group: {
+          _id: '$musical._id',
+          poster_image: { $first: '$musical.poster_image' }
+        }
+      },
+      {
+        $project: {
+          musical_id: '$_id',
+          poster_image: '$poster_image'
+        }
+      }
+    ]);
+
+    const musicals: musical_main_item_dto[] = filter_data.map(musical => ({
+      musical_id: musical.musical_id,
+      poster_image: musical.poster_image
+    }));
+
+    const data = {
+      age_group: `${age_group}대`,
+      musicals: musicals
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at musical_my_age_bookmark: Service", error);
+    throw error;
+  }
+};
+
 
 const musical_my_sex_review = async (user_id: string) => {
   try {
@@ -692,6 +814,7 @@ export {
   random_actor_musical,
   random_follow_musical,
   musical_my_age_review,
+  musical_my_age_bookmark,
   musical_my_sex_review,
   musical_my_sex_bookmark,
   most_review_musical,

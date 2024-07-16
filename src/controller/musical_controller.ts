@@ -180,18 +180,18 @@ const find_musical_my_age_bookmark = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  /*
+  const data = await musical_service.musical_my_age_bookmark(req.user_id);
+  
   try {
     return res
       .status(status_code.OK)
-      .send(form.success(message.MOST_REVIEW_MUSICAL_SUCCESS, data));
+      .send(form.success(message.MY_AGE_BOOKMARK_MUSICAL_SUCCESS, data));
   } catch (error) {
-    console.error("Error at most_review_musical: Controller", error);
+    console.error("Error at my age_group most bookmark musical: Controller", error);
     return res
       .status(status_code.INTERNAL_SERVER_ERROR)
       .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
   }
-  */
 };
 
 const find_musical_my_age_review = async ( 
