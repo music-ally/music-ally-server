@@ -16,10 +16,8 @@ const fetch_my_profile = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
     try {
-      const data = await mypage_service.get_my_profile(user_id);
+      const data = await mypage_service.get_my_profile(req.user_id);
   
       return res
         .status(status_code.OK)
@@ -91,12 +89,10 @@ const update_profile = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
     const user_update_dto: user_update_dto = req.body;
 
     try {
-      const data = await mypage_service.update_profile(user_id, user_update_dto);
+      const data = await mypage_service.update_profile(req.user_id, user_update_dto);
   
       return res
         .status(status_code.OK)
@@ -118,11 +114,8 @@ const fetch_follower = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
-
     try {
-      const data = await mypage_service_utils.get_follower(user_id);
+      const data = await mypage_service_utils.get_follower(req.user_id);
   
       return res
         .status(status_code.OK)
@@ -144,11 +137,8 @@ const fetch_following = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
-
     try {
-      const data = await mypage_service_utils.get_following(user_id);
+      const data = await mypage_service_utils.get_following(req.user_id);
   
       return res
         .status(status_code.OK)
