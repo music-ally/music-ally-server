@@ -6,6 +6,10 @@ import * as mypage_service_utils from "../mypage/mypage_service_utils";
 import * as profile_service_utils from "./profile_service_utils";
 import { user_profile_res_dto } from "../../dto/user/response/user_profile_res";
 import { user_mypage_res_dto } from "../../dto/user/response/user_mypage_res";
+import {
+  follow_item_dto,
+  follow_res_dto,
+} from "../../dto/follow/response/follow_res";
 
 /**
  * 특정 유저 프로필 반환
@@ -102,4 +106,99 @@ const cancel_follow = async (user_id: string, to_user_id: string) => {
   }
 };
 
-export { get_user_profile, do_follow, cancel_follow };
+/**
+ * 특정 유저의 팔로워 목록 반환
+ * user_id : 내 id
+ * opponent_id : 특정 유저의 id
+ */
+const get_others_follower = async (
+  user_id: string,
+  opponent_id: string
+): Promise<follow_res_dto> => {
+  try {
+    const follower_list: follow_item_dto[] = [];
+
+    // 특정 유저를 팔로우하는 사람들의 리스트를 가져옴
+    const follows = await Follows.find({ to_user_id: opponent_id });
+
+    for (const follow of follows) {
+      const follows_user = await mypage_service_utils.find_user_by_id(
+        follow.from_user_id.toString()
+      );
+
+      // 내가 그 리스트 사람들을 팔로우하고 있는지 확인하는 작업
+      const find_is_follow = await mypage_service_utils.is_follow(
+        user_id,
+        follow.from_user_id.toString()
+      );
+
+      follower_list.push({
+        user_id: follows_user._id,
+        nickname: follows_user.nickname,
+        email: follows_user.email,
+        is_following: find_is_follow,
+      });
+    }
+
+    const data: follow_res_dto = {
+      follow_list: follower_list,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error getting someone's follower: ServiceUtils", error);
+    throw error;
+  }
+};
+
+/**
+ * 특정 유저의 팔로잉 목록 반환
+ * user_id : 내 id
+ * opponent_id : 특정 유저의 id
+ */
+const get_others_following = async (
+  user_id: string,
+  opponent_id: string
+): Promise<follow_res_dto> => {
+  try {
+    const following_list: follow_item_dto[] = [];
+
+    // 특정 유저가 팔로우하는 사람들의 리스트를 가져옴
+    const follows = await Follows.find({ from_user_id: opponent_id });
+
+    for (const follow of follows) {
+      const followed_user = await mypage_service_utils.find_user_by_id(
+        follow.to_user_id.toString()
+      );
+
+      // 내가 상대를 팔로우하고있는지 확인하는 작업
+      const find_is_follow = await mypage_service_utils.is_follow(
+        user_id,
+        follow.from_user_id.toString()
+      );
+
+      following_list.push({
+        user_id: followed_user._id,
+        nickname: followed_user.nickname,
+        email: followed_user.email,
+        is_following: find_is_follow,
+      });
+    }
+
+    const data: follow_res_dto = {
+      follow_list: following_list,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error getting someone's following: ServiceUtils", error);
+    throw error;
+  }
+};
+export {
+  get_user_profile,
+  do_follow,
+  cancel_follow,
+  get_others_follower,
+  get_others_following,
+};

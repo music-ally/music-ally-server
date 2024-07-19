@@ -245,6 +245,7 @@ export {
   find_user_by_id,
   find_review_by_id,
   find_musical_by_id,
+  is_follow,
   get_following,
   get_follower,
   get_user_reviewed,

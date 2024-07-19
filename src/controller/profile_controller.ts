@@ -5,8 +5,6 @@ import status_code from "../utils/status_code";
 import { NextFunction, Request, Response } from "express";
 import { Result, ValidationError, validationResult } from "express-validator";
 import * as profile_service from "../service/profile/profile_service";
-import * as mypage_service from "../service/mypage/mypage_service";
-import * as mypage_service_utils from "../service/mypage/mypage_service_utils";
 
 /**
  * 팔로우 하기
@@ -89,7 +87,7 @@ const fetch_user_follower = async (
   const user_id: string = req.params.userId;
 
   try {
-    const data = await mypage_service_utils.get_follower(user_id);
+    const data = await profile_service.get_others_follower(req.user_id, user_id);
 
     return res
       .status(status_code.OK)
@@ -112,7 +110,7 @@ const fetch_user_following = async (
   const user_id: string = req.params.userId;
 
   try {
-    const data = await mypage_service_utils.get_following(user_id);
+    const data = await profile_service.get_others_following(req.user_id, user_id);
 
     return res
       .status(status_code.OK)
