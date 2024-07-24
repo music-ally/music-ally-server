@@ -109,7 +109,8 @@ const update_profile = async (
       );
       throw error;
     }
-  };
+  }
+};
 
 /**
  * 팔로워 목록 보기
@@ -158,10 +159,10 @@ const fetch_following = async (
   };
 
 export {
-    fetch_my_profile,
-    fetch_mypage_review_detail,
-    delete_review,
-    update_profile,
-    fetch_follower,
-    fetch_following
+  fetch_my_profile,
+  fetch_mypage_review_detail,
+  delete_review,
+  update_profile,
+  fetch_follower,
+  fetch_following,
 }
