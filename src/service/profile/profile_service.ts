@@ -19,20 +19,20 @@ const get_user_profile = async (
   to_user_id: string
 ): Promise<user_profile_res_dto> => {
   try {
-    const user = await mypage_service_utils.find_user_by_id(user_id);
+    const user = await mypage_service_utils.find_user_by_id(to_user_id);
 
     // 팔로잉수 반환값
-    const following = await mypage_service_utils.get_following(user_id);
+    const following = await mypage_service_utils.get_following(to_user_id);
     const count_following = following.follow_list.length;
     // 팔로워수 반환값
-    const follower = await mypage_service_utils.get_follower(user_id);
+    const follower = await mypage_service_utils.get_follower(to_user_id);
     const count_follower = follower.follow_list.length;
     // 리뷰 작성한 작품 반환
-    const review_list = await mypage_service_utils.get_user_reviewed(user_id);
+    const review_list = await mypage_service_utils.get_user_reviewed(to_user_id);
     const count_review = review_list.reviews.length;
     // 북마크한 작품 반환
     const bookmark_list = await mypage_service_utils.get_user_bookmarked(
-      user_id
+      to_user_id
     );
     const count_bookmark = bookmark_list.musicals.length;
     // 팔로우 여부 확인

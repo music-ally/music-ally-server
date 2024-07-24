@@ -18,10 +18,10 @@ const check_follow = async (user_id: string, to_user_id: string) => {
     });
 
     if(do_follow) {
-      return true;
+      return ("팔로잉");
     }
     else {
-      return false;
+      return ("팔로우");
     }
   } catch (error) {
     console.error("Error checking I follow someone: Service", error);

@@ -67,7 +67,7 @@ const delete_review = async (
     const review_id: string = req.params.reviewId;
 
     try {
-      const data = await mypage_service.delete_review(review_id);
+      const data = await mypage_service.delete_review(req.user_id, review_id);
   
       return res
         .status(status_code.OK)
