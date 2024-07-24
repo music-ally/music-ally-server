@@ -89,7 +89,12 @@ const update_profile = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    const user_update_dto: user_update_dto = req.body;
+  
+    const user_id: string = req.user_id;
+    const user_update_dto: user_update_dto = JSON.parse(req.body.update_data);
+
+    if (req.file) {
+      user_update_dto.profile_image = req.file.path;
 
     try {
       const data = await mypage_service.update_profile(req.user_id, user_update_dto);
