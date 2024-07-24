@@ -90,7 +90,7 @@ const do_follow = async (user_id: string, to_user_id: string) => {
  * 팔로우 취소 하기
  * 접속중인 유저가 누군가를 follow 취소할때를 가정한 서비스
  * (그래서 user_id는 항상 로그인 중인 주체를 의미함)
- * 순서 : 하는 사람, 당하는 사람
+ * 순서 : 하는 사람, 취소 당하는 사람
  */
 const cancel_follow = async (user_id: string, to_user_id: string) => {
   try {
@@ -129,7 +129,7 @@ const get_others_follower = async (
       // 내가 그 리스트 사람들을 팔로우하고 있는지 확인하는 작업
       const find_is_follow = await mypage_service_utils.is_follow(
         user_id,
-        follow.from_user_id.toString()
+        follows_user._id.toString()
       );
 
       follower_list.push({
@@ -174,7 +174,7 @@ const get_others_following = async (
       // 내가 상대를 팔로우하고있는지 확인하는 작업
       const find_is_follow = await mypage_service_utils.is_follow(
         user_id,
-        follow.from_user_id.toString()
+        followed_user._id.toString()
       );
 
       following_list.push({

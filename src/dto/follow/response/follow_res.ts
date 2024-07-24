@@ -8,6 +8,6 @@ export interface follow_item_dto {
     user_id: mongoose.Types.ObjectId;
     nickname: string;
     email: string;
-    is_following: boolean;
+    is_following: string;
 }
 

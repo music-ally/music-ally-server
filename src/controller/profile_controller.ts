@@ -15,7 +15,7 @@ const create_follow = async (
   next: NextFunction
 ): Promise<void | Response> => {
   // 다른 유저 아이디
-  const to_user_id: string = req.params.toUserId;
+  const to_user_id: string = req.params.userId;
 
   try {
     const data = await profile_service.do_follow(req.user_id, to_user_id);
@@ -38,7 +38,7 @@ const delete_follow = async (
   next: NextFunction
 ): Promise<void | Response> => {
   // 다른 유저 아이디
-  const to_user_id: string = req.params.toUserId;
+  const to_user_id: string = req.params.userId;
 
   try {
     const data = await profile_service.cancel_follow(req.user_id, to_user_id);

@@ -87,7 +87,7 @@ const get_many_actors_in_random_musical =
           random_musical.id
         );
 
-        if (musical_actors.actors.length >= 5) {
+        if (musical_actors.actors.length > 0) {
           break;
         }
       }

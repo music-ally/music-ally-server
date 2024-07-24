@@ -86,22 +86,24 @@ const find_musical_by_id = async (musical_id: string) => {
  */
 const is_follow = async (user_id: string, opponent_id: string) => {
   try {
-    const data = await Follows.exists({
-      from_user_id: user_id,
-      to_user_id: opponent_id,
-    });
-    if(data){
-      return true;
-    }
-    else {
-      return false;
+    if (user_id != opponent_id) {
+      const data = await Follows.exists({
+        from_user_id: user_id,
+        to_user_id: opponent_id,
+      });
+      if (data) {
+        return ("팔로잉");
+      } else {
+        return ("팔로우");
+      }
+    } else {
+      return ("본인");
     }
   } catch (error) {
     console.error("Error finding do I follow someone: ServiceUtils", error);
     throw error;
   }
-}
-
+};
 
 /**
  * 사용자의 object_id로
@@ -121,7 +123,7 @@ const get_following = async (user_id: string): Promise<follow_res_dto> => {
         user_id: follow.to_user_id,
         nickname: followed_user.nickname,
         email: followed_user.email,
-        is_following: true,
+        is_following: "팔로잉",
       });
     }
 
@@ -153,7 +155,10 @@ const get_follower = async (user_id: string): Promise<follow_res_dto> => {
       );
 
       // 내가 상대를 팔로우하고있는지 확인하는 작업
-      const find_is_follow = await is_follow(user_id, follow.from_user_id.toString());
+      const find_is_follow = await is_follow(
+        user_id,
+        follow.from_user_id.toString()
+      );
 
       follower_list.push({
         user_id: follow.from_user_id,
