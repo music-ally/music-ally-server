@@ -7,7 +7,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
 
 const generate_access_token = (id: string): string => {
   return jwt.sign({ id }, JWT_SECRET, {
-    expiresIn: '1h', // 토큰의 유효시간 = 1시간 
+    expiresIn: '1d', // 토큰의 유효시간 = 1시간 
   });
 };
 
