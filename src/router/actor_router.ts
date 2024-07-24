@@ -13,4 +13,6 @@ actor_router.get("/actor/:actorId", auth, actor_controller.fetch_actor_details);
 
 actor_router.post("/actor", actor_controller.create_actor);
 
+actor_router.get("/actor/randomMusical/please", auth, actor_controller.check_random_musicalId);
+
 export default actor_router;

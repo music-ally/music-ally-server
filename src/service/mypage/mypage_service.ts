@@ -99,10 +99,17 @@ const mypage_review_detail = async (
 /**
  * 리뷰 삭제
  */
-const delete_review = async (review_id: string) => {
+const delete_review = async (user_id: string, review_id: string) => {
   try {
-    await Reviews.deleteOne({ review_id: review_id });
-    await Review_likes.deleteMany({ review_id: review_id });
+    const user = await mypage_service_utils.find_user_by_id(user_id);
+    const review_user = await Reviews.findOne({ user_id: user._id });
+    if (review_user) {
+      await Reviews.findByIdAndDelete({ _id: review_id });
+      await Review_likes.deleteMany({ review_id: review_id });
+    }
+    else { 
+      throw new Error("User does not match with this review");
+    }
   } catch (error) {
     console.error("Error delete review at mypage: Service", error);
     throw error;

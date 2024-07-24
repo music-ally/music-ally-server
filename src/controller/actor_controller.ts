@@ -162,6 +162,21 @@ const create_actor = async (
   }
 };
 
+/**
+ * 랜덤 뮤컬아이디 잘 반환하는지 확인하는용
+ */
+const check_random_musicalId = async() => {
+  try {
+    const data = await actor_service_util.get_random_musical();
+
+    return data;
+  } catch (error) {
+    console.error("error fetching random musical: controller/actor", error);
+    throw error;
+  }
+
+}
+
 export {
   fetch_all_actors,
   fetch_actors_appeared,
@@ -170,4 +185,6 @@ export {
   fetch_most_viewed,
   fetch_actor_details,
   create_actor,
+
+  check_random_musicalId
 };

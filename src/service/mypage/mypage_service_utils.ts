@@ -82,8 +82,32 @@ const find_musical_by_id = async (musical_id: string) => {
 };
 
 /**
+ * 내가 상대를 팔로우하고 있는지 확인
+ */
+const is_follow = async (user_id: string, opponent_id: string) => {
+  try {
+    if (user_id != opponent_id) {
+      const data = await Follows.exists({
+        from_user_id: user_id,
+        to_user_id: opponent_id,
+      });
+      if (data) {
+        return ("팔로잉");
+      } else {
+        return ("팔로우");
+      }
+    } else {
+      return ("본인");
+    }
+  } catch (error) {
+    console.error("Error finding do I follow someone: ServiceUtils", error);
+    throw error;
+  }
+};
+
+/**
  * 사용자의 object_id로
- * 내가 팔로우 하는 사람들(=팔로잉) 반환
+ * 내가 팔로우 하는 사람들(=팔로잉) 목록 반환
  */
 const get_following = async (user_id: string): Promise<follow_res_dto> => {
   try {
@@ -95,17 +119,11 @@ const get_following = async (user_id: string): Promise<follow_res_dto> => {
     for (const follow of follows) {
       const followed_user = await find_user_by_id(follow.to_user_id.toString());
 
-      // 맞팔 여부를 확인하기 위해 반대의 관계를 찾아봄
-      const both_follow = await Follows.exists({
-        from_user_id: follow.to_user_id,
-        to_user_id: user_id,
-      });
-
       following_list.push({
         user_id: follow.to_user_id,
         nickname: followed_user.nickname,
         email: followed_user.email,
-        both_follow: !!both_follow,
+        is_following: "팔로잉",
       });
     }
 
@@ -136,17 +154,17 @@ const get_follower = async (user_id: string): Promise<follow_res_dto> => {
         follow.from_user_id.toString()
       );
 
-      // 맞팔 여부를 확인하기 위해 반대의 관계를 찾아봄
-      const both_follow = await Follows.exists({
-        from_user_id: user_id,
-        to_user_id: follow.from_user_id,
-      });
+      // 내가 상대를 팔로우하고있는지 확인하는 작업
+      const find_is_follow = await is_follow(
+        user_id,
+        follow.from_user_id.toString()
+      );
 
       follower_list.push({
         user_id: follow.from_user_id,
         nickname: follows_user.nickname,
         email: follows_user.email,
-        both_follow: !!both_follow,
+        is_following: find_is_follow,
       });
     }
 
@@ -232,6 +250,7 @@ export {
   find_user_by_id,
   find_review_by_id,
   find_musical_by_id,
+  is_follow,
   get_following,
   get_follower,
   get_user_reviewed,

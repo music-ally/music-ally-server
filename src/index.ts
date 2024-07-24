@@ -5,7 +5,7 @@ import connectDB from "./loader/db";
 import user_router from "./router/user_router";
 import crawler_router from "./router/crawler_router"
 import actor_router from "./router/actor_router"
-import mypge_router from "./router/mypage_router";
+import mypage_router from "./router/mypage_router";
 import profile_router from "./router/profile_router";
 import musical_router from "./router/musical_router";
 import review_router from "./router/review_router";
@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(user_router);
 app.use(crawler_router);
 app.use(actor_router);
-app.use(mypge_router);
+app.use(mypage_router);
 app.use(profile_router);
 app.use(review_router);
 app.use(musical_router);

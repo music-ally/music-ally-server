@@ -5,8 +5,6 @@ import status_code from "../utils/status_code";
 import { NextFunction, Request, Response } from "express";
 import { Result, ValidationError, validationResult } from "express-validator";
 import * as profile_service from "../service/profile/profile_service";
-import * as mypage_service from "../service/mypage/mypage_service";
-import * as mypage_service_utils from "../service/mypage/mypage_service_utils";
 
 /**
  * 팔로우 하기
@@ -16,12 +14,11 @@ const create_follow = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  // const user_id: string = req.body.user.id;
-  const user_id: string = req.params.userId;
-  const to_user_id: string = req.params.toUserId;
+  // 다른 유저 아이디
+  const to_user_id: string = req.params.userId;
 
   try {
-    const data = await profile_service.do_follow(user_id, to_user_id);
+    const data = await profile_service.do_follow(req.user_id, to_user_id);
 
     return res
       .status(status_code.OK)
@@ -40,33 +37,34 @@ const delete_follow = async (
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
-  // const user_id: string = req.body.user.id;
-  const user_id: string = req.params.userId;
-  const to_user_id: string = req.params.toUserId;
+  // 다른 유저 아이디
+  const to_user_id: string = req.params.userId;
+
   try {
-    const data = await profile_service.cancle_follow(user_id, to_user_id);
+    const data = await profile_service.cancel_follow(req.user_id, to_user_id);
 
     return res
       .status(status_code.OK)
       .send(form.success(message.DELETE_SUCCESS, data));
   } catch (error) {
-    console.error("error cancle following: controller/profile", error);
+    console.error("error cancel following: controller/profile", error);
     throw error;
   }
 };
 
 /**
- * 유저 프로필 반환
+ * 다른 유저 프로필 반환
  */
 const fetch_user_profile = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
+  // 다른 유저 아이디
   const user_id: string = req.params.userId;
 
   try {
-    const data = await mypage_service.get_my_profile(user_id);
+    const data = await profile_service.get_user_profile(req.user_id, user_id);
 
     return res
       .status(status_code.OK)
@@ -78,17 +76,18 @@ const fetch_user_profile = async (
 };
 
 /**
- * 팔로워 목록 보기
+ * 다른 유저 팔로워 목록 보기
  */
 const fetch_user_follower = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
+  // 다른 유저 아이디
   const user_id: string = req.params.userId;
 
   try {
-    const data = await mypage_service_utils.get_follower(user_id);
+    const data = await profile_service.get_others_follower(req.user_id, user_id);
 
     return res
       .status(status_code.OK)
@@ -100,17 +99,18 @@ const fetch_user_follower = async (
 };
 
 /**
- * 팔로잉 목록 보기
+ * 다른 유저 팔로잉 목록 보기
  */
 const fetch_user_following = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void | Response> => {
+  // 다른 유저 아이디
   const user_id: string = req.params.userId;
 
   try {
-    const data = await mypage_service_utils.get_following(user_id);
+    const data = await profile_service.get_others_following(req.user_id, user_id);
 
     return res
       .status(status_code.OK)

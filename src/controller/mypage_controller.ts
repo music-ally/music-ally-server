@@ -16,10 +16,8 @@ const fetch_my_profile = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
     try {
-      const data = await mypage_service.get_my_profile(user_id);
+      const data = await mypage_service.get_my_profile(req.user_id);
   
       return res
         .status(status_code.OK)
@@ -69,7 +67,7 @@ const delete_review = async (
     const review_id: string = req.params.reviewId;
 
     try {
-      const data = await mypage_service.delete_review(review_id);
+      const data = await mypage_service.delete_review(req.user_id, review_id);
   
       return res
         .status(status_code.OK)
@@ -91,15 +89,15 @@ const update_profile = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
+  
     const user_id: string = req.user_id;
     const user_update_dto: user_update_dto = JSON.parse(req.body.update_data);
 
     if (req.file) {
       user_update_dto.profile_image = req.file.path;
-    }
 
     try {
-      const data = await mypage_service.update_profile(user_id, user_update_dto);
+      const data = await mypage_service.update_profile(req.user_id, user_update_dto);
   
       return res
         .status(status_code.OK)
@@ -121,11 +119,8 @@ const fetch_follower = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
-
     try {
-      const data = await mypage_service_utils.get_follower(user_id);
+      const data = await mypage_service_utils.get_follower(req.user_id);
   
       return res
         .status(status_code.OK)
@@ -147,11 +142,8 @@ const fetch_following = async (
     res: Response,
     next: NextFunction
   ): Promise<void | Response> => {
-    // const user_id: string = req.body.user.id;
-    const user_id: string = req.params.userId;
-
     try {
-      const data = await mypage_service_utils.get_following(user_id);
+      const data = await mypage_service_utils.get_following(req.user_id);
   
       return res
         .status(status_code.OK)
