@@ -14,6 +14,7 @@ const users_schema = new mongoose.Schema({
   nickname: {
     type: String,
     required: true,
+    unique: true,
   },
   birthday: {
     type: Date,
