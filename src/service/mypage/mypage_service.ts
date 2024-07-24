@@ -16,11 +16,13 @@ import {
   follow_item_dto,
   follow_res_dto,
 } from "../../dto/follow/response/follow_res";
+import bcrypt from 'bcryptjs';
 import * as mypage_service_utils from "./mypage_service_utils";
 import Users from "../../schema/users";
 import Reviews from "../../schema/reviews";
 import Review_likes from "../../schema/review_likes";
 import Areas from "../../schema/areas";
+import { has } from "cheerio/lib/api/traversing";
 
 /**
  * 내 프로필 반환
@@ -117,19 +119,24 @@ const update_profile = async (
   try {
     const user = await mypage_service_utils.find_user_by_id(user_id);
 
+    if (user_update_dto.password){
+      const hashed_password = await bcrypt.hash(user_update_dto.password, 10);
+      user_update_dto.password = hashed_password;
+    }
+
     const updated_user = await Users.findByIdAndUpdate(
       user._id,
       user_update_dto
     );
 
+    //뭔가 이걸 앞으로 빼내고 싶은데 어떻게 해야할지 고민중
     const updated_homearea = await Areas.findById(updated_user?.homearea);
 
     const data: user_update_res_dto = {
-      password: updated_user?.password,
       nickname: updated_user?.nickname,
       birthday: updated_user?.birthday,
       homearea_name: updated_homearea?.area_name,
-      profile_image: updated_user?.profile_image,
+      profile_image: updated_user?.profile_image
     };
 
     return data;
