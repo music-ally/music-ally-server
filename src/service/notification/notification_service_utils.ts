@@ -33,7 +33,7 @@ const get_review_like_users = async (review_id: string) => {
 
     const most_recent_like = recent_likes[0];
     const recent_user = await Users.findById(most_recent_like.user_id, {
-      nick_name: 1
+      nick_name: 1,
     });
 
     return {
@@ -41,7 +41,10 @@ const get_review_like_users = async (review_id: string) => {
       recent_user,
     };
   } catch (error) {
-    console.error("Error getting user who liked my review: Service Utils", error);
+    console.error(
+      "Error getting user who liked my review: Service Utils",
+      error
+    );
     throw error;
   }
 };
@@ -58,16 +61,19 @@ const count_review_like = async (review_id: string) => {
     console.error("Error counting review likes: Service Utils", error);
     throw error;
   }
-}
+};
 
 /**
  * 내가 팔로우 하고 있는지 여부
  */
 const check_is_followed = async (user_id: string, follower_id: string) => {
   try {
-    const data = await Follows.findById({ from_user_id: user_id , to_user_id: follower_id });
-    
-    if(data) {
+    const data = await Follows.findOne({
+      from_user_id: user_id,
+      to_user_id: follower_id,
+    });
+
+    if (data) {
       return true;
     } else {
       return false;
@@ -76,7 +82,7 @@ const check_is_followed = async (user_id: string, follower_id: string) => {
     console.error("Error checking if I'm following: Service Utils", error);
     throw error;
   }
-}
+};
 
 /**
  * 리뷰 좋아요 알림 가져오기
@@ -99,7 +105,7 @@ const get_review_notifications = async (user_id: string, type: string) => {
           const reviewMusical = await Musicals.findById(review?.musical_id);
           const reviewLikeUsers = await get_review_like_users(review?._id);
           const countReviewLike = await count_review_like(review?._id);
-          
+
           reviewIds.push(review?._id);
           reviewLikeNotification.push({
             type: notification.type,
@@ -107,17 +113,21 @@ const get_review_notifications = async (user_id: string, type: string) => {
             review_id: notification.review_id,
             poster_image: reviewMusical?.poster_image,
             review_like_nickname: reviewLikeUsers.recent_user?.nickname,
-            review_like_image: reviewLikeUsers.users_with_profile_images?.map((user) => user.profile_image),
+            review_like_image: reviewLikeUsers.users_with_profile_images?.map(
+              (user) => user.profile_image
+            ),
             review_like_num: countReviewLike,
           });
         }
-      };
+      }
 
       return reviewLikeNotification;
     }
-    
   } catch (error) {
-    console.error("Error getting notifications by user id: Service", error);
+    console.error(
+      "Error getting notifications by user id: ServiceUtils",
+      error
+    );
     throw error;
   }
 };
@@ -150,23 +160,49 @@ const get_follow_notifications = async (user_id: string, type: string) => {
             is_followed: meFollow,
           });
         }
-      };
+      }
 
       return followNotification;
     }
   } catch (error) {
-    console.error("Error getting notifications by user id: Service", error);
+    console.error(
+      "Error getting notifications by user id: ServiceUtils",
+      error
+    );
     throw error;
   }
 };
 
+/**
+ * 알림 삭제
+ * user_id: 눌린 사람
+ * from_user_id: 누른 사람
+ */
+const delete_follow_notification = async (user_id: string, from_user_id: string) => {
+  try {
+    await Notifications.findOneAndDelete({ user_id: user_id, follower_id: from_user_id });
+  } catch (error) {
+    console.error("Error deleting follow notifications: ServiceUtils", error);
+    throw error;
+  }
+};
 
-
+/**
+ * 알림 삭제
+ */
+const delete_review_notification = async (review_id: string, liked_user_id: string) => {
+  try {
+    await Notifications.findOneAndDelete({ review_id: review_id, user_id: liked_user_id });
+  } catch (error) {
+    console.error("Error deleting review notifications: ServiceUtils", error);
+    throw error;
+  }
+}
 
 export {
-    get_review_like_users,
-    count_review_like,
-    check_is_followed,
-    get_review_notifications,
-    get_follow_notifications,
-}
+  get_review_like_users,
+  count_review_like,
+  check_is_followed,
+  get_review_notifications,
+  get_follow_notifications,
+};

@@ -19,17 +19,26 @@ const make_review_notification = async (
   from_user_id: string // 리뷰 좋아요 누른 사람
 ) => {
   try {
+    // 중복 알림 존재하는지 확인
+    const exist = await Notifications.find({
+      user_id: from_user_id,
+      review_id: review_id,
+    });
+
     // 리뷰 알림 생성
-    if (type === "리뷰") {
+    if (type === "리뷰" && !exist) {
       const to_user_id = await Reviews.findById(review_id).select("user_id");
       const reviewNotification = new Notifications({
-        user_id: to_user_id,
+        user_id: from_user_id,
         type: "리뷰",
         create_at: new Date(),
         review_id: review_id,
       });
       await reviewNotification.save();
       console.log(`${from_user_id}가 ${to_user_id}리뷰에 좋아요를 눌렀음`);
+    }
+    else {
+      console.log("이미 알림이 존재합니다.");
     }
   } catch (error) {
     console.error("Error making notifications: Service", error);
@@ -47,8 +56,14 @@ const make_follow_notification = async (
   from_user_id: string // 팔로우 누른 사람
 ) => {
   try {
+    // 중복 알림 존재하는지 확인
+    const exist = await Notifications.find({
+      user_id: to_user_id,
+      follower_id: from_user_id,
+    });
+
     // 팔로우 알림 생성
-    if (type === "팔로우") {
+    if (type === "팔로우" && !exist) {
       const followNotification = new Notifications({
         user_id: to_user_id,
         type: "팔로우",
@@ -57,6 +72,9 @@ const make_follow_notification = async (
       });
       await followNotification.save();
       console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`);
+    }
+    else {
+      console.log("이미 알림이 존재합니다.");
     }
   } catch (error) {
     console.error("Error making notifications: Service", error);
@@ -84,8 +102,10 @@ const get_notification = async (
         "팔로우"
       )) || [];
 
-    const notifications: notification_item_dto[] =
-      reviewLikeNotifications.concat(followNotifications);
+    const notifications: notification_item_dto[] = [
+      ...reviewLikeNotifications,
+      ...followNotifications,
+    ];
 
     return { notifications };
   } catch (error) {
@@ -100,12 +120,11 @@ const get_notification = async (
 const on_off_notification = async (user_id: string) => {
   try {
     const user = await Users.findById(user_id);
-    
-    if(user) {
+
+    if (user) {
       user.noti_allow = !user.noti_allow;
       await user.save();
     }
-    
   } catch (error) {
     console.error("Error turn on/off notifications: Service", error);
     throw error;
