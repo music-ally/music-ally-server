@@ -31,6 +31,10 @@ const musicals_schema = new mongoose.Schema({
     required: true,
     ref: "theaters"
   },
+  theater_name: {
+    type: String,
+    required: false,
+  },
   age_limit: {
     type: String,
     required: false,

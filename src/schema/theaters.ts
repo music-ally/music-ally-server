@@ -8,7 +8,7 @@ const theaters_schema = new mongoose.Schema({
   },
   theater_name: {
     type: String,
-    required: true,
+    required: false,
   },
   theater_address: {
     type: String,
