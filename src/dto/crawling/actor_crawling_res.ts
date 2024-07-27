@@ -1,6 +1,6 @@
-export interface Actor {
+export interface Actor_Res {
   actor_ID: number;
-  actor_details: Actor_Details[];
+  actor_details: Actor_Details;
 }
 
 export interface Actor_Details {

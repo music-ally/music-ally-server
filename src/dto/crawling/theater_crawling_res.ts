@@ -1,4 +1,4 @@
-export interface Theater {
+export interface Theater_Res {
   theater_ID: number;
   name: string;
   location: string;

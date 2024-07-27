@@ -1,4 +1,4 @@
-export interface Musical {
+export interface Musical_Res {
   musical_ID: number;
   musical_details: Musical_Details;
 }
