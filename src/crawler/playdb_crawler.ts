@@ -3,12 +3,12 @@ import * as cheerio from "cheerio";
 import iconv from "iconv-lite";
 import * as playdb_crawler_util from "./playdb_crawler_util";
 import {
-  Musical,
+  Musical_Res,
   Casts,
   Musical_Details,
 } from "../dto/crawling/musical_crawling_res";
-import { Actor, Actor_Details } from "../dto/crawling/actor_crawling_res";
-import { Theater, Theater_Details } from "../dto/crawling/theater_crawling_res";
+import { Actor_Res, Actor_Details } from "../dto/crawling/actor_crawling_res";
+import { Theater_Res, Theater_Details } from "../dto/crawling/theater_crawling_res";
 import { last } from "cheerio/lib/api/traversing";
 
 // crawling해줄 기본 URL지정
@@ -31,7 +31,7 @@ const fetch_musicals = async (
   sPlayType: number,
   page: number,
   sStartYear?: number
-): Promise<Musical[]> => {
+): Promise<Musical_Res[]> => {
   // 크롤링 사이트 파라미터 기본설정(ㄱㄴㄷ순으로 받아옴)
   const params: any = {
     Page: page,
@@ -56,7 +56,7 @@ const fetch_musicals = async (
 
     const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
     const $ = cheerio.load(decodedData);
-    const musicals: Musical[] = [];
+    const musicals: Musical_Res[] = [];
 
     let startCollecting = false;
     const rows = $("table > tbody > tr").toArray();
@@ -244,31 +244,18 @@ const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
  * 뮤지컬 크롤링을 위한
  * 페이지 탐색
  */
-const fetch_all_musicals = async (): Promise<Musical[]> => {
-  const allMusicals: Musical[] = [];
+const fetch_all_musicals = async (): Promise<Musical_Res[]> => {
+  const allMusicals: Musical_Res[] = [];
 
   try {
-    /* // 현재 공연 중인 공연 반환
-    for (let page = 1; page <= 1; page++) {
-      const musicals = await fetch_musicals(2, page);
-      allMusicals.push(...musicals);
-      await delay(100); // 0.1초 대기
-    } */
-
-    /* // 개막 예정 공연 반환
-    for (let page = 1; page <= 10; page++) {
-      const musicals = await fetch_musicals(3, page);
-      allMusicals.push(...musicals);
-    } */
-
     // 연도별 공연 반환
-    // 2024년도부터 2020년도까지 fetc해옴
-    for (let year = 2024; year >= 2020; year--) {
+    // 2024년도부터 2020년도까지 fetch해옴
+    for (let year = 2024; year >= 2024; year--) {
       const last_page = await playdb_crawler_util.find_last_page_params(
         1,
         year
       );
-      for (let page = 1; page <= last_page; page++) {
+      for (let page = 1; page <= 1; page++) {
         const musicals = await fetch_musicals(1, page, year);
         allMusicals.push(...musicals);
       }
@@ -292,7 +279,7 @@ const fetch_all_musicals = async (): Promise<Musical[]> => {
  * 배우 리스트
  * 크롤링
  */
-const fetch_actors = async (page: number): Promise<Actor[]> => {
+const fetch_actors = async (page: number): Promise<Actor_Res[]> => {
   try {
     // 접속할 페이지 url
     const actor_list_URL = `${actor_list_base_URL}?Page=${page}&code=013003&sub_code=&ImportantSelect=&ClickCnt=Y&NameSort=&Country=Y&TKPower=&WeekClickCnt=&NameStart=&NameEnd=`;
@@ -305,7 +292,7 @@ const fetch_actors = async (page: number): Promise<Actor[]> => {
 
     const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
     const $ = cheerio.load(decodedData);
-    const actors: Actor[] = [];
+    const actors: Actor_Res[] = [];
 
     let startCollecting = false;
     const rows = $("table > tbody > tr").toArray();
@@ -392,19 +379,18 @@ const fetch_actor_details = async (
  * 배우 크롤링을 위한
  * 페이지 탐색
  */
-const fetch_all_actors = async (): Promise<Actor[]> => {
-  const allActors: Actor[] = [];
+const fetch_all_actors = async (): Promise<Actor_Res[]> => {
+  const allActors: Actor_Res[] = [];
 
   try {
-    // 페이지 수를 설정 (예: 5페이지)
     const last_page = await playdb_crawler_util.find_last_page_url(
       actor_base_URL
     );
 
-    for (let page = 1; page <= 1; page++) {
+    for (let page = 1; page <= last_page; page++) {
       const actors = await fetch_actors(page);
       allActors.push(...actors);
-      await new Promise((resolve) => setTimeout(resolve, 100)); // 0.1초 대기
+      await new Promise((resolve) => setTimeout(resolve, 50)); // 0.1초 대기
     }
 
     // 중복 제거
@@ -425,7 +411,7 @@ const fetch_all_actors = async (): Promise<Actor[]> => {
  * 공연장 리스트
  * 크롤링
  */
-const fetch_theaters = async (page: number): Promise<Theater[]> => {
+const fetch_theaters = async (page: number): Promise<Theater_Res[]> => {
   // 크롤링 사이트 파라미터 기본설정(ㄱㄴㄷ순으로 받아옴)
   const params: any = {
     Page: page,
@@ -437,12 +423,12 @@ const fetch_theaters = async (page: number): Promise<Theater[]> => {
     console.log("Fetching theaters... 🏤", params);
     const response = await axios.get(theater_list_base_URL, {
       params,
-      responseType: "arraybuffer", // 바이트 배열로 응답을 받음
+      responseType: "arraybuffer",
     });
 
     const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
     const $ = cheerio.load(decodedData);
-    const theaters: Theater[] = [];
+    const theaters: Theater_Res[] = [];
 
     let startCollecting = false;
     const rows = $("table > tbody > tr").toArray();
@@ -470,8 +456,8 @@ const fetch_theaters = async (page: number): Promise<Theater[]> => {
             ? hrefAttr.match(/PlacecCD=(\d+)/)
             : null; // PlacecCD 뒤에 공연장 고유 숫자 추출
           const string_theater_ID = theaterIDMatch ? theaterIDMatch[1] : "N/A";
-          const name = titleElement.text().trim();
-          const location = locationElement.text().trim();
+          const name = titleElement.text().trim() || "";
+          const location = locationElement.text().trim() || "";
 
           const theater_details = await fetch_theater_details(string_theater_ID);
 
@@ -563,11 +549,10 @@ const fetch_theater_details = async (
  * 공연장 크롤링을 위한
  * 페이지 탐색
  */
-const fetch_all_theaters = async (): Promise<Theater[]> => {
-  const allTheaters: Theater[] = [];
+const fetch_all_theaters = async (): Promise<Theater_Res[]> => {
+  const allTheaters: Theater_Res[] = [];
 
   try {
-    // 페이지 수를 설정 (예: 5페이지)
     const last_page = await playdb_crawler_util.find_last_page_url(
       theater_list_base_URL
     );
@@ -575,7 +560,7 @@ const fetch_all_theaters = async (): Promise<Theater[]> => {
     for (let page = 1; page <= last_page; page++) {
       const theaters = await fetch_theaters(page);
       allTheaters.push(...theaters);
-      await new Promise((resolve) => setTimeout(resolve, 100)); // 0.1초 대기
+      await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     // 중복 제거
@@ -585,7 +570,7 @@ const fetch_all_theaters = async (): Promise<Theater[]> => {
 
     return uniqueTheaters;
   } catch (error) {
-    console.error("Error fetching all artists:", error);
+    console.error("Error fetching all theaters:", error);
     throw error;
   }
 };
