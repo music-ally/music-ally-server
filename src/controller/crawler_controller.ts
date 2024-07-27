@@ -41,10 +41,6 @@ const save_musicals_controller = async (req: Request, res: Response) => {
     const response = await axios.get("http://localhost:3000/crawling/musical");
     const musicals: Musical_Res[] = response.data;
 
-    for (const musical of musicals) {
-      musical.cast = response.data.cast;
-    }
-
     await crawler_service.save_musicals(musicals);
     res.status(201).json({ message: "Musicals saved successfully" });
   } catch (error) {
