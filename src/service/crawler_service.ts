@@ -13,6 +13,7 @@ import Areas from "../schema/areas";
 import { Actor_Res } from "../dto/crawling/actor_crawling_res";
 import Actors from "../schema/actors";
 import Castings from "../schema/castings";
+import { Casting_Res } from "../dto/crawling/cast_crawling_res";
 
 const get_musicals = async () => {
   try {
@@ -45,18 +46,29 @@ const get_theaters = async () => {
   }
 };
 
-const save_musicals = async (musicals: Musical_Res[], many_casts: Casts[]) => {
+const get_castings = async () => {
+  try {
+    const data = await playdb_crawler.fetch_all_castings();
+    return data;
+  } catch (error) {
+    console.error("Error in getCastings service:", error);
+    throw error;
+  }
+};
+
+const save_musicals = async (musicals: Musical_Res[]) => {
   try {
     for (const musical of musicals) {
       const crawler_theater = await Theaters.findOne({
         seats: musical.musical_details.place,
       });
+
       const start_date = musical.musical_details.date.split("~")[0];
       const end_date = musical.musical_details.date.split("~")[1];
       let insert_theater_id;
 
-      if (!crawler_theater) {
-        // 알수없음 극장
+      if (!crawler_theater || !musical.musical_details.place) {
+        // '알수없음'으로 극장 저장
         insert_theater_id = new mongoose.Types.ObjectId(
           "66a3d8605077119748ebb6c4"
         );
@@ -86,42 +98,8 @@ const save_musicals = async (musicals: Musical_Res[], many_casts: Casts[]) => {
         });
 
         await musical_data.save();
-
-        // 출연진 저장
-        for (const cast of many_casts) {
-          const existing_actor = await Actors.findOne({"actor_name": cast.cast_names});
-          let existing_actor_id;
-          if (!existing_actor || !cast.cast_names) {
-            existing_actor_id = new mongoose.Types.ObjectId("66a3df1c5077119748ebb6c5");
-          } else {
-            existing_actor_id = existing_actor?._id;
-          }
-
-          const existing_cast = await Castings.findOne({
-            musical_id: musical.musical_ID,
-            role: cast.role,
-          });
-
-          if (!existing_cast) {
-            const cast_data = new Castings({
-              musical_id: musical.musical_ID,
-              role: cast.role,
-              actor_id: existing_actor_id
-            });
-
-            await cast_data.save();
-
-          } else {
-            await existing_cast.updateOne({
-              musical_id: musical.musical_ID,
-              role: cast.role,
-              actor_id: existing_actor_id
-            });
-          }
-        }
-
       } else {
-        await existing_musical.updateOne({
+        const update_data = await existing_musical.updateOne({
           musical_name: musical.musical_details.title,
           musical_subname: musical.musical_details.sub_title || "",
           musical_genre: musical.musical_details.genre || "",
@@ -134,41 +112,9 @@ const save_musicals = async (musicals: Musical_Res[], many_casts: Casts[]) => {
           website: musical.musical_details.website || "",
           poster_image: musical.musical_details.image_url || "",
         });
-
-        for (const cast of many_casts) {
-          const existing_actor = await Actors.findOne({"actor_name": cast.cast_names});
-          let existing_actor_id;
-          if (!existing_actor || !cast.cast_names) {
-            existing_actor_id = new mongoose.Types.ObjectId("66a3df1c5077119748ebb6c5");
-          } else {
-            existing_actor_id = existing_actor?._id;
-          }
-
-          const existing_cast = await Castings.findOne({
-            musical_id: musical.musical_ID,
-            role: cast.role,
-          });
-
-          if (!existing_cast) {
-            const cast_data = new Castings({
-              musical_id: musical.musical_ID,
-              role: cast.role,
-              actor_id: existing_actor_id
-            });
-
-            await cast_data.save();
-
-          } else {
-            await existing_cast.updateOne({
-              musical_id: musical.musical_ID,
-              role: cast.role,
-              actor_id: existing_actor_id
-            });
-          }
-        }
       }
-      
     }
+    console.log("Musicals saved successfully in service...🎭");
   } catch (error) {
     console.error("Error in save Musicals : service", error);
     throw error;
@@ -258,11 +204,70 @@ const save_theaters = async (theaters: Theater_Res[]) => {
   }
 };
 
+const save_castings = async (castings: Casting_Res[]) => {
+  try {
+    for (const casting of castings) {
+      for (const cast of casting.cast) {
+        const musical = await Musicals.findOne({
+          musical_playdb_id: casting.musical_ID,
+        });
+
+        if (!musical) {
+          console.error("Musical not found");
+          continue;
+        }
+        else if (!cast) {
+          console.error("Cast not found");
+          continue;
+        } else if (cast) {
+          for (const actor of cast.cast_names) {
+            const actor_data = await Actors.findOne({
+              actor_playdb_id: actor.actor_ID,
+            });
+
+            if (!actor_data) {
+              console.error("Actor not found");
+              continue;
+            }
+
+            const existing_casting = await Castings.findOne({
+              musical_id: musical._id,
+              actor_id: actor_data._id,
+            });
+
+            if (!existing_casting) {
+              const data = new Castings({
+                musical_id: musical._id,
+                actor_id: actor_data._id,
+                role: cast.role || "",
+              });
+
+              await data.save();
+            } else {
+              await existing_casting.updateOne({
+                musical_id: musical._id,
+                actor_id: actor_data._id,
+                role: cast.role || "",
+              });
+            }
+          }
+        }
+      }
+    }
+    console.log("Castings saved successfully in service...👩🧑👨");
+  } catch (error) {
+    console.error("Error in save Castings : service", error);
+    throw error;
+  }
+};
+
 export {
   get_musicals,
   get_actors,
   get_theaters,
+  get_castings,
   save_actors,
   save_musicals,
   save_theaters,
+  save_castings,
 };
