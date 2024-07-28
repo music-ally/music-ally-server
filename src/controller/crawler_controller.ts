@@ -5,6 +5,7 @@ import axios from "axios";
 import { Casts, Musical_Res } from "../dto/crawling/musical_crawling_res";
 import { Actor_Res } from "../dto/crawling/actor_crawling_res";
 import { Theater_Res } from "../dto/crawling/theater_crawling_res";
+import { Casting_Res } from "../dto/crawling/cast_crawling_res";
 
 const get_musicals_controller = async (req: Request, res: Response) => {
   try {
@@ -35,6 +36,16 @@ const get_theaters_controller = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+const get_castings_controller = async (req: Request, res: Response) => {
+  try {
+    const castings = await crawler_service.get_castings();
+    res.status(200).json(castings);
+  } catch (error) {
+    console.error("Error in fetchCastingsController:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+}
 
 const save_musicals_controller = async (req: Request, res: Response) => {
   try {
@@ -72,11 +83,25 @@ const save_theaters_controller = async (req: Request, res: Response) => {
   }
 };
 
+const save_castings_controller = async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get("http://localhost:3000/crawling/casting");
+    const castings: Casting_Res[] = response.data;
+
+    await crawler_service.save_castings(castings);
+    res.status(201).json({ message: "Castings saved successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error saving castings", error });
+  }
+}
+
 export {
   get_musicals_controller,
   get_actors_controller,
   get_theaters_controller,
+  get_castings_controller,
   save_musicals_controller,
   save_actors_controller,
   save_theaters_controller,
+  save_castings_controller,
 };
