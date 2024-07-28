@@ -196,7 +196,10 @@ const get_random_musical = async () => {
       throw new Error("finding random musical fail");
     }
 
-    return random_musical[0]._id;
+    console.log("util");
+    console.log(random_musical[0]);
+
+    return random_musical[0];
 
   } catch (error) {
     console.error("Error fetching random musical Id: ServiceUtils", error);
