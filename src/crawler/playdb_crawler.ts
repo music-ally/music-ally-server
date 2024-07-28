@@ -441,16 +441,16 @@ const fetch_all_castings = async (): Promise<Casting_Res[]> => {
   try {
     // 연도별 캐스팅 반환
     // 2024년도부터 2020년도까지 fetch해옴
-    // for (let year = 2024; year >= 2024; year--) {
+    for (let year = 2024; year >= 2020; year--) {
       const last_page = await playdb_crawler_util.find_last_page_params(
         1,
-        2022
+        year
       );
       for (let page = 1; page <= last_page; page++) {
-        const castings = await fetch_musicals_castings(1, page, 2022);
+        const castings = await fetch_musicals_castings(1, page, year);
         allCastings.push(...castings);
       }
-    // }
+    }
 
     // 중복 제거
     const uniqueCastings = allCastings.filter(
