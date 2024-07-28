@@ -8,8 +8,16 @@ import {
   Musical_Details,
 } from "../dto/crawling/musical_crawling_res";
 import { Actor_Res, Actor_Details } from "../dto/crawling/actor_crawling_res";
-import { Theater_Res, Theater_Details } from "../dto/crawling/theater_crawling_res";
+import {
+  Theater_Res,
+  Theater_Details,
+} from "../dto/crawling/theater_crawling_res";
 import { last } from "cheerio/lib/api/traversing";
+import {
+  Casting_Res,
+  Castings,
+  Castings_Info,
+} from "../dto/crawling/cast_crawling_res";
 
 // crawling해줄 기본 URL지정
 const musical_list_base_URL = "http://www.playdb.co.kr/playdb/playdblist.asp?";
@@ -81,7 +89,9 @@ const fetch_musicals = async (
           const string_musical_ID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
 
           // 뮤지컬 상세 정보 반환 함수 호출
-          const musical_details = await fetch_musical_details(string_musical_ID);
+          const musical_details = await fetch_musical_details(
+            string_musical_ID
+          );
 
           const musical_ID = parseInt(string_musical_ID);
 
@@ -210,7 +220,6 @@ const fetch_cast = async (musicalId: string): Promise<Casts[] | any> => {
       const roleTd = $(element).find("td").eq(0);
       const actorsTd = $(element).find("td").slice(1);
 
-      // role을 <b> 태그의 텍스트로 설정
       const role = roleTd.find("b").text().trim();
 
       const cast_names: string[] = [];
@@ -269,6 +278,188 @@ const fetch_all_musicals = async (): Promise<Musical_Res[]> => {
     return uniqueMusicals;
   } catch (error) {
     console.error("Error fetching all musicals:", error);
+    throw error;
+  }
+};
+
+// ---------------------------------CASTING---------------------------------
+
+/**
+ * 기본 페이지 위에
+ * 뮤지컬 리스트
+ * 크롤링
+ */
+const fetch_musicals_castings = async (
+  sPlayType: number,
+  page: number,
+  sStartYear?: number
+): Promise<Casting_Res[]> => {
+  // 크롤링 사이트 파라미터 기본설정(ㄱㄴㄷ순으로 받아옴)
+  const params: any = {
+    Page: page,
+    sReqMainCategory: "000001",
+    sReqTab: 5,
+    sPlayType: sPlayType,
+    sSelectType: 3,
+  };
+
+  // 선택연도 파라미터
+  if (sStartYear) {
+    params.sStartYear = sStartYear;
+  }
+
+  try {
+    // 크롤링 시작 콘솔 로그
+    console.log("Fetching castings.. 👩🧑👨", params);
+    const response = await axios.get(musical_list_base_URL, {
+      params,
+      responseType: "arraybuffer", // 바이트 배열로 응답을 받음
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR"); // 인코딩을 EUC-KR로 변환
+    const $ = cheerio.load(decodedData);
+    const castings: Casting_Res[] = [];
+
+    let startCollecting = false;
+    const rows = $("table > tbody > tr").toArray();
+    for (const element of rows) {
+      const text = $(element).text();
+      if (
+        text.includes("주간인기도순") ||
+        text.includes("누적인기도순") ||
+        text.includes("공연일순") ||
+        text.includes("ㄱㄴㄷ")
+      ) {
+        startCollecting = true;
+      }
+
+      if (startCollecting) {
+        const titleElement = $(element).find("td b a");
+        if (titleElement.length) {
+          const onclickAttr = titleElement.attr("onclick");
+          const musicalIDMatch = onclickAttr
+            ? onclickAttr.match(/goDetail\('(\d+)'\)/)
+            : null; // goDetail 뒤에 뮤지컬 고유 숫자 추출
+          const string_musical_ID = musicalIDMatch ? musicalIDMatch[1] : "N/A"; // 추출 숫자를 musicalID변수에 저장
+
+          const musical_ID = parseInt(string_musical_ID);
+          const cast = await fetch_cast_only(string_musical_ID);
+
+          castings.push({ musical_ID, cast });
+        }
+      }
+    }
+
+    return castings;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+/**
+ * 뮤지컬ID를 이용해
+ * 해당 뮤지컬의 출연 배우
+ * 크롤링
+ */
+const fetch_cast_only = async (musicalId: string): Promise<Castings[]> => {
+  const allCasts: Castings[] = [];
+  const url = `${musical_URL}sReqPlayno=${musicalId}`;
+
+  try {
+    const response = await axios.get(url, {
+      responseType: "arraybuffer",
+    });
+
+    const decodedData = iconv.decode(Buffer.from(response.data), "EUC-KR");
+    const $ = cheerio.load(decodedData);
+
+    // 출연진 정보를 포함하는 table 요소를 선택
+    const castTable = $("div.detail_contentsbox table");
+
+    // table 내의 각 tr 요소를 순회하면서 출연진 정보 파싱
+    castTable.find("tr").each((index, element) => {
+      // role과 각 배우의 이름을 포함하는 td 요소를 선택
+      const roleTd = $(element).find("td").eq(0);
+      const actorsTd = $(element).find("td").slice(1);
+
+      const role = roleTd.find("b").text().trim();
+      const cast_names: Castings_Info[] = [];
+
+      // 각 역의 캐스트 이름과 ID 추출
+      actorsTd.each((index, actorTd) => {
+        const actorAnchor = $(actorTd).find("a");
+        const actorName = actorAnchor.text().trim();
+        const actorHref = actorAnchor.attr("href");
+
+        if (actorName && actorHref) {
+          const actorID = parseInt(actorHref.split("ManNo=")[1]);
+          cast_names.push({ name: actorName, actor_ID: actorID });
+        }
+      });
+
+      // 캐스트 이름이 하나 이상인 경우에만 추가
+      if (cast_names.length > 0) {
+        allCasts.push({ role, cast_names });
+      }
+    });
+
+    const uniqueCasts: { [role: string]: Castings_Info[] } = {};
+
+    allCasts.forEach((cast) => {
+      if (!uniqueCasts[cast.role]) {
+        uniqueCasts[cast.role] = cast.cast_names;
+      } else {
+        const existingNames = uniqueCasts[cast.role].map((actor) => actor.name);
+        cast.cast_names.forEach((actor) => {
+          if (!existingNames.includes(actor.name)) {
+            uniqueCasts[cast.role].push(actor);
+          }
+        });
+      }
+    });
+
+    return Object.keys(uniqueCasts).map((role) => ({
+      role,
+      cast_names: uniqueCasts[role],
+    }));
+
+    return allCasts;
+  } catch (error) {
+    console.error("Error fetching casts:", error);
+    throw error;
+  }
+};
+
+/**
+ * 캐스팅 크롤링을 위한
+ * 페이지 탐색
+ */
+const fetch_all_castings = async (): Promise<Casting_Res[]> => {
+  const allCastings: Casting_Res[] = [];
+
+  try {
+    // 연도별 캐스팅 반환
+    // 2024년도부터 2020년도까지 fetch해옴
+    // for (let year = 2024; year >= 2024; year--) {
+      const last_page = await playdb_crawler_util.find_last_page_params(
+        1,
+        2022
+      );
+      for (let page = 1; page <= last_page; page++) {
+        const castings = await fetch_musicals_castings(1, page, 2022);
+        allCastings.push(...castings);
+      }
+    // }
+
+    // 중복 제거
+    const uniqueCastings = allCastings.filter(
+      (v, i, a) => a.findIndex((t) => t.musical_ID === v.musical_ID) === i
+    );
+
+    return uniqueCastings;
+  } catch (error) {
+    console.error("Error fetching all castings:", error);
     throw error;
   }
 };
@@ -353,7 +544,7 @@ const fetch_actor_details = async (
     // 아티스트 세부사항 크롤링
     const fullName = $("span.title").text().trim();
     const koreanName = fullName.split("|")[0].trim();
-    const profile_image = $('img.mainimg').attr('src');
+    const profile_image = $("img.mainimg").attr("src");
     const job = $('dt:contains("직업")').next("dd").text().trim();
     const debut = $('dt:contains("데뷔년도")').next("dd").text().trim();
     const birthday = $('dt:contains("생년월일")').next("dd").text().trim();
@@ -362,7 +553,7 @@ const fetch_actor_details = async (
 
     return {
       name: koreanName,
-      profile_image: profile_image || '',
+      profile_image: profile_image || "",
       job,
       debut,
       birthday,
@@ -459,7 +650,9 @@ const fetch_theaters = async (page: number): Promise<Theater_Res[]> => {
           const name = titleElement.text().trim() || "";
           const location = locationElement.text().trim() || "";
 
-          const theater_details = await fetch_theater_details(string_theater_ID);
+          const theater_details = await fetch_theater_details(
+            string_theater_ID
+          );
 
           const theater_ID = parseInt(string_theater_ID);
 
@@ -580,6 +773,9 @@ export {
   fetch_musical_details,
   fetch_cast,
   fetch_all_musicals,
+  fetch_musicals_castings,
+  fetch_cast_only,
+  fetch_all_castings,
   fetch_actors,
   fetch_actor_details,
   fetch_all_actors,
