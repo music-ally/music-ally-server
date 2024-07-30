@@ -17,6 +17,7 @@ require("dotenv").config();
 const { PORT } = process.env;
 const cors = require('cors');
 const app = (0, express_1.default)();
+app.use(cors());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use(user_router_1.default);
