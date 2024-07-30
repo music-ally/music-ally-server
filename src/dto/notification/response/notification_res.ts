@@ -5,10 +5,12 @@ export interface notification_res_dto {
 }
 
 export interface notification_item_dto {
+  notification_id: mongoose.Types.ObjectId;
   type: string;
   create_at: Date;
   review_id?: mongoose.Types.ObjectId;
   poster_image?: string;
+  musical_name?: string;
   review_like_nickname?: string;
   review_like_image?: string[];
   review_like_num?: number;

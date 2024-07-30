@@ -22,6 +22,11 @@ const notifications_schema = new mongoose.Schema({
     required: false,
     ref: "reviews",
   },
+  review_like_user_id: {
+    type: mongoose.Types.ObjectId,
+    required: false,
+    ref: "users",
+  },
   follower_id: {
     type: mongoose.Types.ObjectId,
     required: false,
