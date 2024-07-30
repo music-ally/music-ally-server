@@ -8,6 +8,7 @@ import * as user_service from "../service/user/user_service";
 import { user_join_dto } from "../dto/user/request/user_join";
 import { user_login_dto } from "../dto/user/request/user_login";
 import { user_login_res_dto } from "../dto/user/response/user_login_res"; //Todo 한 번에 import 하는 방법 있는지 확인
+import { user_social_login_dto } from "../dto/user/request/user_social_login";
 
 const join_user = async ( 
   req: Request,
@@ -135,6 +136,51 @@ const login = async (
   }
 };
 
+const social_login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  const user_social_login_dto: user_social_login_dto = req.body
+
+  try {
+    const tokens: user_login_res_dto = await user_service.social_login(user_social_login_dto);
+    return res
+      .status(status_code.OK)
+      .send(
+        form.success(message.LOGIN_SUCCESS, tokens)
+      );
+  } catch (error: any) {
+    if (error.message === 'email not found') {
+      return res
+        .status(status_code.NOT_FOUND)
+        .send(
+          form.fail(message.NOT_FOUND_EMAIL, error)
+        );
+    } else if (error.message === 'wrong social_id') {
+      return res
+        .status(status_code.BAD_REQUEST)
+        .send(
+          form.fail(message.INVALID_PASSWORD, error)
+        );
+    } else if (error.message === 'left user') {
+      return res
+        .status(status_code.BAD_REQUEST)
+        .send(
+          form.fail(message.LEFT_USER, error)
+        );
+    } else {
+      console.error("Error at login: Controller", error);
+      return res
+        .status(status_code.INTERNAL_SERVER_ERROR)
+        .send(
+          form.fail(message.INTERNAL_SERVER_ERROR, error)
+        );
+    }
+  }
+};
+
 
 const check_email = async (
   req: Request,
@@ -188,6 +234,7 @@ export {
   join_user,
   leave,
   login,
+  social_login,
   logout,
   check_email,
   check_nickname
