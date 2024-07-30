@@ -15,11 +15,13 @@ import Follows from "../../schema/follows";
  */
 const get_review_like_users = async (review_id: string) => {
   try {
-    const recent_likes = await Review_likes.findById({
-      review_id: review_id,
+    const recent_likes = await Review_likes.find({
+      review_id: review_id
     })
       .sort({ created_at: -1 })
       .limit(2);
+
+    console.log(recent_likes);
 
     if (!Array.isArray(recent_likes) || recent_likes?.length == 0) {
       return { message: "No likes found for this review." };
@@ -28,12 +30,12 @@ const get_review_like_users = async (review_id: string) => {
     const user_ids = recent_likes.map((like) => like.user_id);
     const users_with_profile_images = await Users.find(
       { _id: { $in: user_ids } },
-      { profile_image: 1 }
+      { nickname: 1, profile_image: 1 }
     );
 
-    const most_recent_like = recent_likes[0];
+    const most_recent_like = recent_likes[0]; //이걸 지우고 위에것에서 nickname 뽑아쓰고 싶은데 수정 아직 X
     const recent_user = await Users.findById(most_recent_like.user_id, {
-      nick_name: 1,
+      nickname: 1,
     });
 
     return {
@@ -97,7 +99,7 @@ const get_review_notifications = async (user_id: string, type: string) => {
     // 사용자의 리뷰 알림 가져오기
     if (type === "리뷰") {
       const reviewLikeNotification: notification_item_dto[] = [];
-      const reviewIds: string[] = [];
+      //const reviewIds: string[] = [];
 
       for (const notification of notifications) {
         if (notification.type === "리뷰") {
@@ -106,17 +108,21 @@ const get_review_notifications = async (user_id: string, type: string) => {
           const reviewLikeUsers = await get_review_like_users(review?._id);
           const countReviewLike = await count_review_like(review?._id);
 
-          reviewIds.push(review?._id);
+          console.log(reviewLikeUsers);
+
+          //reviewIds.push(review?._id);
           reviewLikeNotification.push({
+            notification_id: notification._id,
             type: notification.type,
             create_at: notification.create_at,
             review_id: notification.review_id,
             poster_image: reviewMusical?.poster_image,
+            musical_name: reviewMusical?.musical_name,
             review_like_nickname: reviewLikeUsers.recent_user?.nickname,
             review_like_image: reviewLikeUsers.users_with_profile_images?.map(
               (user) => user.profile_image
             ),
-            review_like_num: countReviewLike,
+            review_like_num: countReviewLike-1, //특정유저 외 n명이 좋아하고 있음이라 -1 함.
           });
         }
       }
@@ -152,10 +158,11 @@ const get_follow_notifications = async (user_id: string, type: string) => {
           const meFollow = await check_is_followed(user_id, follower?._id);
 
           followNotification.push({
+            notification_id: notification._id,
             type: notification.type,
             create_at: notification.create_at,
             follower_id: notification.follower_id,
-            follower_image: follower?.profile_image,
+            follower_image: follower?.profile_image ?? "null", //살짝 애매함 null로 하고 타입을 any로 바꾸는게 나을지도
             follower_nickname: follower?.nickname,
             is_followed: meFollow,
           });
@@ -175,26 +182,12 @@ const get_follow_notifications = async (user_id: string, type: string) => {
 
 /**
  * 알림 삭제
- * user_id: 눌린 사람
- * from_user_id: 누른 사람
  */
-const delete_follow_notification = async (user_id: string, from_user_id: string) => {
+const delete_notification = async (notification_id: string) => {
   try {
-    await Notifications.findOneAndDelete({ user_id: user_id, follower_id: from_user_id });
-  } catch (error) {
-    console.error("Error deleting follow notifications: ServiceUtils", error);
-    throw error;
-  }
-};
-
-/**
- * 알림 삭제
- */
-const delete_review_notification = async (review_id: string, liked_user_id: string) => {
-  try {
-    await Notifications.findOneAndDelete({ review_id: review_id, user_id: liked_user_id });
-  } catch (error) {
-    console.error("Error deleting review notifications: ServiceUtils", error);
+    await Notifications.findByIdAndDelete(notification_id);
+  } catch (error) { 
+    console.error("Error deleting notifications: ServiceUtils", error);
     throw error;
   }
 }
@@ -205,4 +198,5 @@ export {
   check_is_followed,
   get_review_notifications,
   get_follow_notifications,
+  delete_notification
 };

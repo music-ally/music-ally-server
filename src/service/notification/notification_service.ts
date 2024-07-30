@@ -21,21 +21,24 @@ const make_review_notification = async (
   try {
     // 중복 알림 존재하는지 확인
     const exist = await Notifications.find({
-      user_id: from_user_id,
+      review_like_user_id: from_user_id,
       review_id: review_id,
     });
 
+    console.log(exist);
+    
+
     // 리뷰 알림 생성
-    if (type === "리뷰" && !exist) {
+    if (type === "리뷰" && exist.length === 0) {
       const to_user_id = await Reviews.findById(review_id).select("user_id");
       const reviewNotification = new Notifications({
-        user_id: from_user_id,
+        user_id: to_user_id?.user_id,
         type: "리뷰",
         create_at: new Date(),
         review_id: review_id,
+        review_like_user_id: from_user_id
       });
       await reviewNotification.save();
-      console.log(`${from_user_id}가 ${to_user_id}리뷰에 좋아요를 눌렀음`);
     }
     else {
       console.log("이미 알림이 존재합니다.");
