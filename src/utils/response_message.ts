@@ -29,6 +29,7 @@ const message = {
   CONFLICT_EMAIL: '이메일 중복',
   SIGNUP_SUCCESS: '회원가입 성공',
   LOGIN_SUCCESS: '로그인 성공',
+  LOGOUT_SUCCESS: '로그아웃 성공',
   LEAVE_SUCCESS: '회원탈퇴 성공',
   CHECK_EMAIL_SUCCESS : '이메일 중복 확인 성공',
   CHECK_NICKNAME_SUCCESS : '닉네임 중복 확인 성공',

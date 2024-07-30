@@ -74,17 +74,24 @@ const logout = async (
   next: NextFunction
 ): Promise<void | Response> => {
 
-  /*const user_info: user_info = req.body
-  
+  console.log("컨트롤러 실행");
+  console.log(req.token);
   try {
-    const data = await user_service.create_user(user_join_dto);
-    console.log(data);
+    await user_service.logout(req.token);
 
-    return res.send("create_user success!");
-  } catch (error) {
-    console.error("Error at creating User: Controller", error);
-    res.status(500).json({ error: "Error creating User: Controller" });
-  }*/
+    return res
+      .status(status_code.NO_CONTENT)
+      .send(
+        form.success(message.LOGOUT_SUCCESS)
+      );
+  } catch (error: any) {
+    console.error("Error at logout: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(
+        form.fail(message.INTERNAL_SERVER_ERROR, error)
+      );
+  }
 };
 
 const login = async (
