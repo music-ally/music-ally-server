@@ -41,7 +41,7 @@ const upload = multer({
 
 const processFile = (req: Request, res: Response, next: NextFunction) => {
   if (req.file) {
-    req.file.path = `${process.env.BASE_URL}/uploads/${req.file.filename}`;
+    req.file.path = `${process.env.BASE_URL}/dist/uploads/${req.file.filename}`;
   }
   next();
 };

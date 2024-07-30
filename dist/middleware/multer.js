@@ -40,7 +40,7 @@ const upload = (0, multer_1.default)({
 exports.upload = upload;
 const processFile = (req, res, next) => {
     if (req.file) {
-        req.file.path = `${process.env.BASE_URL}/uploads/${req.file.filename}`;
+        req.file.path = `${process.env.BASE_URL}/dist/uploads/${req.file.filename}`;
     }
     next();
 };
