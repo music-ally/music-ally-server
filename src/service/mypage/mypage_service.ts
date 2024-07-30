@@ -23,6 +23,7 @@ import Reviews from "../../schema/reviews";
 import Review_likes from "../../schema/review_likes";
 import Areas from "../../schema/areas";
 import { has } from "cheerio/lib/api/traversing";
+import { find_homearea_by_name } from "../user/user_service";
 
 /**
  * 내 프로필 반환
@@ -131,18 +132,21 @@ const update_profile = async (
       user_update_dto.password = hashed_password;
     }
 
+    if(user_update_dto.homearea_name){
+      const updated_homearea = await find_homearea_by_name(user_update_dto.homearea_name);
+      user_update_dto.homearea = updated_homearea;
+    }
+
     const updated_user = await Users.findByIdAndUpdate(
       user._id,
-      user_update_dto
+      user_update_dto,
+      {new : true}
     );
-
-    //뭔가 이걸 앞으로 빼내고 싶은데 어떻게 해야할지 고민중
-    const updated_homearea = await Areas.findById(updated_user?.homearea);
 
     const data: user_update_res_dto = {
       nickname: updated_user?.nickname,
       birthday: updated_user?.birthday,
-      homearea_name: updated_homearea?.area_name,
+      homearea_name: user_update_dto.homearea_name,
       profile_image: updated_user?.profile_image
     };
 

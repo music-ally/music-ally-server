@@ -30,5 +30,11 @@ app.use(notification_router_1.default);
 (0, db_1.default)();
 app.set("port", process.env.PORT || 3000); //  서버 포트
 app.set("host", process.env.HOST || "0.0.0.0"); // 서버 아이피
+const fs = require('fs');
+const path = require('path');
+const uploadDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 app.listen(PORT, () => console.log(`서버가 ${PORT}번 포트에서 실행 중`));
 //# sourceMappingURL=index.js.map

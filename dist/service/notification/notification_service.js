@@ -61,7 +61,7 @@ const make_review_notification = (type, review_id, from_user_id // 리뷰 좋아
                 type: "리뷰",
                 create_at: new Date(),
                 review_id: review_id,
-                review_like_user_id: from_user_id
+                review_like_user_id: from_user_id,
             });
             yield reviewNotification.save();
         }
@@ -84,12 +84,15 @@ from_user_id // 팔로우 누른 사람
 ) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // 중복 알림 존재하는지 확인
-        const exist = yield notifications_1.default.find({
+        const exist = yield notifications_1.default.findOne({
             user_id: to_user_id,
             follower_id: from_user_id,
         });
         // 팔로우 알림 생성
-        if (type === "팔로우" && !exist) {
+        if (exist) {
+            console.log("이미 알림이 존재합니다.");
+        }
+        else {
             const followNotification = new notifications_1.default({
                 user_id: to_user_id,
                 type: "팔로우",
@@ -98,9 +101,6 @@ from_user_id // 팔로우 누른 사람
             });
             yield followNotification.save();
             console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`);
-        }
-        else {
-            console.log("이미 알림이 존재합니다.");
         }
     }
     catch (error) {

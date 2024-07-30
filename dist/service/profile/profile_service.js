@@ -88,11 +88,20 @@ exports.get_user_profile = get_user_profile;
  */
 const do_follow = (user_id, to_user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const follow = new follows_1.default({
+        const follow_exist = yield follows_1.default.findOne({
             from_user_id: user_id,
             to_user_id: to_user_id,
         });
-        yield follow.save();
+        if (follow_exist) {
+            console.log("이미 존재하는 팔로우입니다.");
+        }
+        else {
+            const follow = new follows_1.default({
+                from_user_id: user_id,
+                to_user_id: to_user_id,
+            });
+            yield follow.save();
+        }
         yield notification_service.make_follow_notification("팔로우", to_user_id, user_id);
     }
     catch (error) {

@@ -41,7 +41,7 @@ const mypage_service_utils = __importStar(require("./mypage_service_utils"));
 const users_1 = __importDefault(require("../../schema/users"));
 const reviews_1 = __importDefault(require("../../schema/reviews"));
 const review_likes_1 = __importDefault(require("../../schema/review_likes"));
-const areas_1 = __importDefault(require("../../schema/areas"));
+const user_service_1 = require("../user/user_service");
 /**
  * 내 프로필 반환
  */
@@ -134,13 +134,15 @@ const update_profile = (user_id, user_update_dto) => __awaiter(void 0, void 0, v
             const hashed_password = yield bcryptjs_1.default.hash(user_update_dto.password, 10);
             user_update_dto.password = hashed_password;
         }
-        const updated_user = yield users_1.default.findByIdAndUpdate(user._id, user_update_dto);
-        //뭔가 이걸 앞으로 빼내고 싶은데 어떻게 해야할지 고민중
-        const updated_homearea = yield areas_1.default.findById(updated_user === null || updated_user === void 0 ? void 0 : updated_user.homearea);
+        if (user_update_dto.homearea_name) {
+            const updated_homearea = yield (0, user_service_1.find_homearea_by_name)(user_update_dto.homearea_name);
+            user_update_dto.homearea = updated_homearea;
+        }
+        const updated_user = yield users_1.default.findByIdAndUpdate(user._id, user_update_dto, { new: true });
         const data = {
             nickname: updated_user === null || updated_user === void 0 ? void 0 : updated_user.nickname,
             birthday: updated_user === null || updated_user === void 0 ? void 0 : updated_user.birthday,
-            homearea_name: updated_homearea === null || updated_homearea === void 0 ? void 0 : updated_homearea.area_name,
+            homearea_name: user_update_dto.homearea_name,
             profile_image: updated_user === null || updated_user === void 0 ? void 0 : updated_user.profile_image
         };
         return data;
