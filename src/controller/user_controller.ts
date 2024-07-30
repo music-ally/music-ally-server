@@ -26,8 +26,6 @@ const join_user = async (
     );
   } catch (error) {
     if ((error as any).code === 11000) {
-      console.log(error);
-
       return res
       .status(status_code.BAD_REQUEST)
       .send(
@@ -145,11 +143,11 @@ const check_email = async (
 ): Promise<void | Response> => {
 
   try {
-    const is_duplicate: boolean = await user_service.check_email(req.body.email);
+    const data = await user_service.check_email(req.body.email);
     return res
       .status(status_code.OK)
       .send(
-        form.success(message.CHECK_EMAIL_SUCCESS, is_duplicate)
+        form.success(message.CHECK_EMAIL_SUCCESS, data)
       );
   } catch (error: any) {
     console.error("Error at check_email: Controller", error);
