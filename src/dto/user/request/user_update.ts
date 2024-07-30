@@ -4,4 +4,5 @@ export interface user_update_dto {
   birthday?: Date;
   homearea_name?: string;
   profile_image?: string;
+  homearea?: any;
 }

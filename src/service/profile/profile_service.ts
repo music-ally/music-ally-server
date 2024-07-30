@@ -28,7 +28,9 @@ const get_user_profile = async (
     const follower = await mypage_service_utils.get_follower(to_user_id);
     const count_follower = follower.follow_list.length;
     // 리뷰 작성한 작품 반환
-    const review_list = await mypage_service_utils.get_user_reviewed(to_user_id);
+    const review_list = await mypage_service_utils.get_user_reviewed(
+      to_user_id
+    );
     const count_review = review_list.reviews.length;
     // 북마크한 작품 반환
     const bookmark_list = await mypage_service_utils.get_user_bookmarked(
@@ -69,12 +71,20 @@ const get_user_profile = async (
  */
 const do_follow = async (user_id: string, to_user_id: string) => {
   try {
-    const follow = new Follows({
+    const follow_exist = await Follows.findOne({
       from_user_id: user_id,
       to_user_id: to_user_id,
     });
+    if (follow_exist) {
+      console.log("이미 존재하는 팔로우입니다.");
+    } else {
+      const follow = new Follows({
+        from_user_id: user_id,
+        to_user_id: to_user_id,
+      });
+      await follow.save();
+    }
 
-    await follow.save();
     await notification_service.make_follow_notification(
       "팔로우",
       to_user_id,

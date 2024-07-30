@@ -1,20 +1,30 @@
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import fs from 'fs';
+
+require("dotenv").config();
+
+// 업로드 디렉토리 설정
+const uploadDir = path.join(__dirname, '..', 'uploads');
+
+// 업로드 디렉토리가 존재하지 않으면 생성
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: function (req: Request, file: Express.Multer.File, cb) {
-    const uploadPath = path.join(__dirname, '..', 'uploads'); // 서버 배포후 정상 작동하는지 확인 필요
-    cb(null, uploadPath);
+    cb(null, uploadDir);
   },
   filename: function (req: Request, file: Express.Multer.File, cb) {
     cb(null, `${Date.now()}_${file.originalname}`);
   },
 });
 
-const file_filter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-  const file_types = /jpeg|jpg|png|gif/;
-  const extname = file_types.test(path.extname(file.originalname).toLowerCase());
+const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
+  const fileTypes = /jpeg|jpg|png|gif/;
+  const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
 
   if (extname) {
     return cb(null, true);
@@ -26,7 +36,14 @@ const file_filter = (req: Request, file: Express.Multer.File, cb: FileFilterCall
 const upload = multer({
   storage: storage,
   limits: { fileSize: 1024 * 1024 * 5 }, // 5MB limit
-  fileFilter: file_filter,
+  fileFilter: fileFilter,
 });
 
-export default upload;
+const processFile = (req: Request, res: Response, next: NextFunction) => {
+  if (req.file) {
+    req.file.path = `${process.env.BASE_URL}/dist/uploads/${req.file.filename}`;
+  }
+  next();
+};
+
+export { upload, processFile };
