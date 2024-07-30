@@ -1,6 +1,4 @@
 import express, { Express, Request, Response, NextFunction } from "express";
-import session from "express-session";
-import mongoose from "mongoose";
 import connectDB from "./loader/db";
 import user_router from "./router/user_router";
 import crawler_router from "./router/crawler_router"
@@ -32,5 +30,14 @@ connectDB();
 
 app.set("port", process.env.PORT || 3000); //  서버 포트
 app.set("host", process.env.HOST || "0.0.0.0"); // 서버 아이피
+
+const fs = require('fs');
+const path = require('path');
+
+const uploadDir = path.join(__dirname, '../uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 app.listen(PORT, () => console.log(`서버가 ${PORT}번 포트에서 실행 중`));
