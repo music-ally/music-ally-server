@@ -74,8 +74,6 @@ const logout = async (
   next: NextFunction
 ): Promise<void | Response> => {
 
-  console.log("컨트롤러 실행");
-  console.log(req.token);
   try {
     await user_service.logout(req.token);
 

@@ -121,7 +121,6 @@ const check_nickname = async (nickname : string): Promise<boolean> => {
 
 
 const logout = async (token : string) => {
-  console.log(token);
   await new Blacklists({ token, expire_at : new Date() }).save();
   return
 };
