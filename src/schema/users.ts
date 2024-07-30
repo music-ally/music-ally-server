@@ -9,7 +9,7 @@ const users_schema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   nickname: {
     type: String,
@@ -38,10 +38,14 @@ const users_schema = new mongoose.Schema({
     require: true,
     ref: "areas",
   },
-  is_social: {
-    type: Boolean,
+  signup_method: {
+    type: String,
     required: true,
-    default: false // true = 소셜로그인, false = 정석로그인
+    default: "뮤지컬리"
+  },
+  social_id: {
+    type: String,
+    required: false
   },
   is_active: {
     type: Boolean,

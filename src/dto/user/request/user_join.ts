@@ -5,4 +5,6 @@ export interface user_join_dto {
   birthday: string; 
   sex: string;
   homearea_name: string;
+  signup_method?: string;
+  social_id?: string;
 }
