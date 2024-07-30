@@ -26,7 +26,6 @@ const make_review_notification = async (
     });
 
     console.log(exist);
-    
 
     // 리뷰 알림 생성
     if (type === "리뷰" && exist.length === 0) {
@@ -36,11 +35,10 @@ const make_review_notification = async (
         type: "리뷰",
         create_at: new Date(),
         review_id: review_id,
-        review_like_user_id: from_user_id
+        review_like_user_id: from_user_id,
       });
       await reviewNotification.save();
-    }
-    else {
+    } else {
       console.log("이미 알림이 존재합니다.");
     }
   } catch (error) {
@@ -60,13 +58,15 @@ const make_follow_notification = async (
 ) => {
   try {
     // 중복 알림 존재하는지 확인
-    const exist = await Notifications.find({
+    const exist = await Notifications.findOne({
       user_id: to_user_id,
       follower_id: from_user_id,
     });
 
     // 팔로우 알림 생성
-    if (type === "팔로우" && !exist) {
+    if (exist) {
+      console.log("이미 알림이 존재합니다.");
+    } else {
       const followNotification = new Notifications({
         user_id: to_user_id,
         type: "팔로우",
@@ -75,9 +75,6 @@ const make_follow_notification = async (
       });
       await followNotification.save();
       console.log(`${from_user_id}가 ${to_user_id}를 팔로우함`);
-    }
-    else {
-      console.log("이미 알림이 존재합니다.");
     }
   } catch (error) {
     console.error("Error making notifications: Service", error);
