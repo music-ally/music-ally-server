@@ -35,7 +35,7 @@ user_router.patch("/auth/leave", auth_1.default, user_controller.leave);
 user_router.post("/auth/login", user_controller.login);
 user_router.post("/auth/login/social", user_controller.social_login);
 user_router.get("/auth/logout", auth_1.default, user_controller.logout);
-user_router.get("/auth/check/email", user_controller.check_email);
-user_router.get("/auth/check/nickname", user_controller.check_nickname);
+user_router.post("/auth/check/email", user_controller.check_email);
+user_router.post("/auth/check/nickname", user_controller.check_nickname);
 exports.default = user_router;
 //# sourceMappingURL=user_router.js.map
