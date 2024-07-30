@@ -14,6 +14,7 @@ import notification_router from "./router/notification_router";
 require("dotenv").config();
 const { PORT } = process.env;
 
+const cors = require('cors')
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
