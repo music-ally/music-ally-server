@@ -40,7 +40,7 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-app.use('/uploads', express.static(path.join(__dirname, '../dist/uploads')));
+app.use('/dist/uploads', express.static(path.join(__dirname, '../dist/uploads')));
 
 
 app.listen(PORT, () => console.log(`서버가 ${PORT}번 포트에서 실행 중`));

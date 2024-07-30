@@ -36,6 +36,6 @@ const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
-app.use('/uploads', express_1.default.static(path.join(__dirname, '../dist/uploads')));
+app.use('/dist/uploads', express_1.default.static(path.join(__dirname, '../dist/uploads')));
 app.listen(PORT, () => console.log(`서버가 ${PORT}번 포트에서 실행 중`));
 //# sourceMappingURL=index.js.map
