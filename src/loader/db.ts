@@ -10,6 +10,7 @@ import Notifications from '../schema/notifications';
 import Review_likes from '../schema/review_likes';
 import Reviews from '../schema/reviews';
 import Theaters from '../schema/theaters';
+import Blacklists from '../schema/jwt_blacklist';
 
 const connectDB = async () => {
     
@@ -59,6 +60,9 @@ const connectDB = async () => {
     });
     Theaters.createCollection().then(function (collection) {
       console.log('Theaters Collection is created!');
+    });
+    Blacklists.createCollection().then(function (collection) {
+      console.log('Blacklists Collection is created!');
     });
   } catch (err: any) {
     console.log(err.message);

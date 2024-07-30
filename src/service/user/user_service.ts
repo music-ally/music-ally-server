@@ -6,6 +6,7 @@ import Users from "../../schema/users";
 import Areas from "../../schema/areas";
 import bcrypt from 'bcryptjs';
 import { generate_access_token, generate_refresh_token } from "../../utils/jwt_handler";
+import Blacklists from "../../schema/jwt_blacklist";
 
 
 
@@ -119,6 +120,13 @@ const check_nickname = async (nickname : string): Promise<boolean> => {
 };
 
 
+const logout = async (token : string) => {
+  console.log(token);
+  await new Blacklists({ token, expire_at : new Date() }).save();
+  return
+};
+
+
 
 export {
   join_user,
@@ -126,4 +134,6 @@ export {
   find_homearea_by_name,
   login_user,
   check_email,
-  check_nickname };
+  check_nickname,
+  logout
+};
