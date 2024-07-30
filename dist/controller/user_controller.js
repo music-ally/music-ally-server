@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.check_nickname = exports.check_email = exports.logout = exports.login = exports.leave = exports.join_user = void 0;
+exports.check_nickname = exports.check_email = exports.logout = exports.social_login = exports.login = exports.leave = exports.join_user = void 0;
 const response_form_1 = __importDefault(require("../utils/response_form"));
 const response_message_1 = __importDefault(require("../utils/response_message"));
 const status_code_1 = __importDefault(require("../utils/status_code"));
@@ -126,6 +126,39 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.login = login;
+const social_login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_social_login_dto = req.body;
+    try {
+        const tokens = yield user_service.social_login(user_social_login_dto);
+        return res
+            .status(status_code_1.default.OK)
+            .send(response_form_1.default.success(response_message_1.default.LOGIN_SUCCESS, tokens));
+    }
+    catch (error) {
+        if (error.message === 'email not found') {
+            return res
+                .status(status_code_1.default.NOT_FOUND)
+                .send(response_form_1.default.fail(response_message_1.default.NOT_FOUND_EMAIL, error));
+        }
+        else if (error.message === 'wrong social_id') {
+            return res
+                .status(status_code_1.default.BAD_REQUEST)
+                .send(response_form_1.default.fail(response_message_1.default.INVALID_PASSWORD, error));
+        }
+        else if (error.message === 'left user') {
+            return res
+                .status(status_code_1.default.BAD_REQUEST)
+                .send(response_form_1.default.fail(response_message_1.default.LEFT_USER, error));
+        }
+        else {
+            console.error("Error at login: Controller", error);
+            return res
+                .status(status_code_1.default.INTERNAL_SERVER_ERROR)
+                .send(response_form_1.default.fail(response_message_1.default.INTERNAL_SERVER_ERROR, error));
+        }
+    }
+});
+exports.social_login = social_login;
 const check_email = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield user_service.check_email(req.body.email);
