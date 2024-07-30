@@ -184,4 +184,11 @@ const check_nickname = async (
 
 
 
-export {join_user, leave, login, logout, check_email, check_nickname}
+export {
+  join_user,
+  leave,
+  login,
+  logout,
+  check_email,
+  check_nickname
+}
