@@ -1,6 +1,6 @@
 export interface user_join_dto {
   email: string;
-  password: string;
+  password?: string;
   nickname: string;
   birthday: string; 
   sex: string;
