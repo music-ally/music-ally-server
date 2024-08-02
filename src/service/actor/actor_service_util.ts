@@ -69,6 +69,9 @@ const find_actor_by_playdb_id = async (actor_playdb_id: number) => {
  */
 const find_musical_by_Id = async (musical_id: string) => {
   try {
+
+    
+
     const musical = await Musicals.findById(new mongoose.Types.ObjectId(musical_id));
 
     if (!musical) {
@@ -140,6 +143,7 @@ const get_actor_item_by_Id = async (
     const data: actor_main_item_dto = {
       actor_id: actor.id,
       profile_image: actor.profile_image,
+      actor_name: actor.actor_name
     };
 
     return data;
@@ -196,11 +200,7 @@ const get_random_musical = async () => {
       throw new Error("finding random musical fail");
     }
 
-    console.log("util");
-    console.log(random_musical[0]);
-
     return random_musical[0];
-
   } catch (error) {
     console.error("Error fetching random musical Id: ServiceUtils", error);
     throw error;
