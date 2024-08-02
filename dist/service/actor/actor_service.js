@@ -46,12 +46,16 @@ const get_all_actors = () => __awaiter(void 0, void 0, void 0, function* () {
         const actor_list = [];
         const all_actors = yield actors_1.default.find();
         all_actors.forEach((actor) => {
+            let format_date;
+            if (actor.birthday) {
+                format_date = actor.birthday.toISOString().split('T')[0].replace(/-/g, '/');
+            }
             actor_list.push({
                 actor_id: actor._id,
                 profile_image: actor.profile_image,
                 actor_name: actor.actor_name,
                 agency: actor.agency,
-                birthday: actor.birthday,
+                birthday: format_date,
             });
         });
         const data = {

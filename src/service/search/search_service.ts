@@ -42,17 +42,24 @@ const search_actor = async (keyword: string): Promise<actor_search_res_dto> => {
   try {
     const actor_list: actor_search_item_dto[] = [];
 
-    const all_actors = await Actors.find({
+    const actors = await Actors.find({
       actor_name: { $regex: keyword, $options: 'i' }
     });
 
-    all_actors.forEach((actor) => {
+
+
+    actors.forEach((actor) => {
+      let format_date;
+      if (actor.birthday){
+        format_date = actor.birthday.toISOString().split('T')[0].replace(/-/g, '/');
+      }
+
       actor_list.push({
         actor_id: actor._id,
         profile_image: actor.profile_image,
         actor_name: actor.actor_name,
         agency: actor.agency,
-        birthday: actor.birthday,
+        birthday: format_date,
       });
     });
 
