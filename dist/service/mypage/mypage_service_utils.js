@@ -113,8 +113,10 @@ const get_following = (user_id) => __awaiter(void 0, void 0, void 0, function* (
         const follows = yield follows_1.default.find({ from_user_id: user_id });
         for (const follow of follows) {
             const followed_user = yield find_user_by_id(follow.to_user_id.toString());
+            const followed_user_profile = followed_user.profile_image;
             following_list.push({
                 user_id: follow.to_user_id,
+                profile_image: followed_user_profile || "",
                 nickname: followed_user.nickname,
                 email: followed_user.email,
                 is_following: "팔로잉",
@@ -142,10 +144,12 @@ const get_follower = (user_id) => __awaiter(void 0, void 0, void 0, function* ()
         const follows = yield follows_1.default.find({ to_user_id: user_id });
         for (const follow of follows) {
             const follows_user = yield find_user_by_id(follow.from_user_id.toString());
+            const follows_user_profile = follows_user.profile_image;
             // 내가 상대를 팔로우하고있는지 확인하는 작업
             const find_is_follow = yield is_follow(user_id, follow.from_user_id.toString());
             follower_list.push({
                 user_id: follow.from_user_id,
+                profile_image: follows_user_profile || "",
                 nickname: follows_user.nickname,
                 email: follows_user.email,
                 is_following: find_is_follow,
