@@ -13,6 +13,7 @@ const profile_router_1 = __importDefault(require("./router/profile_router"));
 const musical_router_1 = __importDefault(require("./router/musical_router"));
 const review_router_1 = __importDefault(require("./router/review_router"));
 const notification_router_1 = __importDefault(require("./router/notification_router"));
+const search_router_1 = __importDefault(require("./router/search_router"));
 require("dotenv").config();
 const { PORT } = process.env;
 const cors = require('cors');
@@ -28,6 +29,7 @@ app.use(profile_router_1.default);
 app.use(review_router_1.default);
 app.use(musical_router_1.default);
 app.use(notification_router_1.default);
+app.use(search_router_1.default);
 (0, db_1.default)();
 app.set("port", process.env.PORT || 3000); //  서버 포트
 app.set("host", process.env.HOST || "0.0.0.0"); // 서버 아이피
