@@ -8,5 +8,6 @@ export interface actor_main_res_dto {
 export interface actor_main_item_dto {
     actor_id: mongoose.Types.ObjectId;
     profile_image?: string;
+    actor_name: string;
 }
 

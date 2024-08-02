@@ -167,6 +167,7 @@ const get_singers = async (): Promise<actor_main_res_dto> => {
         singer_list.push({
           actor_id: singer._id.toString(),
           profile_image: singer.profile_image,
+          actor_name: singer.actor_name
         });
       }
 
@@ -203,6 +204,7 @@ const get_most_viewed = async (): Promise<actor_main_res_dto> => {
       actor_list.push({
         actor_id: actor._id.toString(),
         profile_image: actor.profile_image,
+        actor_name: actor.actor_name
       });
     });
 

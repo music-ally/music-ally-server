@@ -164,6 +164,7 @@ const get_singers = () => __awaiter(void 0, void 0, void 0, function* () {
                 singer_list.push({
                     actor_id: singer._id.toString(),
                     profile_image: singer.profile_image,
+                    actor_name: singer.actor_name
                 });
             }
             attempts++;
@@ -195,6 +196,7 @@ const get_most_viewed = () => __awaiter(void 0, void 0, void 0, function* () {
             actor_list.push({
                 actor_id: actor._id.toString(),
                 profile_image: actor.profile_image,
+                actor_name: actor.actor_name
             });
         });
         const data = {
