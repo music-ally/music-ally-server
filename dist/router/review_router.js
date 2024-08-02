@@ -32,6 +32,7 @@ const auth_1 = __importDefault(require("../middleware/auth"));
 const review_router = express_1.default.Router();
 review_router.get("/review", auth_1.default, review_controller.review_main);
 review_router.get("/review/:reviewId", auth_1.default, review_controller.review_detail);
+review_router.get("/review/writer/profile", auth_1.default, review_controller.writer_profile);
 review_router.post("/review", auth_1.default, review_controller.write_review);
 review_router.patch("/review/:reviewId", auth_1.default, review_controller.update_review);
 review_router.post("/review/:reviewId/like", auth_1.default, review_controller.review_like);

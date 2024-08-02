@@ -6,9 +6,11 @@ const review_router = express.Router();
 
 review_router.get("/review", auth, review_controller.review_main);
 review_router.get("/review/:reviewId", auth, review_controller.review_detail);
+review_router.get("/review/writer/profile", auth, review_controller.writer_profile);
 review_router.post("/review", auth, review_controller.write_review);
 review_router.patch("/review/:reviewId", auth, review_controller.update_review);
 review_router.post("/review/:reviewId/like", auth, review_controller.review_like);
 review_router.delete("/review/:reviewId/like", auth, review_controller.cancel_review_like);
+
 
 export default review_router;

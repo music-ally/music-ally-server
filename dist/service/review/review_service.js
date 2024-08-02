@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancel_review_like = exports.review_like = exports.review_detail = exports.update_review = exports.write_review = exports.review_main = void 0;
+exports.writer_profile = exports.cancel_review_like = exports.review_like = exports.review_detail = exports.update_review = exports.write_review = exports.review_main = void 0;
 const musicals_1 = __importDefault(require("../../schema/musicals"));
 const actors_1 = __importDefault(require("../../schema/actors"));
 const reviews_1 = __importDefault(require("../../schema/reviews"));
@@ -228,4 +228,25 @@ const cancel_review_like = (user_id, review_id) => __awaiter(void 0, void 0, voi
     }
 });
 exports.cancel_review_like = cancel_review_like;
+const writer_profile = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield users_1.default.findById(user_id);
+        console.log(user);
+        if (!user) {
+            throw new Error("유저가 존재하지 않습니다.");
+        }
+        const masked_email = `${user.email.slice(0, 2)}****`;
+        const data = {
+            reviewer_profile_image: user.profile_image || null,
+            reviewer_nickname: user.nickname,
+            reviewer_email: masked_email
+        };
+        return data;
+    }
+    catch (error) {
+        console.error("Error at get writer profile: Service", error);
+        throw error;
+    }
+});
+exports.writer_profile = writer_profile;
 //# sourceMappingURL=review_service.js.map

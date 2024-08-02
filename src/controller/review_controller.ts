@@ -138,11 +138,32 @@ const cancel_review_like = async (
   }
 };
 
+
+const writer_profile = async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+  try {
+    const data = await review_service.writer_profile(req.user_id);
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.GET_WRITER_PROFILE_SUCCESS, data));
+  } catch (error) {
+    console.error("Error at get writer_profile: Controller", error);
+    return res
+      .status(status_code.INTERNAL_SERVER_ERROR)
+      .send(form.fail(message.INTERNAL_SERVER_ERROR, error));
+  }
+};
+
 export { 
   review_main,
   review_detail,
   write_review,
   update_review,
   review_like,
-  cancel_review_like
+  cancel_review_like,
+  writer_profile
 }

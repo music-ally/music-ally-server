@@ -63,6 +63,7 @@ const message = {
   UPDATE_REVIEW_SUCCESS: '리뷰 수정 성공',
   REVIEW_LIKE_SUCCESS: '리뷰 좋아요 성공',
   CANCEL_REVIEW_LIKE_SUCCESS: '리뷰 좋아요 취소 성공',
+  GET_WRITER_PROFILE_SUCCESS: '리뷰 작성자 데이터 반환 성공'
 }
 
 export default message;

@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cancel_review_like = exports.review_like = exports.update_review = exports.write_review = exports.review_detail = exports.review_main = void 0;
+exports.writer_profile = exports.cancel_review_like = exports.review_like = exports.update_review = exports.write_review = exports.review_detail = exports.review_main = void 0;
 const response_form_1 = __importDefault(require("../utils/response_form"));
 const response_message_1 = __importDefault(require("../utils/response_message"));
 const status_code_1 = __importDefault(require("../utils/status_code"));
@@ -136,4 +136,19 @@ const cancel_review_like = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.cancel_review_like = cancel_review_like;
+const writer_profile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield review_service.writer_profile(req.user_id);
+        return res
+            .status(status_code_1.default.OK)
+            .send(response_form_1.default.success(response_message_1.default.GET_WRITER_PROFILE_SUCCESS, data));
+    }
+    catch (error) {
+        console.error("Error at get writer_profile: Controller", error);
+        return res
+            .status(status_code_1.default.INTERNAL_SERVER_ERROR)
+            .send(response_form_1.default.fail(response_message_1.default.INTERNAL_SERVER_ERROR, error));
+    }
+});
+exports.writer_profile = writer_profile;
 //# sourceMappingURL=review_controller.js.map

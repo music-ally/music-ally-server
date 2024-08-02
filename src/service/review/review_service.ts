@@ -10,6 +10,7 @@ import * as notification_service from "../notification/notification_service";
 import Review_likes from "../../schema/review_likes";
 import Users from "../../schema/users";
 import Theaters from "../../schema/theaters";
+import { review_writer_profile_res_dto } from "../../dto/review/response/review_writer_profile_res";
 
 
 const review_main = async (user_id: string) => {
@@ -231,5 +232,34 @@ const cancel_review_like = async (user_id: string, review_id: string) => {
   }
 };
 
+const writer_profile = async (user_id: string) => {
 
-export { review_main, write_review, update_review, review_detail, review_like, cancel_review_like };
+  try {
+    const user = await Users.findById(user_id)
+
+    console.log(user);
+    if(!user){
+      throw new Error("유저가 존재하지 않습니다.")
+    }
+
+    const masked_email = `${user.email.slice(0, 2)}****`;
+    
+    const data: review_writer_profile_res_dto = {
+      reviewer_profile_image: user.profile_image || null,
+      reviewer_nickname: user.nickname,
+      reviewer_email: masked_email
+    };  
+
+    return data;
+
+  } catch (error) {
+    console.error("Error at get writer profile: Service", error);
+    throw error;
+  }
+};
+
+
+
+export { review_main, write_review, update_review, review_detail, review_like, cancel_review_like,
+  writer_profile
+ };
