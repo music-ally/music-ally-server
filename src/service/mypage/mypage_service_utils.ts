@@ -118,9 +118,11 @@ const get_following = async (user_id: string): Promise<follow_res_dto> => {
 
     for (const follow of follows) {
       const followed_user = await find_user_by_id(follow.to_user_id.toString());
+      const followed_user_profile = followed_user.profile_image;
 
       following_list.push({
         user_id: follow.to_user_id,
+        profile_image: followed_user_profile || "",
         nickname: followed_user.nickname,
         email: followed_user.email,
         is_following: "팔로잉",
@@ -153,6 +155,7 @@ const get_follower = async (user_id: string): Promise<follow_res_dto> => {
       const follows_user = await find_user_by_id(
         follow.from_user_id.toString()
       );
+      const follows_user_profile = follows_user.profile_image;
 
       // 내가 상대를 팔로우하고있는지 확인하는 작업
       const find_is_follow = await is_follow(
@@ -162,6 +165,7 @@ const get_follower = async (user_id: string): Promise<follow_res_dto> => {
 
       follower_list.push({
         user_id: follow.from_user_id,
+        profile_image: follows_user_profile || "",
         nickname: follows_user.nickname,
         email: follows_user.email,
         is_following: find_is_follow,

@@ -135,6 +135,7 @@ const get_others_follower = async (
       const follows_user = await mypage_service_utils.find_user_by_id(
         follow.from_user_id.toString()
       );
+      const follows_user_profile = follows_user.profile_image;
 
       // 내가 그 리스트 사람들을 팔로우하고 있는지 확인하는 작업
       const find_is_follow = await mypage_service_utils.is_follow(
@@ -144,6 +145,7 @@ const get_others_follower = async (
 
       follower_list.push({
         user_id: follows_user._id,
+        profile_image: follows_user_profile || "",
         nickname: follows_user.nickname,
         email: follows_user.email,
         is_following: find_is_follow,
@@ -180,6 +182,7 @@ const get_others_following = async (
       const followed_user = await mypage_service_utils.find_user_by_id(
         follow.to_user_id.toString()
       );
+      const followed_user_profile = followed_user.profile_image;
 
       // 내가 상대를 팔로우하고있는지 확인하는 작업
       const find_is_follow = await mypage_service_utils.is_follow(
@@ -189,6 +192,7 @@ const get_others_following = async (
 
       following_list.push({
         user_id: followed_user._id,
+        profile_image: followed_user_profile || "",
         nickname: followed_user.nickname,
         email: followed_user.email,
         is_following: find_is_follow,
