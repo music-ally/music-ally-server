@@ -15,6 +15,9 @@ import Castings from "../../schema/castings";
 import { musical_info } from "../../dto/musical/musical_info";
 import { actor_info } from "../../dto/actor/actor_info";
 import Users from "../../schema/users";
+import Reviews from "../../schema/reviews";
+import { review_info } from "../../dto/review/review_info";
+import * as review_service from "../review/review_service";
 
 /**
  * 뮤지컬의 playdb_id가
@@ -69,10 +72,9 @@ const find_actor_by_playdb_id = async (actor_playdb_id: number) => {
  */
 const find_musical_by_Id = async (musical_id: string) => {
   try {
-
-    
-
-    const musical = await Musicals.findById(new mongoose.Types.ObjectId(musical_id));
+    const musical = await Musicals.findById(
+      new mongoose.Types.ObjectId(musical_id)
+    );
 
     if (!musical) {
       console.error("Error at service/actor/service_utils");
@@ -143,7 +145,7 @@ const get_actor_item_by_Id = async (
     const data: actor_main_item_dto = {
       actor_id: actor.id,
       profile_image: actor.profile_image,
-      actor_name: actor.actor_name
+      actor_name: actor.actor_name,
     };
 
     return data;
@@ -252,24 +254,78 @@ const get_musical_details = async (
   }
 };
 
+const get_reviews_for_actor = async (
+  actor_id: string,
+  musical_ids: string[]
+) => {
+  try {
+    const reviews = await Reviews.find({
+      actor_ids: actor_id,
+      musical_id: { $in: musical_ids },
+    });
+
+    return reviews;
+  } catch (error) {
+    console.error("Error fetching reviews: ServiceUtils", error);
+    throw error;
+  }
+};
+
 /**
  * 배우의 상세 정보 반환
  */
-const get_actor_details = async (actor_id: string): Promise<actor_info> => {
+const get_actor_details = async (
+  actor_id: string,
+  user_id: string
+) => {
   try {
-    const actor_details = await find_actor_by_id(actor_id);
-
+    const actor_details = await Actors.findById(actor_id);
     if (!actor_details) {
       throw new Error("actor not found");
     }
-    
+
     // 배우 조회할때마다 조회수 +1씩 증가
     actor_details.view++;
     await actor_details.save();
 
-    return actor_details;
+    const casting_musical = await Castings.find({ actor_id: actor_id }).select(
+      "musical_id"
+    );
+
+    const musical_ids = casting_musical.map((c) => c.musical_id.toString());
+    const musicals = await Musicals.find({ _id: { $in: musical_ids } });
+
+    const reviews = await get_reviews_for_actor(
+      actor_id,
+      musical_ids
+    );
+    const works = musicals.map((musical) => ({
+      musical_id: musical._id,
+      poster_image: musical.poster_image,
+    }));
+
+    const review_details = await Promise.all(reviews.map(review => 
+      review_service.review_detail_for_actor(review.id.toString(), user_id)
+    ));
+
+
+    const data = {
+      actor_id: actor_details._id,
+      profile_image: actor_details.profile_image,
+      actor_name: actor_details.actor_name,
+      birthday: actor_details.birthday,
+      debut: actor_details.debut,
+      agency: actor_details.agency,
+      job: actor_details.job,
+      physical: actor_details.physical,
+      works_count: works.length,
+      works: works,
+      reviews: review_details,
+    };
+
+    return data;
   } catch (error) {
-    console.error("Error fetching musical details: ServiceUtils", error);
+    console.error("Error fetching actor details: ServiceUtils", error);
     throw error;
   }
 };
@@ -281,7 +337,7 @@ const find_age_by_userId = async (userId: string) => {
   try {
     const user = await Users.findById(userId);
 
-    if(user?.birthday) {
+    if (user?.birthday) {
       const today = new Date();
       const birthDate = new Date(user.birthday);
       let age = today.getFullYear() - birthDate.getFullYear();
@@ -289,16 +345,15 @@ const find_age_by_userId = async (userId: string) => {
       if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
         age--;
       }
-      return age/10;
-    }
-    else {
+      return age / 10;
+    } else {
       return 0;
     }
   } catch (error) {
     console.error("Error finding person's age by userId: ServiceUtils", error);
     throw error;
   }
-}
+};
 
 export {
   find_musical_by_playdb_id,
@@ -312,5 +367,5 @@ export {
   get_random_singer,
   get_musical_details,
   get_actor_details,
-  find_age_by_userId
+  find_age_by_userId,
 };

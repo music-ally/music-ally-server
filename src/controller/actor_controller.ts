@@ -127,9 +127,10 @@ const fetch_actor_details = async (
   next: NextFunction
 ): Promise<void | Response> => {
   const actor_id = req.params.actorId;
+  const user_id = req.user_id;
 
   try {
-    const data = await actor_service_util.get_actor_details(actor_id);
+    const data = await actor_service_util.get_actor_details(actor_id, user_id);
 
     return res
       .status(status_code.OK)

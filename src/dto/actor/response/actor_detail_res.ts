@@ -7,7 +7,7 @@ export interface actor_detail_res_dto{
     profile_image?: string;
     actor_name: string;
     birthday?: Date; 
-    debut?: Date;
+    debut?: string;
     agency?: string;
     job?: string;
     physical?: string;

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { actor_info } from "../dto/actor/actor_info";
 
 const actors_schema = new mongoose.Schema({
-  actor_playdb_id:{
+  actor_playdb_id: {
     type: Number,
     required: true,
   },
@@ -33,14 +33,17 @@ const actors_schema = new mongoose.Schema({
   job: {
     type: String,
     required: false,
-    default: '뮤지컬배우'
+    default: "뮤지컬배우",
   },
   view: {
     type: Number,
     required: true,
-    default: 0
-  }
+    default: 0,
+  },
 });
 
-const Actors = mongoose.model<actor_info & mongoose.Document>("actors", actors_schema);
+const Actors = mongoose.model<actor_info & mongoose.Document>(
+  "actors",
+  actors_schema
+);
 export default Actors;
