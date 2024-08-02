@@ -51,16 +51,18 @@ const get_all_actors = async (): Promise<actor_search_res_dto> => {
   }
 };
 
+
 /**
  * 랜덤한 뮤지컬 1개의
  * [뮤지컬 제목, 출연 배우들][]집합 반환
  */
+/* 하늘 - 이거 안 쓰는 거 같은데 삭제해도 될까요
 const get_actors_in_random_musical =
   async (): Promise<actor_main_musical_res_dto> => {
     try {
       const random_musical = await actor_service_util.get_random_musical();
       const musical_actors = await actor_service_util.get_actors_same_musical(
-        random_musical.id
+        random_musical._id
       );
 
       const data: actor_main_musical_res_dto = {
@@ -73,7 +75,7 @@ const get_actors_in_random_musical =
       console.error("Error fetching actors in random musical: Service", error);
       throw error;
     }
-  };
+  };*/
 
 /**
  * 랜덤한 뮤지컬 1개의
@@ -90,10 +92,10 @@ const get_many_actors_in_random_musical =
       while (true) {
         random_musical = await actor_service_util.get_random_musical();
         musical_actors = await actor_service_util.get_actors_same_musical(
-          random_musical.id
+          random_musical._id
         );
 
-        if (musical_actors.actors.length > 0) {
+        if (musical_actors.actors.length > 4) {
           break;
         }
       }
@@ -249,7 +251,7 @@ const create_actor = async (create_actor_dto: create_actor_dto) => {
 
 export {
   get_all_actors,
-  get_actors_in_random_musical,
+  //get_actors_in_random_musical,
   get_many_actors_in_random_musical,
   get_many_actors_in_num_random_musical,
   get_singers,
