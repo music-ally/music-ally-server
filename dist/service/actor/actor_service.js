@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.create_actor = exports.get_most_viewed = exports.get_singers = exports.get_many_actors_in_num_random_musical = exports.get_many_actors_in_random_musical = exports.get_actors_in_random_musical = exports.get_all_actors = void 0;
+exports.create_actor = exports.get_most_viewed = exports.get_singers = exports.get_many_actors_in_num_random_musical = exports.get_many_actors_in_random_musical = exports.get_all_actors = void 0;
 const actor_service_util = __importStar(require("./actor_service_util"));
 const actors_1 = __importDefault(require("../../schema/actors"));
 /**
@@ -73,22 +73,26 @@ exports.get_all_actors = get_all_actors;
  * 랜덤한 뮤지컬 1개의
  * [뮤지컬 제목, 출연 배우들][]집합 반환
  */
-const get_actors_in_random_musical = () => __awaiter(void 0, void 0, void 0, function* () {
+/* 하늘 - 이거 안 쓰는 거 같은데 삭제해도 될까요
+const get_actors_in_random_musical =
+  async (): Promise<actor_main_musical_res_dto> => {
     try {
-        const random_musical = yield actor_service_util.get_random_musical();
-        const musical_actors = yield actor_service_util.get_actors_same_musical(random_musical.id);
-        const data = {
-            musical_name: random_musical.musical_name,
-            actors: musical_actors.actors,
-        };
-        return data;
+      const random_musical = await actor_service_util.get_random_musical();
+      const musical_actors = await actor_service_util.get_actors_same_musical(
+        random_musical._id
+      );
+
+      const data: actor_main_musical_res_dto = {
+        musical_name: random_musical.musical_name,
+        actors: musical_actors.actors,
+      };
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching actors in random musical: Service", error);
+      throw error;
     }
-    catch (error) {
-        console.error("Error fetching actors in random musical: Service", error);
-        throw error;
-    }
-});
-exports.get_actors_in_random_musical = get_actors_in_random_musical;
+  };*/
 /**
  * 랜덤한 뮤지컬 1개의
  * 출연배우가 5명 이상일 경우에만
@@ -101,8 +105,8 @@ const get_many_actors_in_random_musical = () => __awaiter(void 0, void 0, void 0
         // 출연 배우가 5명 이상인 뮤지컬을 찾을 때까지 반복
         while (true) {
             random_musical = yield actor_service_util.get_random_musical();
-            musical_actors = yield actor_service_util.get_actors_same_musical(random_musical.id);
-            if (musical_actors.actors.length > 0) {
+            musical_actors = yield actor_service_util.get_actors_same_musical(random_musical._id);
+            if (musical_actors.actors.length > 4) {
                 break;
             }
         }

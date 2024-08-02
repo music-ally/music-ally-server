@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.find_age_by_userId = exports.get_actor_details = exports.get_musical_details = exports.get_random_singer = exports.get_random_musical = exports.get_actors_same_musical = exports.get_actor_item_by_Id = exports.get_actors_in_musical = exports.find_actor_by_id = exports.find_musical_by_Id = exports.find_actor_by_playdb_id = exports.find_musical_by_playdb_id = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 const actors_1 = __importDefault(require("../../schema/actors"));
 const musicals_1 = __importDefault(require("../../schema/musicals"));
 const castings_1 = __importDefault(require("../../schema/castings"));
@@ -68,7 +69,7 @@ exports.find_actor_by_playdb_id = find_actor_by_playdb_id;
  */
 const find_musical_by_Id = (musical_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const musical = yield musicals_1.default.findById(musical_id);
+        const musical = yield musicals_1.default.findById(new mongoose_1.default.Types.ObjectId(musical_id));
         if (!musical) {
             console.error("Error at service/actor/service_utils");
             throw new Error("musical not found");
@@ -177,6 +178,8 @@ const get_random_musical = () => __awaiter(void 0, void 0, void 0, function* () 
         if (random_musical.length === 0) {
             throw new Error("finding random musical fail");
         }
+        console.log("util");
+        console.log(random_musical[0]);
         return random_musical[0];
     }
     catch (error) {
