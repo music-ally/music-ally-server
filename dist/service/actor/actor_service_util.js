@@ -132,6 +132,7 @@ const get_actor_item_by_Id = (actor_id) => __awaiter(void 0, void 0, void 0, fun
         const data = {
             actor_id: actor.id,
             profile_image: actor.profile_image,
+            actor_name: actor.actor_name
         };
         return data;
     }
@@ -178,8 +179,6 @@ const get_random_musical = () => __awaiter(void 0, void 0, void 0, function* () 
         if (random_musical.length === 0) {
             throw new Error("finding random musical fail");
         }
-        console.log("util");
-        console.log(random_musical[0]);
         return random_musical[0];
     }
     catch (error) {
