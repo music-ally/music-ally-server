@@ -49,7 +49,7 @@ const review_main = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
             .populate({
             path: 'musical_id',
             model: musicals_1.default,
-            select: 'poster_uri'
+            select: 'poster_image'
         })
             .populate({
             path: 'user_id',
@@ -66,7 +66,7 @@ const review_main = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
             const masked_email = `${review.user_id.email.slice(0, 2)}****`;
             const review_data = {
                 review_id: review._id,
-                poster_image: review.musical_id.poster_uri,
+                poster_image: review.musical_id.poster_image,
                 reviewer_profile_image: review.user_id.profile_image || null,
                 reviewer_nickname: review.user_id.nickname,
                 reviewer_email: masked_email,
