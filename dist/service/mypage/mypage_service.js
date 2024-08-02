@@ -64,6 +64,7 @@ const get_my_profile = (user_id) => __awaiter(void 0, void 0, void 0, function* 
             profile_image: user.profile_image,
             nickname: user.nickname,
             email: user.email,
+            signup_method: user.signup_method,
             following_num: count_following,
             follower_num: count_follower,
             review_num: count_review,

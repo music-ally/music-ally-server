@@ -6,6 +6,7 @@ export interface user_mypage_res_dto {
     profile_image?: string;
     nickname: string;
     email: string; //마스킹 안된 전체 이메일
+    signup_method: string;
     following_num: number; //내가 팔로우한 사람 수
     follower_num: number; //나를 팔로우하는 사람 수
     review_num: number;
