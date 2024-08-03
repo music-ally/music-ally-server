@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,6 +41,8 @@ const actors_1 = __importDefault(require("../../schema/actors"));
 const musicals_1 = __importDefault(require("../../schema/musicals"));
 const castings_1 = __importDefault(require("../../schema/castings"));
 const users_1 = __importDefault(require("../../schema/users"));
+const reviews_1 = __importDefault(require("../../schema/reviews"));
+const review_service = __importStar(require("../review/review_service"));
 /**
  * 뮤지컬의 playdb_id가
  * 유효한지 확인해주고
@@ -132,7 +157,7 @@ const get_actor_item_by_Id = (actor_id) => __awaiter(void 0, void 0, void 0, fun
         const data = {
             actor_id: actor.id,
             profile_image: actor.profile_image,
-            actor_name: actor.actor_name
+            actor_name: actor.actor_name,
         };
         return data;
     }
@@ -228,22 +253,57 @@ const get_musical_details = (musical_id) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.get_musical_details = get_musical_details;
+const get_reviews_for_actor = (actor_id, musical_ids) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const reviews = yield reviews_1.default.find({
+            actor_ids: actor_id,
+            musical_id: { $in: musical_ids },
+        });
+        return reviews;
+    }
+    catch (error) {
+        console.error("Error fetching reviews: ServiceUtils", error);
+        throw error;
+    }
+});
 /**
  * 배우의 상세 정보 반환
  */
-const get_actor_details = (actor_id) => __awaiter(void 0, void 0, void 0, function* () {
+const get_actor_details = (actor_id, user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const actor_details = yield find_actor_by_id(actor_id);
+        const actor_details = yield actors_1.default.findById(actor_id);
         if (!actor_details) {
             throw new Error("actor not found");
         }
         // 배우 조회할때마다 조회수 +1씩 증가
         actor_details.view++;
         yield actor_details.save();
-        return actor_details;
+        const casting_musical = yield castings_1.default.find({ actor_id: actor_id }).select("musical_id");
+        const musical_ids = casting_musical.map((c) => c.musical_id.toString());
+        const musicals = yield musicals_1.default.find({ _id: { $in: musical_ids } });
+        const reviews = yield get_reviews_for_actor(actor_id, musical_ids);
+        const works = musicals.map((musical) => ({
+            musical_id: musical._id,
+            poster_image: musical.poster_image,
+        }));
+        const review_details = yield Promise.all(reviews.map(review => review_service.review_detail_for_actor(review.id.toString(), user_id)));
+        const data = {
+            actor_id: actor_details._id,
+            profile_image: actor_details.profile_image,
+            actor_name: actor_details.actor_name,
+            birthday: actor_details.birthday,
+            debut: actor_details.debut,
+            agency: actor_details.agency,
+            job: actor_details.job,
+            physical: actor_details.physical,
+            works_count: works.length,
+            works: works,
+            reviews: review_details,
+        };
+        return data;
     }
     catch (error) {
-        console.error("Error fetching musical details: ServiceUtils", error);
+        console.error("Error fetching actor details: ServiceUtils", error);
         throw error;
     }
 });

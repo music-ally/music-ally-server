@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writer_profile = exports.cancel_review_like = exports.review_like = exports.review_detail = exports.update_review = exports.write_review = exports.review_main = void 0;
+exports.writer_profile = exports.cancel_review_like = exports.review_like = exports.review_detail_for_actor = exports.review_detail = exports.update_review = exports.write_review = exports.review_main = void 0;
 const musicals_1 = __importDefault(require("../../schema/musicals"));
 const actors_1 = __importDefault(require("../../schema/actors"));
 const reviews_1 = __importDefault(require("../../schema/reviews"));
@@ -45,19 +45,19 @@ const users_1 = __importDefault(require("../../schema/users"));
 const theaters_1 = __importDefault(require("../../schema/theaters"));
 const review_main = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const reviews = yield reviews_1.default.find()
+        const reviews = (yield reviews_1.default.find()
             .populate({
-            path: 'musical_id',
+            path: "musical_id",
             model: musicals_1.default,
-            select: 'poster_image'
+            select: "poster_image",
         })
             .populate({
-            path: 'user_id',
+            path: "user_id",
             model: users_1.default,
-            select: 'profile_image nickname email',
+            select: "profile_image nickname email",
         })
             //.sort({ create_at: -1 }) //-1 => 내림차순, 최신순 정렬
-            .exec();
+            .exec());
         let all_review = [];
         yield Promise.all(reviews.map((review) => __awaiter(void 0, void 0, void 0, function* () {
             const review_id = review._id;
@@ -124,7 +124,9 @@ const write_review = (user_id, review_write_dto) => __awaiter(void 0, void 0, vo
 exports.write_review = write_review;
 const update_review = (review_id, review_update_dto) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = yield reviews_1.default.findByIdAndUpdate(review_id, review_update_dto, { new: true });
+        const data = yield reviews_1.default.findByIdAndUpdate(review_id, review_update_dto, {
+            new: true,
+        });
         return data;
     }
     catch (error) {
@@ -135,40 +137,42 @@ const update_review = (review_id, review_update_dto) => __awaiter(void 0, void 0
 exports.update_review = update_review;
 const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const review = yield reviews_1.default.findById(review_id)
+        const review = (yield reviews_1.default.findById(review_id)
             .populate({
-            path: 'user_id',
+            path: "user_id",
             model: users_1.default,
-            select: 'profile_image nickname email'
+            select: "profile_image nickname email",
         })
             .populate({
-            path: 'musical_id',
+            path: "musical_id",
             model: musicals_1.default,
             populate: {
-                path: 'theater_id',
+                path: "theater_id",
                 model: theaters_1.default,
-                select: 'theater_name'
+                select: "theater_name",
             },
-            select: 'poster_uri musical_name'
+            select: "poster_image musical_name",
         })
             .populate({
-            path: 'actor_ids',
+            path: "actor_ids",
             model: actors_1.default,
-            select: 'profile_image actor_name'
+            select: "profile_image actor_name",
         })
-            .exec(); // 이렇게 any로 캐스팅해줘야 오류가 안 나는데 왜 필요한지 모르겠음...
+            .exec()); // 이렇게 any로 캐스팅해줘야 오류가 안 나는데 왜 필요한지 모르겠음...
         if (!review) {
-            throw new Error('Review not found');
+            throw new Error("Review not found");
         }
         console.log(review);
         const is_like = yield review_likes_1.default.exists({ user_id, review_id });
         const masked_email = `${review.user_id.email.slice(0, 2)}****`;
-        const like_num = yield review_likes_1.default.countDocuments({ review_id: review_id });
+        const like_num = yield review_likes_1.default.countDocuments({
+            review_id: review_id,
+        });
         const data = {
             review_id: review._id,
             musical: {
                 musical_id: review.musical_id._id,
-                poster_uri: review.musical_id.poster_uri,
+                poster_image: review.musical_id.poster_image,
                 musical_name: review.musical_id.musical_name,
                 theater_name: review.musical_id.theater_id.theater_name,
                 watch_at: review.watch_at,
@@ -178,7 +182,7 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
                 profile_image: actor.profile_image,
                 actor_name: actor.actor_name,
             })),
-            poster_uri: review.musical_id.poster_uri,
+            poster_image: review.musical_id.poster_uri,
             reviewer_profile_image: review.user_id.profile_image || null,
             reviewer_nickname: review.user_id.nickname,
             reviewer_email: masked_email,
@@ -188,7 +192,7 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
             fear: review.fear,
             sensitivity: review.sensitivity,
             content: review.content,
-            create_at: review.create_at
+            create_at: review.create_at,
         };
         return data;
     }
@@ -198,11 +202,66 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.review_detail = review_detail;
+const review_detail_for_actor = (review_id, user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const review = (yield reviews_1.default.findById(review_id)
+            .populate({
+            path: "user_id",
+            model: users_1.default,
+            select: "profile_image nickname email",
+        })
+            .populate({
+            path: "musical_id",
+            model: musicals_1.default,
+            populate: {
+                path: "theater_id",
+                model: theaters_1.default,
+                select: "theater_name",
+            },
+            select: "poster_image musical_name",
+        })
+            .populate({
+            path: "actor_ids",
+            model: actors_1.default,
+            select: "profile_image actor_name",
+        })
+            .exec()); // 이렇게 any로 캐스팅해줘야 오류가 안 나는데 왜 필요한지 모르겠음...
+        if (!review) {
+            throw new Error("Review not found");
+        }
+        console.log(review);
+        const is_like = yield review_likes_1.default.exists({ user_id, review_id });
+        const masked_email = `${review.user_id.email.slice(0, 2)}****`;
+        const like_num = yield review_likes_1.default.countDocuments({
+            review_id: review_id,
+        });
+        const data = {
+            review_id: review._id,
+            poster_image: review.musical_id.poster_image,
+            reviewer_profile_image: review.user_id.profile_image || null,
+            reviewer_nickname: review.user_id.nickname,
+            reviewer_email: masked_email,
+            like_num: like_num,
+            is_like: Boolean(is_like),
+            violence: review.violence,
+            fear: review.fear,
+            sensitivity: review.sensitivity,
+            content: review.content,
+            create_at: review.create_at,
+        };
+        return data;
+    }
+    catch (error) {
+        console.error("Error at get review_detail: Service", error);
+        throw error;
+    }
+});
+exports.review_detail_for_actor = review_detail_for_actor;
 const review_like = (user_id, review_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const review_like = new review_likes_1.default({
             user_id: user_id,
-            review_id: review_id
+            review_id: review_id,
         });
         yield review_like.save();
         yield notification_service.make_review_notification("리뷰", review_id, user_id);
@@ -218,7 +277,7 @@ const cancel_review_like = (user_id, review_id) => __awaiter(void 0, void 0, voi
     try {
         const review_like = yield review_likes_1.default.findOneAndDelete({
             user_id: user_id,
-            review_id: review_id
+            review_id: review_id,
         });
         return;
     }
@@ -239,7 +298,7 @@ const writer_profile = (user_id) => __awaiter(void 0, void 0, void 0, function* 
         const data = {
             reviewer_profile_image: user.profile_image || null,
             reviewer_nickname: user.nickname,
-            reviewer_email: masked_email
+            reviewer_email: masked_email,
         };
         return data;
     }

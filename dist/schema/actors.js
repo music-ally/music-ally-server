@@ -36,13 +36,13 @@ const actors_schema = new mongoose_1.default.Schema({
     job: {
         type: String,
         required: false,
-        default: '뮤지컬배우'
+        default: "뮤지컬배우",
     },
     view: {
         type: Number,
         required: true,
-        default: 0
-    }
+        default: 0,
+    },
 });
 const Actors = mongoose_1.default.model("actors", actors_schema);
 exports.default = Actors;

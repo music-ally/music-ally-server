@@ -127,8 +127,9 @@ exports.fetch_most_viewed = fetch_most_viewed;
  */
 const fetch_actor_details = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const actor_id = req.params.actorId;
+    const user_id = req.user_id;
     try {
-        const data = yield actor_service_util.get_actor_details(actor_id);
+        const data = yield actor_service_util.get_actor_details(actor_id, user_id);
         return res
             .status(status_code_1.default.OK)
             .send(response_form_1.default.success(response_message_1.default.FETCH_SUCCESS, data));
