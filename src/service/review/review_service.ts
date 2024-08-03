@@ -142,7 +142,7 @@ const review_detail = async (review_id: string, user_id: string) => {
           model: Theaters,
           select: "theater_name",
         },
-        select: "poster_uri musical_name",
+        select: "poster_image musical_name",
       })
       .populate({
         path: "actor_ids",
@@ -169,7 +169,7 @@ const review_detail = async (review_id: string, user_id: string) => {
       review_id: review._id,
       musical: {
         musical_id: review.musical_id._id,
-        poster_uri: review.musical_id.poster_uri,
+        poster_image: review.musical_id.poster_image,
         musical_name: review.musical_id.musical_name,
         theater_name: review.musical_id.theater_id.theater_name,
         watch_at: review.watch_at,
@@ -179,7 +179,7 @@ const review_detail = async (review_id: string, user_id: string) => {
         profile_image: actor.profile_image,
         actor_name: actor.actor_name,
       })),
-      poster_uri: review.musical_id.poster_uri,
+      poster_image: review.musical_id.poster_uri,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,
@@ -215,7 +215,7 @@ const review_detail_for_actor = async (review_id: string, user_id: string) => {
           model: Theaters,
           select: "theater_name",
         },
-        select: "poster_uri musical_name",
+        select: "poster_image musical_name",
       })
       .populate({
         path: "actor_ids",
@@ -240,7 +240,7 @@ const review_detail_for_actor = async (review_id: string, user_id: string) => {
 
     const data: review_main_item_dto = {
       review_id: review._id,
-      poster_uri: review.musical_id.poster_uri,
+      poster_image: review.musical_id.poster_image,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,

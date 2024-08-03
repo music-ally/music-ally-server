@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 export interface review_detail_musical_dto{
     musical_id: mongoose.Types.ObjectId;
-    poster_uri: string;
+    poster_image: string;
     musical_name: string;
     theater_name: string;
     watch_at: Date;
@@ -19,7 +19,7 @@ export interface review_detail_res_dto{
     review_id: mongoose.Types.ObjectId;
     musical: review_detail_musical_dto;
     actors: review_detail_actor_dto[];
-    poster_uri: string;
+    poster_image: string;
     reviewer_profile_image: string;
     reviewer_nickname: string;
     reviewer_email: string; //앞의 2글자만 or 2글자외 나머지 마스킹해서 보내기
