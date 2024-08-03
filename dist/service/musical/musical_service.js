@@ -636,14 +636,23 @@ const ongoing_musical = () => __awaiter(void 0, void 0, void 0, function* () {
         const today = new Date();
         const filter_data = yield musicals_1.default.aggregate([
             {
+                $addFields: {
+                    trimmed_start_at: { $trim: { input: "$start_at" } },
+                    trimmed_end_at: { $trim: { input: "$end_at" } }
+                }
+            },
+            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $lte: [{ $toDate: "$start_at" }, today] },
-                            { $gte: [{ $toDate: "$end_at" }, today] }
+                            { $lte: [{ $dateFromString: { dateString: "$trimmed_start_at", format: "%Y/%m/%d" } }, today] },
+                            { $gte: [{ $dateFromString: { dateString: "$trimmed_end_at", format: "%Y/%m/%d" } }, today] }
                         ]
                     }
                 }
+            },
+            {
+                $limit: 10
             },
             {
                 $project: {
@@ -679,15 +688,24 @@ const near_musical = (user_id) => __awaiter(void 0, void 0, void 0, function* ()
                 $unwind: '$theaters'
             },
             {
+                $addFields: {
+                    trimmed_start_at: { $trim: { input: "$start_at" } },
+                    trimmed_end_at: { $trim: { input: "$end_at" } }
+                }
+            },
+            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $lte: [{ $toDate: "$start_at" }, today] },
-                            { $gte: [{ $toDate: "$end_at" }, today] },
+                            { $lte: [{ $dateFromString: { dateString: "$trimmed_start_at", format: "%Y/%m/%d" } }, today] },
+                            { $gte: [{ $dateFromString: { dateString: "$trimmed_end_at", format: "%Y/%m/%d" } }, today] },
                             { $eq: ["$theaters.area_id", user.homearea._id] }
                         ]
                     }
                 }
+            },
+            {
+                $limit: 10
             },
             {
                 $project: {

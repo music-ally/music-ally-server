@@ -695,14 +695,23 @@ const ongoing_musical = async (): Promise<musical_main_item_dto[]> => {
 
     const filter_data = await Musicals.aggregate([
       {
+        $addFields: {
+          trimmed_start_at: { $trim: { input: "$start_at" } },
+          trimmed_end_at: { $trim: { input: "$end_at" } }
+        }
+      },
+      {
         $match: {
           $expr: {
             $and: [
-              { $lte: [{ $toDate: "$start_at" }, today] },
-              { $gte: [{ $toDate: "$end_at" }, today] }
+              { $lte: [{ $dateFromString: { dateString: "$trimmed_start_at", format: "%Y/%m/%d" } }, today] },
+              { $gte: [{ $dateFromString: { dateString: "$trimmed_end_at", format: "%Y/%m/%d" } }, today] }
             ]
           }
         }
+      },
+      {
+        $limit: 10
       },
       {
         $project: {
@@ -741,15 +750,24 @@ const near_musical = async (user_id: string) => {
         $unwind: '$theaters'
       },
       {
+        $addFields: {
+          trimmed_start_at: { $trim: { input: "$start_at" } },
+          trimmed_end_at: { $trim: { input: "$end_at" } }
+        }
+      },
+      {
         $match: {
           $expr: {
             $and: [
-              { $lte: [{ $toDate: "$start_at" }, today] },
-              { $gte: [{ $toDate: "$end_at" }, today] },
+              { $lte: [{ $dateFromString: { dateString: "$trimmed_start_at", format: "%Y/%m/%d" } }, today] },
+              { $gte: [{ $dateFromString: { dateString: "$trimmed_end_at", format: "%Y/%m/%d" } }, today] },
               { $eq: ["$theaters.area_id", user.homearea._id] }
             ]
           }
         }
+      },
+      {
+        $limit: 10
       },
       {
         $project: {
