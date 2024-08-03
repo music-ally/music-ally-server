@@ -10,6 +10,8 @@ mypage_router.get("/myPage/review/:reviewId", auth, mypage_controller.fetch_mypa
 mypage_router.get("/myPage/follower", auth, mypage_controller.fetch_follower);
 mypage_router.get("/myPage/following", auth, mypage_controller.fetch_following);
 mypage_router.patch("/myPage", auth, upload.single('profile_image'), processFile, mypage_controller.update_profile);
+mypage_router.patch("/myPage/profile/image", auth, upload.single('profile_image'), processFile, mypage_controller.update_profile_image);
+mypage_router.patch("/myPage/profile/text", auth, mypage_controller.update_profile_text);
 
 mypage_router.delete("/myPage/review/:reviewId", auth, mypage_controller.delete_review);
 

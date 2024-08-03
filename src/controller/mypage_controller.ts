@@ -94,6 +94,7 @@ const update_profile = async (
 
     if (req.file) {
       user_update_dto.profile_image = req.file.path;
+    }
 
     try {
       const data = await mypage_service.update_profile(req.user_id, user_update_dto);
@@ -108,6 +109,63 @@ const update_profile = async (
       );
       throw error;
     }
+};
+
+
+/**
+ * 개인정보 수정(파일)
+ */
+const update_profile_image = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  let profile_image;
+
+  if (req.file) {
+    profile_image = req.file.path;
+  }
+
+  try {
+    const data = await mypage_service.update_profile_image(req.user_id, profile_image);
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.UPDATE_SUCCESS, data));
+  } catch (error) {
+    console.error(
+      "error updating profile: controller/mypage",
+      error
+    );
+    throw error;
+  }
+};
+
+
+/**
+ * 개인정보 수정 (json)
+ */
+const update_profile_text = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void | Response> => {
+
+  const user_update_dto: user_update_dto = req.body;
+
+  try {
+    const data = await mypage_service.update_profile(req.user_id, user_update_dto);
+
+    return res
+      .status(status_code.OK)
+      .send(form.success(message.UPDATE_SUCCESS, data));
+  } catch (error) {
+    console.error(
+      "error updating profile: controller/mypage",
+      error
+    );
+    throw error;
   }
 };
 
@@ -164,4 +222,6 @@ export {
   update_profile,
   fetch_follower,
   fetch_following,
+  update_profile_image,
+  update_profile_text
 }

@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update_profile = exports.delete_review = exports.mypage_review_detail = exports.get_my_profile = void 0;
+exports.update_profile_image = exports.update_profile_text = exports.update_profile = exports.delete_review = exports.mypage_review_detail = exports.get_my_profile = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const mypage_service_utils = __importStar(require("./mypage_service_utils"));
 const users_1 = __importDefault(require("../../schema/users"));
@@ -154,4 +154,50 @@ const update_profile = (user_id, user_update_dto) => __awaiter(void 0, void 0, v
     }
 });
 exports.update_profile = update_profile;
+/**
+ * 개인정보 수정
+ */
+const update_profile_text = (user_id, user_update_dto) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield mypage_service_utils.find_user_by_id(user_id);
+        if (user_update_dto.password) {
+            const hashed_password = yield bcryptjs_1.default.hash(user_update_dto.password, 10);
+            user_update_dto.password = hashed_password;
+        }
+        if (user_update_dto.homearea_name) {
+            const updated_homearea = yield (0, user_service_1.find_homearea_by_name)(user_update_dto.homearea_name);
+            user_update_dto.homearea = updated_homearea;
+        }
+        const updated_user = yield users_1.default.findByIdAndUpdate(user._id, user_update_dto, { new: true });
+        const data = {
+            nickname: updated_user === null || updated_user === void 0 ? void 0 : updated_user.nickname,
+            birthday: updated_user === null || updated_user === void 0 ? void 0 : updated_user.birthday,
+            homearea_name: user_update_dto.homearea_name,
+        };
+        return data;
+    }
+    catch (error) {
+        console.error("Error updating profile text at mypage: Service", error);
+        throw error;
+    }
+});
+exports.update_profile_text = update_profile_text;
+/**
+ * 개인정보 수정
+ */
+const update_profile_image = (user_id, profile_image) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield mypage_service_utils.find_user_by_id(user_id);
+        const updated_user = yield users_1.default.findByIdAndUpdate(user._id, { profile_image: profile_image }, { new: true });
+        const data = {
+            profile_image: updated_user === null || updated_user === void 0 ? void 0 : updated_user.profile_image
+        };
+        return data;
+    }
+    catch (error) {
+        console.error("Error updating profile image at mypage: Service", error);
+        throw error;
+    }
+});
+exports.update_profile_image = update_profile_image;
 //# sourceMappingURL=mypage_service.js.map
