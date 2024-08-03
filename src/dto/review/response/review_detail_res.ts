@@ -20,6 +20,7 @@ export interface review_detail_res_dto{
     musical: review_detail_musical_dto;
     actors: review_detail_actor_dto[];
     poster_image: string;
+    reviewer_id: mongoose.Types.ObjectId;
     reviewer_profile_image: string;
     reviewer_nickname: string;
     reviewer_email: string; //앞의 2글자만 or 2글자외 나머지 마스킹해서 보내기

@@ -66,6 +66,7 @@ const musical_detail = async (user_id:string, musical_id:string) => {
     
       return {
         review_id: review._id,
+        reviewer_id: review.user_id,
         reviewer_profile_image: review.user_id.profile_image || null,
         reviewer_nickname: review.user_id.nickname,
         reviewer_email: masked_email,

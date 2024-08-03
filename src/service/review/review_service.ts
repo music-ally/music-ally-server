@@ -180,6 +180,7 @@ const review_detail = async (review_id: string, user_id: string) => {
         actor_name: actor.actor_name,
       })),
       poster_image: review.musical_id.poster_uri,
+      reviewer_id: review.user_id,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,
@@ -241,6 +242,7 @@ const review_detail_for_actor = async (review_id: string, user_id: string) => {
     const data: review_main_item_dto = {
       review_id: review._id,
       poster_image: review.musical_id.poster_image,
+      reviewer_id: review.user_id,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,

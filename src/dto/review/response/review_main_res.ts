@@ -8,6 +8,7 @@ export interface review_main_res_dto {
 export interface review_main_item_dto {
     review_id: mongoose.Types.ObjectId;
     poster_image: string;
+    reviewer_id: mongoose.Types.ObjectId;
     reviewer_profile_image: string;
     reviewer_nickname: string;
     reviewer_email: string; //앞의 2글자만 or 2글자외 나머지 마스킹해서 보내기
