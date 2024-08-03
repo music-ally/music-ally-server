@@ -135,7 +135,7 @@ const update_profile_image = async (
       .send(form.success(message.UPDATE_SUCCESS, data));
   } catch (error) {
     console.error(
-      "error updating profile: controller/mypage",
+      "error updating profile image: controller/mypage",
       error
     );
     throw error;
@@ -155,14 +155,14 @@ const update_profile_text = async (
   const user_update_dto: user_update_dto = req.body;
 
   try {
-    const data = await mypage_service.update_profile(req.user_id, user_update_dto);
+    const data = await mypage_service.update_profile_text(req.user_id, user_update_dto);
 
     return res
       .status(status_code.OK)
       .send(form.success(message.UPDATE_SUCCESS, data));
   } catch (error) {
     console.error(
-      "error updating profile: controller/mypage",
+      "error updating profile text: controller/mypage",
       error
     );
     throw error;

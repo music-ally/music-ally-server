@@ -126,7 +126,7 @@ const update_profile_image = (req, res, next) => __awaiter(void 0, void 0, void 
             .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
     }
     catch (error) {
-        console.error("error updating profile: controller/mypage", error);
+        console.error("error updating profile image: controller/mypage", error);
         throw error;
     }
 });
@@ -137,13 +137,13 @@ exports.update_profile_image = update_profile_image;
 const update_profile_text = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user_update_dto = req.body;
     try {
-        const data = yield mypage_service.update_profile(req.user_id, user_update_dto);
+        const data = yield mypage_service.update_profile_text(req.user_id, user_update_dto);
         return res
             .status(status_code_1.default.OK)
             .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
     }
     catch (error) {
-        console.error("error updating profile: controller/mypage", error);
+        console.error("error updating profile text: controller/mypage", error);
         throw error;
     }
 });
