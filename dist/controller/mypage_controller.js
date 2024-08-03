@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetch_following = exports.fetch_follower = exports.update_profile = exports.delete_review = exports.fetch_mypage_review_detail = exports.fetch_my_profile = void 0;
+exports.update_profile_text = exports.update_profile_image = exports.fetch_following = exports.fetch_follower = exports.update_profile = exports.delete_review = exports.fetch_mypage_review_detail = exports.fetch_my_profile = void 0;
 const response_form_1 = __importDefault(require("../utils/response_form"));
 const response_message_1 = __importDefault(require("../utils/response_message"));
 const status_code_1 = __importDefault(require("../utils/status_code"));
@@ -98,19 +98,56 @@ const update_profile = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     const user_update_dto = JSON.parse(req.body.update_data);
     if (req.file) {
         user_update_dto.profile_image = req.file.path;
-        try {
-            const data = yield mypage_service.update_profile(req.user_id, user_update_dto);
-            return res
-                .status(status_code_1.default.OK)
-                .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
-        }
-        catch (error) {
-            console.error("error updating profile: controller/mypage", error);
-            throw error;
-        }
+    }
+    try {
+        const data = yield mypage_service.update_profile(req.user_id, user_update_dto);
+        return res
+            .status(status_code_1.default.OK)
+            .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
+    }
+    catch (error) {
+        console.error("error updating profile: controller/mypage", error);
+        throw error;
     }
 });
 exports.update_profile = update_profile;
+/**
+ * 개인정보 수정(파일)
+ */
+const update_profile_image = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    let profile_image;
+    if (req.file) {
+        profile_image = req.file.path;
+    }
+    try {
+        const data = yield mypage_service.update_profile_image(req.user_id, profile_image);
+        return res
+            .status(status_code_1.default.OK)
+            .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
+    }
+    catch (error) {
+        console.error("error updating profile: controller/mypage", error);
+        throw error;
+    }
+});
+exports.update_profile_image = update_profile_image;
+/**
+ * 개인정보 수정 (json)
+ */
+const update_profile_text = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_update_dto = req.body;
+    try {
+        const data = yield mypage_service.update_profile(req.user_id, user_update_dto);
+        return res
+            .status(status_code_1.default.OK)
+            .send(response_form_1.default.success(response_message_1.default.UPDATE_SUCCESS, data));
+    }
+    catch (error) {
+        console.error("error updating profile: controller/mypage", error);
+        throw error;
+    }
+});
+exports.update_profile_text = update_profile_text;
 /**
  * 팔로워 목록 보기
  */

@@ -36,6 +36,8 @@ mypage_router.get("/myPage/review/:reviewId", auth_1.default, mypage_controller.
 mypage_router.get("/myPage/follower", auth_1.default, mypage_controller.fetch_follower);
 mypage_router.get("/myPage/following", auth_1.default, mypage_controller.fetch_following);
 mypage_router.patch("/myPage", auth_1.default, multer_1.upload.single('profile_image'), multer_1.processFile, mypage_controller.update_profile);
+mypage_router.patch("/myPage/profile/image", auth_1.default, multer_1.upload.single('profile_image'), multer_1.processFile, mypage_controller.update_profile_image);
+mypage_router.patch("/myPage/profile/text", auth_1.default, mypage_controller.update_profile_text);
 mypage_router.delete("/myPage/review/:reviewId", auth_1.default, mypage_controller.delete_review);
 exports.default = mypage_router;
 //# sourceMappingURL=mypage_router.js.map

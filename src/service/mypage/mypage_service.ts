@@ -1,29 +1,14 @@
-import mongoose from "mongoose";
 import { user_mypage_res_dto } from "../../dto/user/response/user_mypage_res";
-import { user_profile_res_dto } from "../../dto/user/response/user_profile_res";
 import { user_update_dto } from "../../dto/user/request/user_update";
 import { user_update_res_dto } from "../../dto/user/response/user_update_res";
-import {
-  review_profile_res_dto,
-  review_profile_item_dto,
-} from "../../dto/review/response/review_profile_res";
 import { review_mypage_detail_res_dto } from "../../dto/review/response/review_mypage_detail_res";
-import {
-  musical_profile_res_dto,
-  musical_profile_item_dto,
-} from "../../dto/musical/response/musical_profile_res";
-import {
-  follow_item_dto,
-  follow_res_dto,
-} from "../../dto/follow/response/follow_res";
 import bcrypt from 'bcryptjs';
 import * as mypage_service_utils from "./mypage_service_utils";
 import Users from "../../schema/users";
 import Reviews from "../../schema/reviews";
 import Review_likes from "../../schema/review_likes";
-import Areas from "../../schema/areas";
-import { has } from "cheerio/lib/api/traversing";
 import { find_homearea_by_name } from "../user/user_service";
+import { profile } from "console";
 
 /**
  * 내 프로필 반환
@@ -158,4 +143,75 @@ const update_profile = async (
   }
 };
 
-export { get_my_profile, mypage_review_detail, delete_review, update_profile };
+
+/**
+ * 개인정보 수정
+ */
+const update_profile_text = async (
+  user_id: string,
+  user_update_dto: user_update_dto
+): Promise<user_update_res_dto> => {
+  try {
+    const user = await mypage_service_utils.find_user_by_id(user_id);
+
+    if (user_update_dto.password){
+      const hashed_password = await bcrypt.hash(user_update_dto.password, 10);
+      user_update_dto.password = hashed_password;
+    }
+
+    if(user_update_dto.homearea_name){
+      const updated_homearea = await find_homearea_by_name(user_update_dto.homearea_name);
+      user_update_dto.homearea = updated_homearea;
+    }
+
+    const updated_user = await Users.findByIdAndUpdate(
+      user._id,
+      user_update_dto,
+      {new : true}
+    );
+
+    const data: user_update_res_dto = {
+      nickname: updated_user?.nickname,
+      birthday: updated_user?.birthday,
+      homearea_name: user_update_dto.homearea_name,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error updating profile text at mypage: Service", error);
+    throw error;
+  }
+};
+
+
+/**
+ * 개인정보 수정
+ */
+const update_profile_image = async (
+  user_id: string,
+  profile_image: any,
+): Promise<user_update_res_dto> => {
+  try {
+    const user = await mypage_service_utils.find_user_by_id(user_id);
+
+    const updated_user = await Users.findByIdAndUpdate(
+      user._id,
+      { profile_image : profile_image },
+      { new : true }
+    );
+
+    const data: user_update_res_dto = {
+      profile_image: updated_user?.profile_image
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error updating profile image at mypage: Service", error);
+    throw error;
+  }
+};
+
+export { get_my_profile, mypage_review_detail, delete_review, update_profile,
+  update_profile_text,
+  update_profile_image
+ };
