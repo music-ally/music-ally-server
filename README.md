@@ -1,6 +1,6 @@
-![KakaoTalk_20240804_112612117](https://github.com/user-attachments/assets/2b2f3259-6127-4b90-836d-72b08924d090)
+## music-ally Back-End
 
-##music-ally Back-End
+![KakaoTalk_20240804_112612117](https://github.com/user-attachments/assets/2b2f3259-6127-4b90-836d-72b08924d090)
 
 🌟숙명 중앙 동아리 SOLUX 송티티 팀
 
