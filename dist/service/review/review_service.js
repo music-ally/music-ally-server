@@ -162,7 +162,6 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
         if (!review) {
             throw new Error("Review not found");
         }
-        console.log(review);
         const is_like = yield review_likes_1.default.exists({ user_id, review_id });
         const masked_email = `${review.user_id.email.slice(0, 2)}****`;
         const like_num = yield review_likes_1.default.countDocuments({
@@ -183,7 +182,7 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
                 actor_name: actor.actor_name,
             })),
             poster_image: review.musical_id.poster_uri,
-            reviewer_id: review.user_id,
+            reviewer_id: review.user_id._id,
             reviewer_profile_image: review.user_id.profile_image || null,
             reviewer_nickname: review.user_id.nickname,
             reviewer_email: masked_email,
@@ -230,7 +229,6 @@ const review_detail_for_actor = (review_id, user_id) => __awaiter(void 0, void 0
         if (!review) {
             throw new Error("Review not found");
         }
-        console.log(review);
         const is_like = yield review_likes_1.default.exists({ user_id, review_id });
         const masked_email = `${review.user_id.email.slice(0, 2)}****`;
         const like_num = yield review_likes_1.default.countDocuments({
@@ -239,7 +237,7 @@ const review_detail_for_actor = (review_id, user_id) => __awaiter(void 0, void 0
         const data = {
             review_id: review._id,
             poster_image: review.musical_id.poster_image,
-            reviewer_id: review.user_id,
+            reviewer_id: review.user_id._id,
             reviewer_profile_image: review.user_id.profile_image || null,
             reviewer_nickname: review.user_id.nickname,
             reviewer_email: masked_email,
@@ -292,7 +290,6 @@ exports.cancel_review_like = cancel_review_like;
 const writer_profile = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield users_1.default.findById(user_id);
-        console.log(user);
         if (!user) {
             throw new Error("유저가 존재하지 않습니다.");
         }

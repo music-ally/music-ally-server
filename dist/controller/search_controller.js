@@ -56,9 +56,7 @@ const search_actors = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 exports.search_actors = search_actors;
 const search_musicals = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('Query Parameters:', req.query);
         const keyword = req.query.keyword;
-        console.log(keyword);
         const data = yield search_service.search_musical(keyword);
         return res
             .status(status_code_1.default.OK)

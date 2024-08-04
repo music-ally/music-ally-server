@@ -32,9 +32,7 @@ const search_musicals = async (
   next: NextFunction
 ): Promise<void | Response> => {
   try {
-    console.log('Query Parameters:', req.query);
     const keyword = req.query.keyword as string;
-    console.log(keyword);
     const data = await search_service.search_musical(keyword);
 
     return res

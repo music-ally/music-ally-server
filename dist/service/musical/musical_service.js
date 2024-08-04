@@ -40,13 +40,10 @@ const musical_detail = (user_id, musical_id) => __awaiter(void 0, void 0, void 0
         if (!theater) {
             throw new Error("해당 극장 아이디의 극장을 찾을 수 없습니다");
         }
-        console.log(musical_oid);
         const castings = yield castings_1.default.find({ musical_id: musical_oid })
             .populate('actor_id')
             .exec();
-        console.log(castings);
         const castings_names = castings.map((casting) => casting.actor_id.actor_name);
-        console.log(castings_names);
         const review_data = yield reviews_1.default.find({ musical_id: musical_oid })
             .populate('user_id')
             .populate('musical_id')
@@ -58,7 +55,7 @@ const musical_detail = (user_id, musical_id) => __awaiter(void 0, void 0, void 0
             const masked_email = `${review.user_id.email.slice(0, 2)}****`;
             return {
                 review_id: review._id,
-                reviewer_id: review.user_id,
+                reviewer_id: review.user_id._id,
                 reviewer_profile_image: review.user_id.profile_image || null,
                 reviewer_nickname: review.user_id.nickname,
                 reviewer_email: masked_email,

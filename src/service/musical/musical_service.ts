@@ -39,18 +39,11 @@ const musical_detail = async (user_id:string, musical_id:string) => {
       throw new Error("해당 극장 아이디의 극장을 찾을 수 없습니다");
     }
 
-    console.log(musical_oid)
-
     const castings = await Castings.find({musical_id: musical_oid})
     .populate('actor_id')
     .exec() as any[];
 
-    console.log(castings)
-
     const castings_names = castings.map((casting: any) => casting.actor_id.actor_name);
-  
-    console.log(castings_names)
-
 
     const review_data = await Reviews.find({musical_id: musical_oid })
     .populate('user_id')
@@ -66,7 +59,7 @@ const musical_detail = async (user_id:string, musical_id:string) => {
     
       return {
         review_id: review._id,
-        reviewer_id: review.user_id,
+        reviewer_id: review.user_id._id,
         reviewer_profile_image: review.user_id.profile_image || null,
         reviewer_nickname: review.user_id.nickname,
         reviewer_email: masked_email,

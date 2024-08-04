@@ -155,8 +155,6 @@ const review_detail = async (review_id: string, user_id: string) => {
       throw new Error("Review not found");
     }
 
-    console.log(review);
-
     const is_like = await Review_likes.exists({ user_id, review_id });
 
     const masked_email = `${review.user_id.email.slice(0, 2)}****`;
@@ -180,7 +178,7 @@ const review_detail = async (review_id: string, user_id: string) => {
         actor_name: actor.actor_name,
       })),
       poster_image: review.musical_id.poster_uri,
-      reviewer_id: review.user_id,
+      reviewer_id: review.user_id._id,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,
@@ -229,8 +227,6 @@ const review_detail_for_actor = async (review_id: string, user_id: string) => {
       throw new Error("Review not found");
     }
 
-    console.log(review);
-
     const is_like = await Review_likes.exists({ user_id, review_id });
 
     const masked_email = `${review.user_id.email.slice(0, 2)}****`;
@@ -242,7 +238,7 @@ const review_detail_for_actor = async (review_id: string, user_id: string) => {
     const data: review_main_item_dto = {
       review_id: review._id,
       poster_image: review.musical_id.poster_image,
-      reviewer_id: review.user_id,
+      reviewer_id: review.user_id._id,
       reviewer_profile_image: review.user_id.profile_image || null,
       reviewer_nickname: review.user_id.nickname,
       reviewer_email: masked_email,
@@ -301,7 +297,6 @@ const writer_profile = async (user_id: string) => {
   try {
     const user = await Users.findById(user_id);
 
-    console.log(user);
     if (!user) {
       throw new Error("유저가 존재하지 않습니다.");
     }
