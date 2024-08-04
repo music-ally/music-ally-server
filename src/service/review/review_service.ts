@@ -44,6 +44,7 @@ const review_main = async (user_id: string) => {
         const review_data = {
           review_id: review._id,
           poster_image: review.musical_id.poster_image,
+          reviewer_id: review.user_id._id,
           reviewer_profile_image: review.user_id.profile_image || null,
           reviewer_nickname: review.user_id.nickname,
           reviewer_email: masked_email,
