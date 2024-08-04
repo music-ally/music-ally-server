@@ -32,7 +32,7 @@ const musical_detail = async (user_id:string, musical_id:string) => {
     musical.view++;
     await musical.save();
 
-    const is_bookmark = Boolean(await Bookmarks.exists( { user_oid, musical_oid } ));
+    const is_bookmark = Boolean(await Bookmarks.exists( { user_id: user_oid, musical_id: musical_oid } ));
 
     const theater = await Theaters.findById(musical.theater_id);
     if (!theater){
