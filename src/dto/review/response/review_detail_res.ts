@@ -5,7 +5,9 @@ export interface review_detail_musical_dto{
     poster_image: string;
     musical_name: string;
     theater_name: string;
-    watch_at: Date;
+    watch_at?: Date;
+    start_at: string;
+    end_at: string;
 }
 
 export interface review_detail_actor_dto{

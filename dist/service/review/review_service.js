@@ -105,7 +105,7 @@ const write_review = (user_id, review_write_dto) => __awaiter(void 0, void 0, vo
             musical_id: review_write_dto.musical_id,
             actor_ids: review_write_dto.actor_ids,
             content: review_write_dto.content,
-            watch_at: new Date(review_write_dto.watch_at),
+            //watch_at: new Date(review_write_dto.watch_at),
             create_at: new Date(),
             fear: review_write_dto.fear,
             sensitivity: review_write_dto.sensitivity,
@@ -152,7 +152,7 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
                 model: theaters_1.default,
                 select: "theater_name",
             },
-            select: "poster_image musical_name",
+            select: "poster_image musical_name start_at end_at",
         })
             .populate({
             path: "actor_ids",
@@ -176,6 +176,8 @@ const review_detail = (review_id, user_id) => __awaiter(void 0, void 0, void 0, 
                 musical_name: review.musical_id.musical_name,
                 theater_name: review.musical_id.theater_id.theater_name,
                 watch_at: review.watch_at,
+                start_at: review.musical_id.start_at.trim(),
+                end_at: review.musical_id.end_at.trim()
             },
             actors: review.actor_ids.map((actor) => ({
                 actor_id: actor._id,
