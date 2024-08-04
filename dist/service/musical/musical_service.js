@@ -35,7 +35,7 @@ const musical_detail = (user_id, musical_id) => __awaiter(void 0, void 0, void 0
         //뮤지컬 조회수 증가
         musical.view++;
         yield musical.save();
-        const is_bookmark = Boolean(yield bookmarks_1.default.exists({ user_oid, musical_oid }));
+        const is_bookmark = Boolean(yield bookmarks_1.default.exists({ user_id: user_oid, musical_id: musical_oid }));
         const theater = yield theaters_1.default.findById(musical.theater_id);
         if (!theater) {
             throw new Error("해당 극장 아이디의 극장을 찾을 수 없습니다");
