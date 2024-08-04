@@ -26,7 +26,7 @@ const reviews_schema = new mongoose_1.default.Schema({
     },
     watch_at: {
         type: Date,
-        required: true,
+        required: false,
     },
     create_at: {
         type: Date,

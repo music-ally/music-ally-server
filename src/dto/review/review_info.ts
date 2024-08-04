@@ -5,7 +5,7 @@ export interface review_info {
   musical_id: mongoose.Types.ObjectId;
   actor_id: mongoose.Types.ObjectId;
   content: string;
-  watch_at: Date;
+  watch_at?: Date;
   create_at: Date;
   fear: number;
   sensitivity: number;
